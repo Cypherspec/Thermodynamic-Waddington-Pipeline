@@ -1,0 +1,40 @@
+{
+  "description": "Same design as v2 (90 cells/stage, 400 permutation replicates, Fisher combined test) but with real scVelo dynamical-model velocity instead of the spliced-minus-unspliced proxy.",
+  "velocity_source": "scvelo dynamical model (EM-fit two-state kinetics), 255/300 HVGs converged",
+  "branches": {
+    "Beta": {
+      "terminal_fate": "Beta",
+      "n_cells": 450,
+      "n_genes_used": 255,
+      "entropy_production_rate": 0.25888314595050826,
+      "bootstrap_ci": [
+        0.24969616962488095,
+        0.2678936900822049
+      ],
+      "permutation_p_value": 0.0024937655860349127,
+      "stationarity_residual": 0.005648384412451572
+    },
+    "Alpha": {
+      "terminal_fate": "Alpha",
+      "n_cells": 450,
+      "n_genes_used": 255,
+      "entropy_production_rate": 0.33929362397219376,
+      "bootstrap_ci": [
+        0.32370879929833135,
+        0.35426057584785553
+      ],
+      "permutation_p_value": 0.004987531172069825,
+      "stationarity_residual": 0.007696856965819446
+    }
+  },
+  "combined_test": {
+    "method": "fisher",
+    "input_p_values": [
+      0.0024937655860349127,
+      0.004987531172069825
+    ],
+    "chi2_statistic": 22.589551348106387,
+    "degrees_of_freedom": 4,
+    "combined_p_value": 0.00015291914445871846
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "dataset": "dentate_gyrus_hochgerner2018",
+  "lineage": "granule cell (Radial Glia-like -> nIPC -> Neuroblast -> Granule immature -> Granule mature)",
+  "n_cells": 75,
+  "n_genes_used": 145,
+  "n_genes_converged_total": 145,
+  "entropy_production_rate": 0.2279454982088743,
+  "bootstrap_ci": [
+    0.2082281605631389,
+    0.2468787271671953
+  ],
+  "permutation_p_value": 0.9526184538653366,
+  "stationarity_residual": 0.027255772889131103
+}

@@ -1,0 +1,45 @@
+{
+  "description": "Scaled-up replication: 90 cells/stage (vs 45), 400 permutation replicates (vs 60), plus Fisher's combined test across branches.",
+  "branches": {
+    "Beta": {
+      "terminal_fate": "Beta",
+      "n_cells": 450,
+      "entropy_production_rate": 2.0066190572185505,
+      "bootstrap_ci": [
+        1.82598073662907,
+        2.194702364326367
+      ],
+      "permutation_p_value": 0.0024937655860349127,
+      "null_mean": 1.0275668609318214,
+      "stationarity_residual": 0.008748275973129186,
+      "permutation_replicates": 400,
+      "bootstrap_replicates": 200,
+      "elapsed_seconds": 64.24367785453796
+    },
+    "Alpha": {
+      "terminal_fate": "Alpha",
+      "n_cells": 450,
+      "entropy_production_rate": 2.1301424960723545,
+      "bootstrap_ci": [
+        1.8809003033598009,
+        2.448910900468589
+      ],
+      "permutation_p_value": 0.0024937655860349127,
+      "null_mean": 0.9190177954368199,
+      "stationarity_residual": 0.008836784277555635,
+      "permutation_replicates": 400,
+      "bootstrap_replicates": 200,
+      "elapsed_seconds": 63.33111095428467
+    }
+  },
+  "combined_test": {
+    "method": "fisher",
+    "input_p_values": [
+      0.0024937655860349127,
+      0.0024937655860349127
+    ],
+    "chi2_statistic": 23.975845709226277,
+    "degrees_of_freedom": 4,
+    "combined_p_value": 8.077016221673453e-05
+  }
+}
