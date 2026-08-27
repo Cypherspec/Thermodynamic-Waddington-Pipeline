@@ -1,0 +1,76 @@
+{
+  "Beta": [
+    {
+      "k": 12,
+      "entropy_production_rate": 0.099,
+      "permutation_p_value": 0.0066,
+      "stationarity_residual": 0.0021,
+      "elapsed_seconds": 43.4
+    },
+    {
+      "k": 18,
+      "entropy_production_rate": 0.174,
+      "permutation_p_value": 0.0066,
+      "stationarity_residual": 0.0037,
+      "elapsed_seconds": 62.3
+    },
+    {
+      "k": 24,
+      "entropy_production_rate": 0.259,
+      "permutation_p_value": 0.0066,
+      "stationarity_residual": 0.0056,
+      "elapsed_seconds": 80.3
+    },
+    {
+      "k": 32,
+      "entropy_production_rate": 0.45504194676663323,
+      "permutation_p_value": 0.013245033112582781,
+      "stationarity_residual": 0.009079588165633729,
+      "elapsed_seconds": 104.8
+    },
+    {
+      "k": 40,
+      "entropy_production_rate": 0.7519950401095605,
+      "permutation_p_value": 0.006622516556291391,
+      "stationarity_residual": 0.01358482844101814,
+      "elapsed_seconds": 128.9
+    }
+  ],
+  "Alpha": [
+    {
+      "k": 12,
+      "entropy_production_rate": 0.11070703291111937,
+      "permutation_p_value": 0.08609271523178808,
+      "stationarity_residual": 0.0027932223510159625,
+      "elapsed_seconds": 42.9
+    },
+    {
+      "k": 18,
+      "entropy_production_rate": 0.21516883510405335,
+      "permutation_p_value": 0.006622516556291391,
+      "stationarity_residual": 0.005103189009764793,
+      "elapsed_seconds": 61.7
+    },
+    {
+      "k": 24,
+      "entropy_production_rate": 0.33929362397219376,
+      "permutation_p_value": 0.019867549668874173,
+      "stationarity_residual": 0.007696856965819446,
+      "elapsed_seconds": 81.4
+    },
+    {
+      "k": 32,
+      "entropy_production_rate": 0.5761227693207759,
+      "permutation_p_value": 0.013245033112582781,
+      "stationarity_residual": 0.01227833015020025,
+      "elapsed_seconds": 109.1
+    },
+    {
+      "k": 40,
+      "entropy_production_rate": 0.8740324945808968,
+      "permutation_p_value": 0.059602649006622516,
+      "stationarity_residual": 0.017212596665298077,
+      "elapsed_seconds": 133.5
+    }
+  ]
+}

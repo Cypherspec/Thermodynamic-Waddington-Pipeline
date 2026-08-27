@@ -1,0 +1,37 @@
+[
+  {
+    "k": 12,
+    "entropy_production_rate": 0.099,
+    "permutation_p_value": 0.0066,
+    "stationarity_residual": 0.0021,
+    "elapsed_seconds": 43.4
+  },
+  {
+    "k": 18,
+    "entropy_production_rate": 0.174,
+    "permutation_p_value": 0.0066,
+    "stationarity_residual": 0.0037,
+    "elapsed_seconds": 62.3
+  },
+  {
+    "k": 24,
+    "entropy_production_rate": 0.259,
+    "permutation_p_value": 0.0066,
+    "stationarity_residual": 0.0056,
+    "elapsed_seconds": 80.3
+  },
+  {
+    "k": 32,
+    "entropy_production_rate": 0.45504194676663323,
+    "permutation_p_value": 0.013245033112582781,
+    "stationarity_residual": 0.009079588165633729,
+    "elapsed_seconds": 104.8
+  },
+  {
+    "k": 40,
+    "entropy_production_rate": 0.7519950401095605,
+    "permutation_p_value": 0.006622516556291391,
+    "stationarity_residual": 0.01358482844101814,
+    "elapsed_seconds": 128.9
+  }
+]

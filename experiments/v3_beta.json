@@ -1,0 +1,12 @@
+{
+  "terminal_fate": "Beta",
+  "n_cells": 450,
+  "n_genes_used": 255,
+  "entropy_production_rate": 0.25888314595050826,
+  "bootstrap_ci": [
+    0.24969616962488095,
+    0.2678936900822049
+  ],
+  "permutation_p_value": 0.0024937655860349127,
+  "stationarity_residual": 0.005648384412451572
+}
