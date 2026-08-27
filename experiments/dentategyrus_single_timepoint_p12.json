@@ -1,0 +1,12 @@
+{
+  "age_days": 12,
+  "n_cells": 120,
+  "n_genes_used": 145,
+  "entropy_production_rate": 0.28848582971405284,
+  "bootstrap_ci": [
+    0.2658500435540815,
+    0.3119174524189392
+  ],
+  "permutation_p_value": 0.6976744186046512,
+  "stationarity_residual": 0.01575613084774386
+}

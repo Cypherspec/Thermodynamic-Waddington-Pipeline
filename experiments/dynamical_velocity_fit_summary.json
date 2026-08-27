@@ -1,0 +1,8 @@
+{
+  "n_cells": 3696,
+  "n_genes_after_filter": 300,
+  "n_genes_with_converged_fit": 255,
+  "n_genes_with_usable_velocity": 255,
+  "mode": "dynamical",
+  "model": "two-state transcriptional kinetics (Bergen et al. 2020), EM-fit alpha/beta/gamma/switching-time per gene, velocity = fitted ds/dt at each cell's inferred latent time"
+}

@@ -1,0 +1,26 @@
+{
+  "GABA": {
+    "fate": "GABA",
+    "n_cells": 90,
+    "n_genes_used": 145,
+    "entropy_production_rate": 0.2775693428225835,
+    "bootstrap_ci": [
+      0.259262207888096,
+      0.2994731742153134
+    ],
+    "permutation_p_value": 0.9900332225913622,
+    "stationarity_residual": 0.019429154770601528
+  },
+  "Granule_mature": {
+    "fate": "Granule mature",
+    "n_cells": 90,
+    "n_genes_used": 145,
+    "entropy_production_rate": 0.12132294743405858,
+    "bootstrap_ci": [
+      0.11098576978010864,
+      0.13062918975187243
+    ],
+    "permutation_p_value": 0.046511627906976744,
+    "stationarity_residual": 0.009132974393768815
+  }
+}

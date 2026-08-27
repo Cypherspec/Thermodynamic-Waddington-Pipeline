@@ -1,0 +1,19 @@
+{
+  "design": "pre-specified confirmatory test, fixed before execution",
+  "lineage": "Radial Glia-like -> Granule mature",
+  "n_per_stage": 45,
+  "k": 24,
+  "permutation_replicates": 1000,
+  "seed": 424242,
+  "significance_threshold": 0.01,
+  "n_cells": 90,
+  "n_genes_used": 145,
+  "entropy_production_rate": 0.14974579332218926,
+  "bootstrap_ci": [
+    0.1394192044746858,
+    0.16007935380123772
+  ],
+  "permutation_p_value": 0.026973026973026972,
+  "stationarity_residual": 0.012197997596487088,
+  "passes_confirmatory_threshold": false
+}
