@@ -1,0 +1,98 @@
+{
+  "schnakenberg": {
+    "n_cycles": 6253,
+    "global_ep": 0.25888314595050826,
+    "cycle_sum_ep": 0.23833680755343004,
+    "relative_error": 0.07936529943515966,
+    "n_irreversible": 6229,
+    "top_5": [
+      {
+        "nodes": [
+          135,
+          121,
+          1
+        ],
+        "current": -0.1689339121844503,
+        "affinity": -0.007225414263360541,
+        "ep": 0.0007223546481963723
+      },
+      {
+        "nodes": [
+          135,
+          121,
+          1,
+          50
+        ],
+        "current": -0.10952578336811479,
+        "affinity": -0.010427541774602922,
+        "ep": 0.0006413209661242153
+      },
+      {
+        "nodes": [
+          162,
+          179,
+          111,
+          155
+        ],
+        "current": 0.24074717626060296,
+        "affinity": 0.003530368295711739,
+        "ep": 0.0005719267564585311
+      },
+      {
+        "nodes": [
+          159,
+          17,
+          7,
+          20
+        ],
+        "current": -0.0314440816696082,
+        "affinity": -0.03445327620138805,
+        "ep": 0.0005270025033405194
+      },
+      {
+        "nodes": [
+          86,
+          24,
+          22,
+          48
+        ],
+        "current": -1.7544259680216137,
+        "affinity": -0.0007589660458293679,
+        "ep": 0.00048720298131351217
+      }
+    ]
+  },
+  "multi_source": {
+    "n_components": 1,
+    "coverage": 444,
+    "total_cells": 450,
+    "energy_range": [
+      0.0,
+      4023.5830836748055
+    ],
+    "fallback_count": 6
+  },
+  "divergence": {
+    "mean_divergence": -0.09548626928603014,
+    "std_divergence": 0.07729815799857159,
+    "fraction_converging": 0.9066666666666666,
+    "fraction_diverging": 0.09333333333333334,
+    "weighted_mean": -0.09889777029193346,
+    "sign_consistency": 1.2352981204001607,
+    "audit": {
+      "n_cells": 450,
+      "bandwidth": 0.65,
+      "method": "kernel_weighted_finite_difference",
+      "interpretation": "mean_divergence > 0 means net source behavior (inconsistent with detailed balance). mean_divergence < 0 means net convergence (attractor-dominated). sign_consistency > 1 means the mean direction is larger than cell-to-cell variation."
+    }
+  },
+  "cross_validation": {
+    "div_weighted_mean": -0.09889777029193346,
+    "div_sign_consistency": 1.2352981204001607,
+    "ep_rate": 0.25888314595050826,
+    "signs_agree": false,
+    "fraction_converging": 0.9066666666666666,
+    "fraction_diverging": 0.09333333333333334,
+    "note": "Sign agreement is the meaningful check. Magnitude comparison is not valid because div(v) and EP have different units and normalizations."
+  }
+}
