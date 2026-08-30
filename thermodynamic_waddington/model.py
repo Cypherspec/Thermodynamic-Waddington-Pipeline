@@ -9,6 +9,9 @@ from .arrays import percentile, shape
 from .config import FitConfig
 from .graph import Edge, annotate_edges, build_knn, estimate_local_diffusion, local_density
 from .jarzynski import barrier_heights, bootstrap_uncertainty, propagate_free_energy, attractor_candidates, jarzynski_diagnostics
+from .multi_source_propagation import propagate_multi_source
+from .cycle_decomposition import schnakenberg_decomposition
+from .divergence import estimate_divergence
 from .linalg import pca, two_dimensional_projection
 from .validation import fate_calibration, reversibility_gap, velocity_alignment_score
 from .observability import fingerprint, make_provenance
@@ -106,8 +109,19 @@ def fit_landscape(expression: Sequence[Sequence[float]], velocity: Sequence[Sequ
     residuals = velocity_residuals(points, velocity, graph)
     diffusion_tensors = estimate_diffusion_tensor(residuals, graph, config.diffusion_floor)
     edges = annotate_edges(points, velocity, graph, densities, diffusions, config.temperature, config.velocity_scale, config.edge_alignment_threshold)
-    energies, counts, paths = propagate_free_energy(edges, n_cells, min(n_cells - 1, max(0, config.reference_index)), config.temperature, config.max_paths)
-    uncertainties = bootstrap_uncertainty(edges, n_cells, min(n_cells - 1, max(0, config.reference_index)), config.temperature, config.max_paths, config.effective_bootstrap_replicates(), config.seed + 991)
+
+    # multi-source propagation: propagates from the highest-degree node in
+    # each weakly-connected component so all cells get a real value, not a
+    # fallback placeholder. Fixes the ~48% unreachable-cell bug in the old
+    # single-reference propagate_free_energy call.
+    ms_result = propagate_multi_source(edges, n_cells, config.temperature, config.max_paths)
+    energies = ms_result.energies
+    counts   = ms_result.path_counts
+    # bootstrap uncertainty still uses the legacy single-reference call since
+    # it operates edge-by-edge and doesn't depend on global coverage
+    ref_idx      = min(n_cells - 1, max(0, config.reference_index))
+    _, _, paths  = propagate_free_energy(edges, n_cells, ref_idx, config.temperature, config.max_paths)
+    uncertainties = bootstrap_uncertainty(edges, n_cells, ref_idx, config.temperature, config.max_paths, config.effective_bootstrap_replicates(), config.seed + 991)
     serialized = _serialize_edges(edges)
     labels = list(labels) if labels is not None else ["unlabeled"] * n_cells
     cell_ids = list(cell_ids) if cell_ids is not None else [f"cell_{i:05d}" for i in range(n_cells)]
@@ -119,12 +133,23 @@ def fit_landscape(expression: Sequence[Sequence[float]], velocity: Sequence[Sequ
         "path_count_min": min(counts) if counts else 0,
         "path_count_max": max(counts) if counts else 0,
         "reference_cell": min(n_cells - 1, max(0, config.reference_index)),
+        "coverage": sum(ms_result.coverage),
+        "coverage_fraction": sum(ms_result.coverage) / max(n_cells, 1),
+        "n_components": ms_result.n_components,
+        "fallback_cells": len(ms_result.fallback_cells),
         "lineage_outcomes_provided": lineage_outcomes is not None,
         "velocity_status": velocity_status,
         "velocity_observed": velocity_observed,
-        "warnings": ["effective landscape; not an equilibrium thermodynamic state function"] + ([] if velocity_observed else ["RNA velocity was not observed; velocity alignment, directed flow, path work, transition pressure, and velocity-dependent free-energy estimates are unavailable or provisional."]),
+        "warnings": (
+            ["effective landscape; not an equilibrium thermodynamic state function"]
+            + ([] if velocity_observed else ["RNA velocity was not observed; velocity alignment, directed flow, path work, transition pressure, and velocity-dependent free-energy estimates are unavailable or provisional."])
+            + ([f"{len(ms_result.fallback_cells)} cells unreachable (isolated nodes with no directed edges)"] if ms_result.fallback_cells else [])
+        ),
     }
     attractors = attractor_candidates(edges, energies, config.barrier_quantile)
+    # only flag cells with a real propagated energy as attractors -- cells that
+    # are only reachable via a fallback path are excluded here
+    attractors = [a for a in attractors if ms_result.coverage[a]]
     barriers = barrier_heights(edges, energies)
     edge_pairs = [(edge.source, edge.target) for edge in edges]
     topology_pairs = lower_star_pairs(energies, edge_pairs)
@@ -135,16 +160,43 @@ def fit_landscape(expression: Sequence[Sequence[float]], velocity: Sequence[Sequ
     path_diagnostics = jarzynski_diagnostics(paths, energies, config.temperature)
     entropy_production_report = None
     if config.enable_entropy_production and velocity_observed:
-        entropy_production_report = estimate_entropy_production(
-            points, velocity, densities, diffusions, graph,
-            EntropyProductionConfig(
-                temperature=config.temperature,
-                velocity_scale=config.velocity_scale,
-                bootstrap_replicates=config.entropy_production_bootstrap_replicates,
-                permutation_replicates=config.entropy_production_permutation_replicates,
-                seed=config.seed + 5231,
-            ),
+        ep_cfg = EntropyProductionConfig(
+            temperature=config.temperature,
+            velocity_scale=config.velocity_scale,
+            bootstrap_replicates=config.entropy_production_bootstrap_replicates,
+            permutation_replicates=config.entropy_production_permutation_replicates,
+            seed=config.seed + 5231,
         )
+        entropy_production_report = estimate_entropy_production(
+            points, velocity, densities, diffusions, graph, ep_cfg)
+
+        # Schnakenberg cycle decomposition: exact EP decomposition into
+        # fundamental graph cycles. Only runs when EP is enabled since it
+        # needs the same pair-flux computation.
+        try:
+            cycle_result = schnakenberg_decomposition(
+                points, velocity, densities, diffusions, graph,
+                EntropyProductionConfig(
+                    temperature=config.temperature,
+                    velocity_scale=config.velocity_scale,
+                    permutation_replicates=0,
+                    bootstrap_replicates=0,
+                    seed=config.seed + 7777,
+                ),
+            )
+            diagnostics["schnakenberg"] = cycle_result.to_dict()
+        except Exception as exc:
+            diagnostics["schnakenberg"] = {"error": str(exc)}
+
+        # velocity-field divergence: independent local EP estimator
+        try:
+            div_result = estimate_divergence(
+                points, velocity, graph, densities,
+                bandwidth=config.density_bandwidth,
+            )
+            diagnostics["divergence"] = div_result.to_dict()
+        except Exception as exc:
+            diagnostics["divergence"] = {"error": str(exc)}
     audit_metadata = dict(source_metadata)
     audit_metadata.update({"path_work": path_sample_summary(path_samples, config.temperature), "path_protocol": protocol_sanity_checks(path_samples), "diffusion_tensor": tensor_summary(diffusion_tensors), "current": current_summary(currents)})
     diagnostics["scientific_audit"] = scientific_audit(points, velocity, graph, edges, diffusions, config.diffusion_floor, config.temperature, audit_metadata)
