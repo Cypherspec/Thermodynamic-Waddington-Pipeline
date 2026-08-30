@@ -1,0 +1,50 @@
+{
+  "mfpt": {
+    "n_attractors_used": 5,
+    "attractor_indices": [
+      7,
+      20,
+      58,
+      11,
+      24
+    ],
+    "converged_all": false,
+    "mean_commitment_time": 172.43234130706398,
+    "min_commitment_time": 0.0,
+    "max_commitment_time": 255.94012319765744,
+    "n_attractors": 5,
+    "commitment_fractions": {
+      "attractor_0": 0.6511111111111111,
+      "attractor_1": 0.0022222222222222222,
+      "attractor_2": 0.0022222222222222222,
+      "attractor_3": 0.3422222222222222,
+      "attractor_4": 0.0022222222222222222
+    },
+    "median_commitment_time": 212.5374668482192
+  },
+  "gradient_alignment": {
+    "mean_alignment": -0.09683865974218622,
+    "std_alignment": 0.12014790819364644,
+    "fraction_downhill": 0.20222222222222222,
+    "fraction_uphill": 0.7977777777777778,
+    "weighted_mean_alignment": -0.0923311629126859,
+    "mean_gradient_magnitude": 58.875604958976545,
+    "mean_velocity_magnitude": 2.877073239978654,
+    "audit": {
+      "n_cells": 450,
+      "bandwidth": 0.65,
+      "n_zero_gradient": 0,
+      "n_zero_velocity": 0,
+      "interpretation": "mean_alignment > 0: velocity points downhill on average (landscape has predictive validity). mean_alignment ~ 0: landscape and velocity are orthogonal (landscape is static density, not predictive of dynamics). mean_alignment < 0: velocity points uphill (sign inconsistency between landscape construction and velocity direction)."
+    },
+    "permutation_test": {
+      "observed_alignment": -0.09683865974218622,
+      "null_mean": -0.004076745791909036,
+      "null_std": 0.008479073896535487,
+      "p_value": 1.0,
+      "n_permutations": 200,
+      "significant": false,
+      "interpretation": "p < 0.05: landscape gradient significantly predicts velocity direction. This is evidence the free-energy landscape captures real dynamics, not just a smooth summary of static cell density."
+    }
+  }
+}
