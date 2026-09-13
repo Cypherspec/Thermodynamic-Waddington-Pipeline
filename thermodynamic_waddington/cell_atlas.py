@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 import math
 from dataclasses import asdict, dataclass
 from typing import Any, Sequence
@@ -107,6 +108,7 @@ def default_gene_names(n_features: int) -> list[str]:
     return [f"feature_{index}" for index in range(n_features)]
 
 
+@functools.lru_cache(maxsize=None)
 def _canonical_gene(name: str) -> str:
     value = str(name).strip().upper().replace("-", "").replace("_", "")
     if value.startswith("MT"):
@@ -114,7 +116,8 @@ def _canonical_gene(name: str) -> str:
     return value
 
 
-def _gene_index(gene_names: Sequence[str]) -> dict[str, int]:
+@functools.lru_cache(maxsize=64)
+def _gene_index_cached(gene_names: tuple[str, ...]) -> dict[str, int]:
     index: dict[str, int] = {}
     for position, raw_name in enumerate(gene_names):
         for alias in str(raw_name).replace(";", "|").split("|"):
@@ -122,6 +125,11 @@ def _gene_index(gene_names: Sequence[str]) -> dict[str, int]:
             if normalized:
                 index.setdefault(normalized, position)
     return index
+
+
+def _gene_index(gene_names: Sequence[str]) -> dict[str, int]:
+    # callers only read the returned mapping, so the cached dict can be shared
+    return _gene_index_cached(tuple(gene_names))
 
 
 def _score(values: Sequence[float], indices: Sequence[int]) -> tuple[float, float]:
