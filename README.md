@@ -24,6 +24,10 @@ documented in the research note, not hidden.
 - **Validated on real data.** On the pancreas endocrine branch, observed entropy
   production is significant (**p = 0.005**), while a shuffled-velocity negative
   control is not (**p = 0.751**).
+- **Reads out in kT.** The landscape is expressed on a physical kT scale via a
+  density-anchored Boltzmann inversion (about **5 kT** deep on the pancreas
+  branch), and the path-work vs density R^2 quantifies its non-equilibrium
+  departure.
 - **Does what other tools do not.** Entropy production, cycle-resolved
   irreversibility (Schnakenberg), and a permutation test for "is this
   non-equilibrium", on top of any velocity field.
@@ -72,11 +76,12 @@ not. This is not a fate-prediction leaderboard.
 | Entropy-production estimate (Seifert) | **yes** | no |
 | Cycle-resolved irreversibility (Schnakenberg) | **yes** | no |
 | Permutation test for "is this non-equilibrium" | **yes** | no |
-| Physically calibrated free energy | no | n/a |
+| Free energy on a physical kT scale | yes | n/a |
 
-The free-energy magnitude is not physically calibrated (no unit conversion, no
-temperature calibration), so the permutation p-value, not the raw number, is what
-supports non-equilibrium claims.
+The landscape is expressed on a kT scale by a density-anchored Boltzmann
+inversion (the standard Waddington pseudopotential), not a molecular free-energy
+measurement. Rare states read as high energy, so use the permutation p-value for
+non-equilibrium claims and read kT barriers as a pseudopotential.
 
 ## Install
 
@@ -139,6 +144,29 @@ branches is in the research note.
 
 ![pancreas validation](figures/pancreas_entropy_validation.png)
 
+## Free-energy calibration
+
+The landscape is expressed on a physical kT scale with a density-anchored
+Boltzmann inversion, `F = -ln P` over a kernel-density estimate of the embedding
+(the standard Waddington pseudopotential, the same idea as `gmx sham`). On the
+pancreas endocrine branch the landscape is about 5 kT deep.
+
+```python
+from thermodynamic_waddington import calibrate_fit
+rep = calibrate_fit(fit)
+print(rep.boltzmann_energy_range_kt)   # landscape depth in kT
+print(rep.r_squared)                   # path-work vs density agreement
+```
+
+`calibrate()` also fits the path-work landscape to that reference and reports the
+kT-per-work-unit factor and an R^2. On real data the R^2 is low (about 0.14),
+which is the point: the path-work landscape carries non-equilibrium, directional
+structure the density landscape cannot see, consistent with the significant
+entropy production on the same data. Caveat: `-ln P` is a quasi-steady-state
+pseudopotential, so rare or under-sampled states read as high energy.
+
+![free-energy calibration](figures/free_energy_calibration.png)
+
 ## Reproduce the benchmarks
 
 ```bash
@@ -146,6 +174,7 @@ python benchmarks/runtime_scaling.py           # timing table -> experiments/run
 python benchmarks/plot_scaling.py              # figures/runtime_speedup.png
 python benchmarks/pancreas_entropy_validation.py   # needs data/real/endocrinogenesis_day15.h5ad
 python benchmarks/plot_pancreas_validation.py  # figures/pancreas_entropy_validation.png
+python benchmarks/free_energy_calibration.py   # kT landscape -> figures/free_energy_calibration.png
 ```
 
 See [benchmarks/README.md](benchmarks/README.md) for details.
@@ -195,8 +224,10 @@ held up in a kNN sensitivity sweep. It did not replicate in dentate gyrus across
 7 independent tests, including one pre-registered confirmatory test. Full results
 are in `RESEARCH_NOTE_entropy_production_pancreas.md`.
 
-The free-energy magnitude is not physically calibrated. Use the permutation
-p-value for "is this non-equilibrium" claims, not the raw number.
+The landscape is reported on a kT scale via a density-anchored Boltzmann
+inversion (a pseudopotential, not a molecular free energy). Use the permutation
+p-value for "is this non-equilibrium" claims, and read kT barriers with the
+sampling caveat in mind.
 
 ## Citation
 

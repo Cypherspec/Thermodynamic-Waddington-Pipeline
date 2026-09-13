@@ -3,6 +3,16 @@
 All notable changes to this project are documented here. Format loosely follows
 Keep a Changelog. Versioning is semantic.
 
+## [Unreleased]
+
+### Added
+- Physical free-energy calibration (`calibration.py`): density-anchored
+  Boltzmann inversion expresses the landscape in kT, plus a fit of the path-work
+  landscape to that reference (kT-per-work-unit factor and R^2). Exposed as
+  `calibrate`, `calibrate_fit`, `boltzmann_free_energy`, `basin_barriers_kt`.
+- `benchmarks/free_energy_calibration.py`: kT calibration on the pancreas branch
+  (about 5 kT deep, path-vs-density R^2 ~ 0.14) with a figure.
+
 ## [0.2.0] - 2026-09-13
 
 ### Added
