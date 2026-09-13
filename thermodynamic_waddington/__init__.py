@@ -102,6 +102,9 @@ __all__ += [
     "displacement_interpolate", "fit_schrodinger_chain", "chain_diagnostic_report",
 ]
 
+from .calibration import CalibrationReport, basin_barriers_kt, boltzmann_free_energy, calibrate, calibrate_fit
+__all__ += ["CalibrationReport", "basin_barriers_kt", "boltzmann_free_energy", "calibrate", "calibrate_fit"]
+
 from .entropy_production import (
     EntropyProductionConfig, EntropyProductionReport, PairFlux,
     compute_pair_fluxes, estimate_entropy_production, stationarity_residual,
