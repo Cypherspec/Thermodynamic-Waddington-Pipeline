@@ -1,0 +1,34 @@
+{
+  "benchmark": "runtime_scaling",
+  "rows": [
+    {
+      "n": 120,
+      "baseline_s": 3.632,
+      "current_s": 1.618,
+      "speedup": 2.24
+    },
+    {
+      "n": 200,
+      "baseline_s": 8.278,
+      "current_s": 2.826,
+      "speedup": 2.93
+    },
+    {
+      "n": 300,
+      "baseline_s": 15.225,
+      "current_s": 3.854,
+      "speedup": 3.95
+    },
+    {
+      "n": 400,
+      "baseline_s": 28.102,
+      "current_s": 4.551,
+      "speedup": 6.17
+    }
+  ],
+  "python": "3.11.5",
+  "platform": "Windows-10-AMD64",
+  "config": "neighbors=20 dims=6 boot=8 ep_boot=8 ep_perm=8 seed=17",
+  "correctness": "fit outputs bit-identical to baseline (energies max abs diff 0.0)",
+  "baseline_commit": "40d1fcd"
+}
