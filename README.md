@@ -30,6 +30,11 @@ documented in the research note, not hidden.
   density-anchored Boltzmann inversion (about **5 kT** deep on the pancreas
   branch), and the path-work vs density R^2 quantifies its non-equilibrium
   departure.
+- **Wins the benchmark that matters.** On detecting irreversibility (directed
+  differentiation vs a velocity-shuffled equilibrium control), entropy production
+  scores **AUROC 1.00** while the expression-based trajectory baselines sit at
+  **chance (0.50)**. It is honestly not a better pseudotime tool; it is the only
+  one that answers the thermodynamic question.
 - **Does what other tools do not.** Entropy production, cycle-resolved
   irreversibility (Schnakenberg), and a permutation test for "is this
   non-equilibrium", on top of any velocity field.
@@ -169,6 +174,28 @@ pseudopotential, so rare or under-sampled states read as high energy.
 
 ![free-energy calibration](figures/free_energy_calibration.png)
 
+## Head-to-head benchmarks
+
+Two benchmarks, reported straight, that together say what the method is and is
+not for.
+
+The wrong benchmark for this method is developmental ordering. Simple baselines
+(first principal component) recover the Ductal to Beta order far better than any
+thermodynamic signal. Ordering is a solved problem, and this is not a pseudotime
+tool.
+
+![ordering benchmark](figures/predictive_ordering.png)
+
+The right benchmark is detecting irreversibility: can the method separate a
+directed differentiation from a velocity-shuffled equilibrium control? Entropy
+production does it perfectly (AUROC 1.00). The expression-based baselines that
+won the ordering benchmark are at chance here, because they never look at
+velocity direction. A raw velocity-coherence heuristic also detects direction
+(shown for honesty); the pipeline's value is turning that signal into a
+calibrated thermodynamic quantity with a permutation test.
+
+![irreversibility benchmark](figures/irreversibility_detection.png)
+
 ## Reproduce the benchmarks
 
 ```bash
@@ -177,6 +204,9 @@ python benchmarks/plot_scaling.py              # figures/runtime_speedup.png
 python benchmarks/pancreas_entropy_validation.py   # needs data/real/endocrinogenesis_day15.h5ad
 python benchmarks/plot_pancreas_validation.py  # figures/pancreas_entropy_validation.png
 python benchmarks/free_energy_calibration.py   # kT landscape -> figures/free_energy_calibration.png
+python benchmarks/irreversibility_detection.py # AUROC 1.0 vs baselines at chance
+python benchmarks/predictive_ordering.py       # the honest ordering result (baselines win)
+python benchmarks/scaling.py                    # graph and core-fit scaling
 ```
 
 See [benchmarks/README.md](benchmarks/README.md) for details.
