@@ -5,6 +5,8 @@
 [![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+**Nischay Kommisetty - MIT Kellis Lab**
+
 **Is cell differentiation thermodynamically irreversible?** This pipeline turns
 single-cell RNA velocity into an effective free-energy landscape and measures the
 entropy production of the process, the one quantity trajectory tools do not
