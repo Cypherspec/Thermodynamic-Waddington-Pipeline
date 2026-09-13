@@ -12,6 +12,19 @@ Keep a Changelog. Versioning is semantic.
   `calibrate`, `calibrate_fit`, `boltzmann_free_energy`, `basin_barriers_kt`.
 - `benchmarks/free_energy_calibration.py`: kT calibration on the pancreas branch
   (about 5 kT deep, path-vs-density R^2 ~ 0.14) with a figure.
+- KD-tree `build_knn` (n log n, bit-identical to the old brute force); graph
+  construction now scales to 50k cells in seconds.
+- `enable_cycle_decomposition` flag to skip the combinatorial cycle work on
+  large datasets while keeping the landscape and entropy production.
+- `benchmarks/scaling.py`: graph and core-fit scaling, reported honestly (graph
+  scales; the full fit is still super-linear past a few thousand cells).
+- `benchmarks/predictive_ordering.py`: honest head-to-head on developmental
+  ordering. Simple baselines (PC1) beat the thermodynamic signals; ordering is
+  not what the pipeline is for, and the result is reported straight.
+
+### Fixed
+- Iterative SCC decomposition (`topology/cycles.py`) so deep graphs no longer
+  overflow the Python recursion limit.
 
 ## [0.2.0] - 2026-09-13
 
