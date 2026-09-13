@@ -37,6 +37,7 @@ class FitConfig:
     audit_science: bool = True
     enable_report_payload: bool = True
     enable_entropy_production: bool = True
+    enable_cycle_decomposition: bool = True
     entropy_production_bootstrap_replicates: int = 32
     entropy_production_permutation_replicates: int = 32
 

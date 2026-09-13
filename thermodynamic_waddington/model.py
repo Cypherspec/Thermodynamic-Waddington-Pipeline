@@ -172,21 +172,26 @@ def fit_landscape(expression: Sequence[Sequence[float]], velocity: Sequence[Sequ
 
         # Schnakenberg cycle decomposition: exact EP decomposition into
         # fundamental graph cycles. Only runs when EP is enabled since it
-        # needs the same pair-flux computation.
-        try:
-            cycle_result = schnakenberg_decomposition(
-                points, velocity, densities, diffusions, graph,
-                EntropyProductionConfig(
-                    temperature=config.temperature,
-                    velocity_scale=config.velocity_scale,
-                    permutation_replicates=0,
-                    bootstrap_replicates=0,
-                    seed=config.seed + 7777,
-                ),
-            )
-            diagnostics["schnakenberg"] = cycle_result.to_dict()
-        except Exception as exc:
-            diagnostics["schnakenberg"] = {"error": str(exc)}
+        # needs the same pair-flux computation. It is combinatorial in the
+        # number of cycles, so it can be turned off for large datasets while
+        # keeping the landscape and entropy-production estimate.
+        if config.enable_cycle_decomposition:
+            try:
+                cycle_result = schnakenberg_decomposition(
+                    points, velocity, densities, diffusions, graph,
+                    EntropyProductionConfig(
+                        temperature=config.temperature,
+                        velocity_scale=config.velocity_scale,
+                        permutation_replicates=0,
+                        bootstrap_replicates=0,
+                        seed=config.seed + 7777,
+                    ),
+                )
+                diagnostics["schnakenberg"] = cycle_result.to_dict()
+            except Exception as exc:
+                diagnostics["schnakenberg"] = {"error": str(exc)}
+        else:
+            diagnostics["schnakenberg"] = {"status": "skipped", "reason": "enable_cycle_decomposition=False"}
 
         # velocity-field divergence: independent local EP estimator
         try:
@@ -232,7 +237,7 @@ def fit_landscape(expression: Sequence[Sequence[float]], velocity: Sequence[Sequ
         "information_geometry": information_summary(points, diffusions, energies),
         "lineage_summary": lineage_summary(labels, lineage_outcomes),
         "thermodynamic_summary": effective_thermodynamic_summary(energies, diffusions, graph.edges, config.temperature),
-        "cycle_summary": cycle_summary(LandscapeFit(asdict(config), display_embedding, energies, uncertainties, diffusions, densities, labels, cell_ids, serialized, attractors, barriers, {}, metadata or {})),
+        "cycle_summary": cycle_summary(LandscapeFit(asdict(config), display_embedding, energies, uncertainties, diffusions, densities, labels, cell_ids, serialized, attractors, barriers, {}, metadata or {})) if config.enable_cycle_decomposition else {"status": "skipped", "reason": "enable_cycle_decomposition=False"},
         "work_distribution": edge_work_distribution(edges, config.temperature),
         "current_balance": current_balance(edges, energies, config.temperature),
         "graph_signature": graph_signature(edges),
