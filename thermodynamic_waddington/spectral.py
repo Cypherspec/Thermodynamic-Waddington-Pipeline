@@ -4,6 +4,8 @@ import math
 from dataclasses import dataclass
 from typing import Sequence
 
+import numpy as np
+
 from .arrays import mean, percentile
 from .graph import Edge
 
@@ -36,12 +38,15 @@ def stationary_distribution(matrix: Sequence[Sequence[float]], iterations: int =
     n = len(matrix)
     if not n:
         return []
-    distribution = [1.0 / n for _ in range(n)]
+    m = np.asarray(matrix, dtype=float)
+    mt = m.T
+    v = np.full(n, 1.0 / n)
     for _ in range(iterations):
-        next_distribution = [sum(distribution[i] * matrix[i][j] for i in range(n)) for j in range(n)]
-        total = sum(next_distribution)
-        distribution = [value / total for value in next_distribution] if total else distribution
-    return distribution
+        nxt = mt @ v
+        total = nxt.sum()
+        if total:
+            v = nxt / total
+    return v.tolist()
 
 
 def summarize_spectrum(edges: Sequence[Edge], n: int, temperature: float = 1.0) -> SpectralSummary:
