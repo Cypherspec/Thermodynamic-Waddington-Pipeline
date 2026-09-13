@@ -1,0 +1,44 @@
+{
+  "benchmark": "scaling",
+  "knn": [
+    {
+      "n": 1000,
+      "seconds": 0.04,
+      "edges": 20000
+    },
+    {
+      "n": 4000,
+      "seconds": 0.207,
+      "edges": 80000
+    },
+    {
+      "n": 16000,
+      "seconds": 1.094,
+      "edges": 320000
+    },
+    {
+      "n": 50000,
+      "seconds": 6.155,
+      "edges": 1000000
+    }
+  ],
+  "core_fit": [
+    {
+      "n": 500,
+      "seconds": 2.37
+    },
+    {
+      "n": 1000,
+      "seconds": 5.53
+    },
+    {
+      "n": 2000,
+      "seconds": 14.73
+    },
+    {
+      "n": 4000,
+      "seconds": 43.66
+    }
+  ],
+  "notes": "build_knn is n log n and bit-identical to the old brute force; core fit is still super-linear (propagation + bootstrap)."
+}
