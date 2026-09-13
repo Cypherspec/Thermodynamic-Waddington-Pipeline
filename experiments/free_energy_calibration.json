@@ -1,0 +1,18 @@
+{
+  "benchmark": "free_energy_calibration_pancreas",
+  "dataset": "scVelo endocrinogenesis_day15 (endocrine branch)",
+  "n_cells": 500,
+  "landscape_range_kt": 5.006665375369961,
+  "kt_per_work_unit": 0.0036020249554224114,
+  "path_vs_density_r2": 0.14168485168317524,
+  "entropy_production_p": 0.009900990099009901,
+  "basin_depth_kt": {
+    "Ductal": 0.5891164087564223,
+    "Ngn3 low EP": 0.3354016663033727,
+    "Ngn3 high EP": 0.1615098350567316,
+    "Pre-endocrine": 0.21456280389889312,
+    "Beta": 2.065225608564691
+  },
+  "assumptions": "Density-anchored pseudopotential (F = -ln P) as an equilibrium reference; kT is the thermal-energy convention, valid up to steady-state occupancy. Not a molecular free-energy measurement.",
+  "note": "Low path-vs-density R^2 reflects non-equilibrium structure the density landscape misses; entropy production is significant on the same data."
+}
