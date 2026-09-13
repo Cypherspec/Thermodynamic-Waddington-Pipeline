@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Thermodynamic Waddington Pipeline"
+abstract: >-
+  Non-equilibrium thermodynamics of single-cell fate: path-work free-energy
+  landscapes, entropy production, and irreversibility from RNA velocity.
+authors:
+  - family-names: Kommisetty
+    given-names: Nischay
+version: 0.2.0
+date-released: 2026-09-13
+license: MIT
+repository-code: "https://github.com/Cypherspec/thermodynamic-waddington-pipeline"
+keywords:
+  - single-cell
+  - RNA-velocity
+  - entropy-production
+  - non-equilibrium-thermodynamics
+  - cell-fate
