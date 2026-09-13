@@ -1,0 +1,29 @@
+{
+  "benchmark": "pancreas_entropy_production_proxy",
+  "dataset": "scVelo endocrinogenesis_day15",
+  "branch": [
+    "Ductal",
+    "Ngn3 low EP",
+    "Ngn3 high EP",
+    "Pre-endocrine",
+    "Beta"
+  ],
+  "n_cells": 500,
+  "n_genes": 50,
+  "observed": {
+    "entropy_production_rate": 297982106184100.3,
+    "permutation_p_value": 0.004975124378109453,
+    "null_mean": 115887915450574.62,
+    "bootstrap_ci": [
+      273817534725833.38,
+      317553675985412.06
+    ],
+    "n_pairs": 6572
+  },
+  "shuffled_velocity_control": {
+    "entropy_production_rate": 101285491947134.19,
+    "permutation_p_value": 0.7512437810945274
+  },
+  "velocity": "unspliced minus spliced proxy (not scVelo dynamical)",
+  "note": "Proxy-velocity execution and significance check. Dynamical-velocity Beta/Alpha result is in RESEARCH_NOTE_entropy_production_pancreas.md."
+}
