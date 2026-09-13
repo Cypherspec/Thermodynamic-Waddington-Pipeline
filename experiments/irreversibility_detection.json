@@ -1,0 +1,30 @@
+{
+  "benchmark": "irreversibility_detection_pancreas",
+  "task": "separate directed differentiation from a velocity-shuffled equilibrium control",
+  "metric": "AUROC over 2N datasets",
+  "n_pairs": 12,
+  "n_cells": 300,
+  "rows": [
+    {
+      "method": "TW entropy production",
+      "kind": "tw",
+      "auroc": 1.0
+    },
+    {
+      "method": "velocity coherence",
+      "kind": "velocity",
+      "auroc": 1.0
+    },
+    {
+      "method": "PC1 (expression only)",
+      "kind": "blind",
+      "auroc": 0.5
+    },
+    {
+      "method": "distance from progenitor",
+      "kind": "blind",
+      "auroc": 0.5
+    }
+  ],
+  "note": "Expression-only baselines never use velocity direction, so they score a dataset and its shuffled control identically and sit at 0.5. This is the task the pipeline is built for."
+}
