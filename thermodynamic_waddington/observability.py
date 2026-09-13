@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 import hashlib
 import json
 import platform
@@ -7,6 +8,14 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any
+
+
+@functools.lru_cache(maxsize=1)
+def _platform_tag() -> str:
+    try:
+        return f"{platform.system()}-{platform.release()}-{platform.machine()}"
+    except Exception:
+        return "unknown"
 
 
 @dataclass(frozen=True)
@@ -29,7 +38,7 @@ def fingerprint(payload: Any) -> str:
 
 def make_provenance(payload: Any, stages: list[str] | tuple[str, ...]) -> Provenance:
     digest = fingerprint(payload)
-    return Provenance(digest, datetime.now(timezone.utc).isoformat(), sys.version.split()[0], platform.platform(), digest, tuple(stages))
+    return Provenance(digest, datetime.now(timezone.utc).isoformat(), sys.version.split()[0], _platform_tag(), digest, tuple(stages))
 
 
 def merge_diagnostics(*records: dict[str, Any]) -> dict[str, Any]:
