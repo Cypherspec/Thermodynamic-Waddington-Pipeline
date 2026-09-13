@@ -1,0 +1,42 @@
+{
+  "benchmark": "predictive_ordering_pancreas",
+  "task": "recover developmental stage (Ductal->Beta) per cell",
+  "metric": "abs Spearman",
+  "n_cells": 400,
+  "rows": [
+    {
+      "method": "PC1",
+      "kind": "baseline",
+      "abs_spearman": 0.886
+    },
+    {
+      "method": "distance from progenitor",
+      "kind": "baseline",
+      "abs_spearman": 0.806
+    },
+    {
+      "method": "library size",
+      "kind": "baseline",
+      "abs_spearman": 0.575
+    },
+    {
+      "method": "TW free energy",
+      "kind": "tw",
+      "abs_spearman": 0.339
+    },
+    {
+      "method": "TW MFPT commitment time",
+      "kind": "tw",
+      "abs_spearman": 0.283
+    },
+    {
+      "method": "TW density landscape (kT)",
+      "kind": "tw",
+      "abs_spearman": 0.072
+    }
+  ],
+  "best_tw": 0.339,
+  "best_baseline": 0.886,
+  "verdict": "baselines win at ordering",
+  "note": "Ordering is not this pipeline's job. Its unique output is the irreversibility test (EP with a permutation null), which none of these baselines provide."
+}
