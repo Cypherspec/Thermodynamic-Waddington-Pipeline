@@ -21,7 +21,7 @@ from .topology.landscape import watershed_basins
 from .analysis import basin_statistics, flux_matrix, report as analyze_report
 from .dynamics import summarize_risk, transition_risk
 from .metrics import basin_contrast, irreversibility_index, landscape_roughness, mean_alignment
-from .causal import intervention_scan, rank_targets
+from .causal import counterfactual_ranking, intervention_scan, rank_targets
 from .spectral import spectral_summary
 from .trajectory import simulate_trajectories, trajectory_summary
 from .experiment import analyze_experiment
@@ -225,7 +225,7 @@ def fit_landscape(expression: Sequence[Sequence[float]], velocity: Sequence[Sequ
         "trajectory_ensemble": trajectory_summary(simulate_trajectories(edges, energies, [min(attractors) if attractors else 0], steps=config.trajectory_steps, replicates=config.trajectory_replicates, temperature=config.temperature, seed=config.seed + 4001)),
         "basin_statistics": basin_statistics([basin.representative for basin in basin_records for _ in basin.members], energies, _to_2d_vectors(velocity, n_cells)),
         "flux_matrix": flux_matrix([next((basin.representative for basin in basin_records if index in basin.members), -1) for index in range(n_cells)], edges, energies, config.temperature),
-        "counterfactual_targets": rank_targets(intervention_scan(edges, energies, damping=0.25), limit=12) if config.enable_counterfactuals else [],
+        "counterfactual_targets": counterfactual_ranking(edges, energies, damping=0.25, limit=12) if config.enable_counterfactuals else [],
         "spectral": spectral_summary(edges, energies) if config.enable_spectral_analysis else {},
         "experiment_summary": analyze_experiment(energies, serialized, labels, config.temperature),
         "forecast": [item.__dict__ for item in forecast([min(n_cells - 1, max(0, config.reference_index))], edges, energies, config.temperature)],

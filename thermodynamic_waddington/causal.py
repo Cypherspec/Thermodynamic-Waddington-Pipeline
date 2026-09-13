@@ -69,6 +69,48 @@ def rank_targets(effects: Sequence[InterventionEffect], limit: int = 10) -> list
     return ranked[:limit]
 
 
+def counterfactual_ranking(edges: Sequence[Edge], energies: Sequence[float], damping: float = 0.5, limit: int = 10) -> list[int]:
+    # O(E) equivalent of rank_targets(intervention_scan(...)). The scan damps
+    # edges incident to each candidate node and scores nodes by mean
+    # |delta_work| * confidence over the edges that land on them. Every scan
+    # target contributes the same term to an edge unless it is incident, so the
+    # full T x E sweep collapses to a single scatter over edges.
+    import numpy as np
+    if not edges:
+        return []
+    src = np.fromiter((e.source for e in edges), np.int64, len(edges))
+    tgt = np.fromiter((e.target for e in edges), np.int64, len(edges))
+    algn = np.fromiter((e.alignment for e in edges), float, len(edges))
+    en = np.asarray(energies, float)
+    base = en[tgt] - en[src]
+    ab = np.abs(base)
+    f0 = np.maximum(0.01, algn + 1.0)
+    fd = np.maximum(0.01, algn * damping + 1.0)
+    d0 = base * (f0 - 1.0)
+    dd = base * (fd - 1.0)
+    term0 = np.abs(d0) * np.minimum(1.0, np.abs(d0) / (1.0 + ab))
+    termd = np.abs(dd) * np.minimum(1.0, np.abs(dd) / (1.0 + ab))
+    tset = set(int(x) for x in tgt.tolist())
+    total_targets = len(tset)
+    src_in = np.fromiter((1.0 if int(x) in tset else 0.0 for x in src.tolist()), float, len(edges))
+    dcount = np.where(src_in > 0.0, 2.0, 1.0)
+    contrib = dcount * termd + (total_targets - dcount) * term0
+    size = int(tgt.max()) + 1
+    gtot = np.zeros(size)
+    gcnt = np.zeros(size)
+    np.add.at(gtot, tgt, contrib)
+    np.add.at(gcnt, tgt, float(total_targets))
+    order: list[int] = []
+    seen: set[int] = set()
+    for x in tgt.tolist():
+        xi = int(x)
+        if xi not in seen:
+            seen.add(xi)
+            order.append(xi)
+    score = {m: gtot[m] / gcnt[m] for m in order}
+    return sorted(order, key=lambda m: score[m], reverse=True)[:limit]
+
+
 def intervention_matrix(edges: Sequence[Edge], energies: Sequence[float], targets: Sequence[int], damping: float = 0.5) -> list[list[float]]:
     effects = intervention_scan(edges, energies, targets, damping)
     by_target: dict[int, list[InterventionEffect]] = {target: [] for target in targets}
