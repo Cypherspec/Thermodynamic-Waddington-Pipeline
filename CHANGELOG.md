@@ -3,9 +3,13 @@
 All notable changes to this project are documented here. Format loosely follows
 Keep a Changelog. Versioning is semantic.
 
-## [Unreleased]
+## [0.3.0] - 2026-09-14
 
 ### Added
+- High-level `analyze()` API returning a compact, serializable `AnalysisReport`
+  (irreversibility test, kT landscape depth, attractors, and the committor
+  commitment coordinate and barrier when source/target labels are given).
+- Ruff lint/format configuration; version bumped to 0.3.0.
 - Physical free-energy calibration (`calibration.py`): density-anchored
   Boltzmann inversion expresses the landscape in kT, plus a fit of the path-work
   landscape to that reference (kT-per-work-unit factor and R^2). Exposed as

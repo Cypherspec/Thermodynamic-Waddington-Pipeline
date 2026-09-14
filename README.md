@@ -110,6 +110,20 @@ Requires Python 3.10+.
 
 ## Quick start
 
+One call for the headline results:
+
+```python
+from thermodynamic_waddington import analyze
+
+report = analyze(expression, velocity, labels=labels,
+                 source_labels=["Ductal"], target_labels=["Beta"])
+print(report.is_irreversible, report.entropy_production_pvalue)  # the core test
+print(report.commitment_label, report.commitment_barrier_kt)     # where/how hard fate commits
+print(report.landscape_range_kt)                                 # landscape depth in kT
+```
+
+Or drive the pipeline directly for full detail:
+
 ```python
 from thermodynamic_waddington.model import fit_landscape
 from thermodynamic_waddington.config import FitConfig
