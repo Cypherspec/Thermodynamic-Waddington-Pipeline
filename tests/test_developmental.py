@@ -3,6 +3,7 @@ import unittest
 from thermodynamic_waddington import (
     FitConfig,
     commitment_profile,
+    committor_free_energy_profile,
     developmental_coordinate,
     fit_landscape,
 )
@@ -51,6 +52,16 @@ class TestDevelopmental(unittest.TestCase):
         a = developmental_coordinate(self.fit, self.src, self.tgt)
         b = developmental_coordinate(self.fit, self.src, self.tgt)
         self.assertEqual(a, b)
+
+    def test_free_energy_profile(self):
+        q = developmental_coordinate(self.fit, self.src, self.tgt)
+        prof = committor_free_energy_profile(q, temperature=1.0, grid=40)
+        self.assertEqual(len(prof.q_grid), 40)
+        self.assertEqual(len(prof.free_energy_kt), 40)
+        self.assertGreaterEqual(prof.barrier_kt, 0.0)
+        self.assertGreaterEqual(prof.barrier_q, 0.0)
+        self.assertLessEqual(prof.barrier_q, 1.0)
+        self.assertAlmostEqual(min(prof.free_energy_kt), 0.0, places=9)
 
     def test_missing_labels_raise(self):
         with self.assertRaises(ValueError):

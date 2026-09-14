@@ -23,6 +23,17 @@ from .graph import Edge
 
 
 @dataclass(frozen=True)
+class FreeEnergyProfile:
+    q_grid: list[float]          # committor values along the reaction coordinate
+    free_energy_kt: list[float]  # potential of mean force at each, in kT
+    barrier_kt: float            # height of the commitment barrier
+    barrier_q: float             # committor value at the barrier top (transition state)
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class CommitmentReport:
     order: list[str]                 # cell-type labels sorted by mean committor
     mean_committor: dict[str, float] # per label
@@ -90,3 +101,28 @@ def commitment_profile(fit, source_labels, target_labels, iterations: int = 400)
         n_reactive_edges=len(reactive),
         peak_flux_label=peak_label,
     )
+
+
+def committor_free_energy_profile(committor, temperature: float = 1.0, grid: int = 60, floor: float = 1e-9) -> FreeEnergyProfile:
+    """Potential of mean force along the committor: F(q) = -kT ln P(q).
+
+    Estimates the density of cells along the committor reaction coordinate with a
+    1D Gaussian KDE and Boltzmann-inverts it. The maximum over the populated
+    interior is the commitment barrier in kT (the transition state), the standard
+    free-energy-profile method from reaction-rate theory.
+    """
+    q = np.asarray(committor, dtype=float)
+    q = q[np.isfinite(q)]
+    if q.size < 3:
+        raise ValueError("need at least 3 committor values")
+    xs = np.linspace(0.0, 1.0, grid)
+    bw = 1.06 * (float(np.std(q)) + 1e-9) * q.size ** (-1.0 / 5.0)
+    d = (xs[:, None] - q[None, :]) / bw
+    dens = np.exp(-0.5 * d * d).sum(axis=1) / (q.size * bw * np.sqrt(2.0 * np.pi))
+    dens = np.clip(dens, floor, None)
+    f = -temperature * np.log(dens)
+    f = f - f.min()
+    lo, hi = float(np.quantile(q, 0.05)), float(np.quantile(q, 0.95))
+    interior = np.where((xs >= lo) & (xs <= hi))[0]
+    top = interior[int(np.argmax(f[interior]))] if interior.size else int(np.argmax(f))
+    return FreeEnergyProfile(xs.tolist(), f.tolist(), float(f[top]), float(xs[top]))
