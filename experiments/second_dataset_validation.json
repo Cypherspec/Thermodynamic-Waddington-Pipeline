@@ -1,0 +1,17 @@
+{
+  "benchmark": "second_dataset_gastrulation_erythroid",
+  "lineage": [
+    "Blood progenitors 1",
+    "Blood progenitors 2",
+    "Erythroid1",
+    "Erythroid2",
+    "Erythroid3"
+  ],
+  "seeds": 5,
+  "committor_ordering_mean": 0.814,
+  "pc1_ordering_mean": 0.937,
+  "ep_directed_mean_p": 0.01,
+  "ep_shuffled_mean_p": 0.347,
+  "committor_beats_pc1": 0,
+  "note": "Independent dataset. Same pipeline, no tuning."
+}
