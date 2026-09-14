@@ -105,6 +105,9 @@ __all__ += [
 from .calibration import CalibrationReport, basin_barriers_kt, boltzmann_free_energy, calibrate, calibrate_fit
 __all__ += ["CalibrationReport", "basin_barriers_kt", "boltzmann_free_energy", "calibrate", "calibrate_fit"]
 
+from .developmental import CommitmentReport, commitment_profile, developmental_coordinate
+__all__ += ["CommitmentReport", "commitment_profile", "developmental_coordinate"]
+
 from .entropy_production import (
     EntropyProductionConfig, EntropyProductionReport, PairFlux,
     compute_pair_fluxes, estimate_entropy_production, stationarity_residual,
