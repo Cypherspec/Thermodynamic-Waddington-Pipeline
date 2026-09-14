@@ -1,0 +1,18 @@
+{
+  "benchmark": "dynamical_velocity_validation",
+  "dataset": "scVelo endocrinogenesis_day15 (endocrine branch)",
+  "velocity_genes": 470,
+  "dynamical": {
+    "ep_directed_p": 0.09836065573770492,
+    "ep_shuffled_p": 0.47540983606557374,
+    "committor_ordering_rho": 0.9828811301300292,
+    "n_cells": 500
+  },
+  "proxy": {
+    "ep_directed_p": 0.11475409836065574,
+    "ep_shuffled_p": 0.26229508196721313,
+    "committor_ordering_rho": 0.9594562036909072,
+    "n_cells": 500
+  },
+  "note": "Headline results reproduced on real scVelo dynamical-model velocity, alongside the proxy on the same cells and genes."
+}
