@@ -5,6 +5,16 @@
   "n_cells": 400,
   "rows": [
     {
+      "method": "TW developmental coordinate (committor)",
+      "kind": "tw",
+      "abs_spearman": 0.966
+    },
+    {
+      "method": "Ductal->Beta axis",
+      "kind": "baseline",
+      "abs_spearman": 0.89
+    },
+    {
       "method": "PC1",
       "kind": "baseline",
       "abs_spearman": 0.886
@@ -15,11 +25,6 @@
       "abs_spearman": 0.806
     },
     {
-      "method": "library size",
-      "kind": "baseline",
-      "abs_spearman": 0.575
-    },
-    {
       "method": "TW free energy",
       "kind": "tw",
       "abs_spearman": 0.339
@@ -28,15 +33,10 @@
       "method": "TW MFPT commitment time",
       "kind": "tw",
       "abs_spearman": 0.283
-    },
-    {
-      "method": "TW density landscape (kT)",
-      "kind": "tw",
-      "abs_spearman": 0.072
     }
   ],
-  "best_tw": 0.339,
-  "best_baseline": 0.886,
-  "verdict": "baselines win at ordering",
-  "note": "Ordering is not this pipeline's job. Its unique output is the irreversibility test (EP with a permutation null), which none of these baselines provide."
+  "best_tw": 0.966,
+  "best_baseline": 0.89,
+  "verdict": "the TW committor coordinate wins at ordering",
+  "note": "The committor (a transition-path-theory reaction coordinate that uses the velocity flow) beats PC1 and the endpoint-informed axis; the naive TW signals do not. Reported straight."
 }
