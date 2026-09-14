@@ -1,0 +1,15 @@
+# Exact package versions this release (0.3.0) was tested against.
+# The core needs only numpy; the rest are for real-data loading and figures.
+# Install the package with `pip install -e ".[all]"`; these pins reproduce the
+# tested environment.
+python_version==3.11.5
+numpy==2.4.6
+scipy==1.17.1
+scikit-learn==1.9.0
+anndata==0.12.19
+scvelo==0.3.4
+scanpy==1.11.5
+h5py==3.16.0
+matplotlib==3.11.0
+pandas==2.3.3
+numba==0.66.0
