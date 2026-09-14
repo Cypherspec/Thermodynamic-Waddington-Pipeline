@@ -75,7 +75,7 @@ def analyze(
         cal = calibrate_fit(fit)
         range_kt = cal.boltzmann_energy_range_kt
         r2 = cal.r_squared
-    except Exception as exc:  # calibration needs a spread of embedding points
+    except Exception:  # calibration needs a spread of embedding points
         range_kt = None
         r2 = None
         cal = None
