@@ -205,9 +205,13 @@ from transition-path theory, recovers the Ductal to Beta order at Spearman 0.97,
 beating the first principal component (0.89) and even an endpoint-informed
 Ductal to Beta axis (0.89). The naive thermodynamic signals (raw free energy,
 MFPT) do not, so the win comes from using the right coordinate, and that is shown
-in the chart rather than hidden.
+in the chart rather than hidden. Across 10 random subsamples the committor wins
+every seed (0.94 +/- 0.02 vs 0.89), paired Wilcoxon p = 0.002, so it is not a
+single lucky run.
 
 ![ordering benchmark](figures/predictive_ordering.png)
+
+![ordering across seeds](figures/statistical_validation.png)
 
 The right benchmark is detecting irreversibility: can the method separate a
 directed differentiation from a velocity-shuffled equilibrium control? Entropy
@@ -228,9 +232,14 @@ python benchmarks/pancreas_entropy_validation.py   # needs data/real/endocrinoge
 python benchmarks/plot_pancreas_validation.py  # figures/pancreas_entropy_validation.png
 python benchmarks/free_energy_calibration.py   # kT landscape -> figures/free_energy_calibration.png
 python benchmarks/irreversibility_detection.py # AUROC 1.0 vs baselines at chance
-python benchmarks/predictive_ordering.py       # the honest ordering result (baselines win)
+python benchmarks/predictive_ordering.py       # committor 0.97 beats PC1 0.89
+python benchmarks/statistical_validation.py    # committor wins 10/10 seeds, paired p=0.002
 python benchmarks/scaling.py                    # graph and core-fit scaling
+python benchmarks/run_all.py                    # everything above, one command
 ```
+
+New to the package? `python examples/tutorial.py` runs the whole pipeline on
+synthetic data with no download and prints each result.
 
 See [benchmarks/README.md](benchmarks/README.md) for details.
 

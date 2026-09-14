@@ -29,6 +29,11 @@ Keep a Changelog. Versioning is semantic.
   and locate where the committor crosses 0.5. On the pancreas branch it recovers
   the lineage order and beats PC1 at ordering (Spearman 0.97 vs 0.89). Exposed as
   `developmental_coordinate` and `commitment_profile`.
+- `benchmarks/statistical_validation.py`: multi-seed CIs, win-rate, and a paired
+  Wilcoxon test. The committor beats the baselines 10/10 seeds (0.94 vs 0.89,
+  p=0.002).
+- `benchmarks/run_all.py` to reproduce every benchmark in one command, and
+  `examples/tutorial.py` for an end-to-end run on synthetic data.
 
 ### Fixed
 - Iterative SCC decomposition (`topology/cycles.py`) so deep graphs no longer
