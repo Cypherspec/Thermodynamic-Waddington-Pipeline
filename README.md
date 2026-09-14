@@ -30,13 +30,18 @@ documented in the research note, not hidden.
   density-anchored Boltzmann inversion (about **5 kT** deep on the pancreas
   branch), and the path-work vs density R^2 quantifies its non-equilibrium
   departure.
-- **Wins both benchmarks.** On detecting irreversibility (directed vs a
-  velocity-shuffled control) entropy production scores **AUROC 1.00** while
-  expression-based baselines are at chance. On developmental ordering the
-  committor coordinate scores **Spearman 0.97**, beating PC1 (0.89).
-- **Predicts and explains commitment.** The committor developmental coordinate
-  orders cells, recovers the lineage sequence unsupervised, and pinpoints where
-  fate commits (crosses 0.5 at Pre-endocrine on the pancreas branch).
+- **Irreversibility detection generalizes.** Entropy production separates
+  directed differentiation from a velocity-shuffled control (**AUROC 1.00** on
+  pancreas; directed **p=0.01** vs shuffled 0.35 on an independent gastrulation
+  erythroid dataset), while expression-based baselines are at chance. This is the
+  robust, cross-dataset result.
+- **Ordering: strong but dataset-dependent.** The committor coordinate beats PC1
+  on pancreas (0.94 vs 0.89, 10/10 seeds, p=0.002), but plain PC1 wins on the
+  cleaner gastrulation erythroid lineage (0.94 vs 0.81). The committor's ordering
+  advantage is not universal, and that is stated rather than hidden.
+- **Predicts and explains commitment.** On pancreas the committor recovers the
+  lineage sequence unsupervised, locates commitment (crosses 0.5 at
+  Pre-endocrine), and gives a commitment free-energy barrier of ~1.6 kT.
 - **Does what other tools do not.** Entropy production, cycle-resolved
   irreversibility (Schnakenberg), and a permutation test for "is this
   non-equilibrium", on top of any velocity field.
@@ -233,10 +238,16 @@ python benchmarks/plot_pancreas_validation.py  # figures/pancreas_entropy_valida
 python benchmarks/free_energy_calibration.py   # kT landscape -> figures/free_energy_calibration.png
 python benchmarks/irreversibility_detection.py # AUROC 1.0 vs baselines at chance
 python benchmarks/predictive_ordering.py       # committor 0.97 beats PC1 0.89
-python benchmarks/statistical_validation.py    # committor wins 10/10 seeds, paired p=0.002
+python benchmarks/statistical_validation.py    # committor 10/10 seeds on pancreas, p=0.002
+python benchmarks/commitment_barrier.py        # commitment free-energy barrier ~1.6 kT
+python benchmarks/second_dataset_validation.py # generalization: EP holds, ordering does not
 python benchmarks/scaling.py                    # graph and core-fit scaling
 python benchmarks/run_all.py                    # everything above, one command
 ```
+
+The second-dataset benchmark needs `data/real/gastrulation_erythroid.h5ad`
+(`scvelo.datasets.gastrulation_erythroid`). It is the honesty check: entropy
+production generalizes to it, the committor ordering advantage does not.
 
 New to the package? `python examples/tutorial.py` runs the whole pipeline on
 synthetic data with no download and prints each result.

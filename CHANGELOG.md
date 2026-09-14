@@ -34,6 +34,19 @@ Keep a Changelog. Versioning is semantic.
   p=0.002).
 - `benchmarks/run_all.py` to reproduce every benchmark in one command, and
   `examples/tutorial.py` for an end-to-end run on synthetic data.
+- Free-energy profile along the committor (`committor_free_energy_profile`): the
+  potential of mean force, giving a commitment barrier of ~1.6 kT [1.4, 1.9].
+- `benchmarks/commitment_barrier.py` and `benchmarks/second_dataset_validation.py`.
+
+### Findings (reported straight)
+- Entropy-production significance is robust to gene count (20-400) and to log
+  normalization, and generalizes to a second independent dataset (gastrulation
+  erythroid: directed p=0.01 vs shuffled 0.35).
+- The committor's ordering advantage is dataset-dependent: it beats PC1 on
+  pancreas but loses to PC1 on gastrulation erythroid (0.81 vs 0.94). Not a
+  universal win.
+- A variational (parametric) committor was prototyped and underperforms the
+  exact iterative graph solve; not shipped.
 
 ### Fixed
 - Iterative SCC decomposition (`topology/cycles.py`) so deep graphs no longer
