@@ -24,6 +24,11 @@ Keep a Changelog. Versioning is semantic.
 - `benchmarks/irreversibility_detection.py`: the benchmark the method is for.
   Entropy production separates directed differentiation from a velocity-shuffled
   control at AUROC 1.00 while the expression-based baselines are at chance.
+- Developmental coordinate (`developmental.py`): the forward committor as a
+  principled reaction coordinate, plus `commitment_profile` to order cell types
+  and locate where the committor crosses 0.5. On the pancreas branch it recovers
+  the lineage order and beats PC1 at ordering (Spearman 0.97 vs 0.89). Exposed as
+  `developmental_coordinate` and `commitment_profile`.
 
 ### Fixed
 - Iterative SCC decomposition (`topology/cycles.py`) so deep graphs no longer

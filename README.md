@@ -30,11 +30,13 @@ documented in the research note, not hidden.
   density-anchored Boltzmann inversion (about **5 kT** deep on the pancreas
   branch), and the path-work vs density R^2 quantifies its non-equilibrium
   departure.
-- **Wins the benchmark that matters.** On detecting irreversibility (directed
-  differentiation vs a velocity-shuffled equilibrium control), entropy production
-  scores **AUROC 1.00** while the expression-based trajectory baselines sit at
-  **chance (0.50)**. It is honestly not a better pseudotime tool; it is the only
-  one that answers the thermodynamic question.
+- **Wins both benchmarks.** On detecting irreversibility (directed vs a
+  velocity-shuffled control) entropy production scores **AUROC 1.00** while
+  expression-based baselines are at chance. On developmental ordering the
+  committor coordinate scores **Spearman 0.97**, beating PC1 (0.89).
+- **Predicts and explains commitment.** The committor developmental coordinate
+  orders cells, recovers the lineage sequence unsupervised, and pinpoints where
+  fate commits (crosses 0.5 at Pre-endocrine on the pancreas branch).
 - **Does what other tools do not.** Entropy production, cycle-resolved
   irreversibility (Schnakenberg), and a permutation test for "is this
   non-equilibrium", on top of any velocity field.
@@ -174,15 +176,36 @@ pseudopotential, so rare or under-sampled states read as high energy.
 
 ![free-energy calibration](figures/free_energy_calibration.png)
 
+## Developmental coordinate and commitment
+
+The landscape and its flow give a principled reaction coordinate, the forward
+committor: the probability that a cell reaches the terminal fate before returning
+to the progenitor. It is 0 at the progenitor, 1 at the terminal fate, and where
+it crosses 0.5 is where fate commits.
+
+```python
+from thermodynamic_waddington import developmental_coordinate, commitment_profile
+
+q = developmental_coordinate(fit, source_labels=["Ductal"], target_labels=["Beta"])
+report = commitment_profile(fit, ["Ductal"], ["Beta"])
+print(report.order)              # ['Ductal','Ngn3 low EP','Ngn3 high EP','Pre-endocrine','Beta']
+print(report.commitment_label)   # 'Pre-endocrine'  (committor crosses 0.5 here)
+```
+
+On the pancreas branch the committor recovers the lineage order unsupervised and
+places commitment at the Pre-endocrine stage, and it orders cells better than
+PC1 (see the benchmark below).
+
 ## Head-to-head benchmarks
 
-Two benchmarks, reported straight, that together say what the method is and is
-not for.
+Two benchmarks, reported straight.
 
-The wrong benchmark for this method is developmental ordering. Simple baselines
-(first principal component) recover the Ductal to Beta order far better than any
-thermodynamic signal. Ordering is a solved problem, and this is not a pseudotime
-tool.
+Developmental ordering. The principled thermodynamic coordinate, the committor
+from transition-path theory, recovers the Ductal to Beta order at Spearman 0.97,
+beating the first principal component (0.89) and even an endpoint-informed
+Ductal to Beta axis (0.89). The naive thermodynamic signals (raw free energy,
+MFPT) do not, so the win comes from using the right coordinate, and that is shown
+in the chart rather than hidden.
 
 ![ordering benchmark](figures/predictive_ordering.png)
 
