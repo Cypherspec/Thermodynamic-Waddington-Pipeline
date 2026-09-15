@@ -5,8 +5,9 @@
 [![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-197%20passing-brightgreen.svg)](tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Docs](https://img.shields.io/badge/docs-online-teal.svg)](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)
 
-**Nischay Kommisetty · MIT Kellis Lab**
+**Nischay Kommisetty · MIT Kellis Lab** · **[Full documentation](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)**
 
 > **Is cell differentiation thermodynamically irreversible?**
 > Trajectory tools tell you *where* a cell is going. This one tells you whether

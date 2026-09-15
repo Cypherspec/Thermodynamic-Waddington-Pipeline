@@ -1,0 +1,46 @@
+site_name: Thermodynamic Waddington Pipeline
+site_description: Non-equilibrium thermodynamics of single-cell fate - entropy production, free-energy landscapes, and commitment from RNA velocity
+repo_url: https://github.com/Cypherspec/Thermodynamic-Waddington-Pipeline
+repo_name: Cypherspec/Thermodynamic-Waddington-Pipeline
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/weather-night
+        name: Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/weather-sunny
+        name: Light mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - toc.integrate
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Getting started: getting-started.md
+  - Concepts: concepts.md
+  - API reference: api.md
+  - Benchmarks and validation: benchmarks.md
+  - Limitations and scope: limitations.md
+  - FAQ: faq.md
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences

@@ -6,4 +6,6 @@ data/
 *.h5ad
 build/
 dist/
+site/
+.ruff_cache/
 .bench_*.json
