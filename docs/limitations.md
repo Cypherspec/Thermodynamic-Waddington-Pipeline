@@ -6,9 +6,10 @@ where it does not. This page is that statement. None of it is hidden elsewhere.
 ## What is well supported
 
 - **Irreversibility detection.** Entropy production distinguishes directed
-  differentiation from an equilibrium (velocity-shuffled) control on two
-  independent datasets, at chance for direction-blind baselines. Robust to gene
-  count and normalization. This is the core, defensible claim.
+  differentiation from an equilibrium (velocity-shuffled) control on three
+  independent datasets from three tissues (pancreas, gastrulation erythroid, bone
+  marrow), at chance for direction-blind baselines. Robust to gene count and
+  normalization. This is the core, defensible claim.
 - **The software.** Deterministic given a seed, 203 unit tests, reproducible in
   one command, numeric core pinned to bit-identical outputs.
 

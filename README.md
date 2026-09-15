@@ -28,7 +28,7 @@ transition-path-theory committor as a commitment coordinate.
 | result | number | notes |
 |---|---|---|
 | **Detects irreversibility** | **AUROC 1.00** vs 0.50 baselines | directed vs velocity-shuffled control |
-| **Generalizes across datasets** | directed **p≈0.01**, shuffled ≈0.35 | pancreas *and* gastrulation erythroid |
+| **Generalizes across tissues** | directed **p=0.010**, shuffled not sig. | pancreas, gastrulation, *and* bone marrow |
 | **Commitment barrier** | **1.6 kT** [1.4, 1.9] | potential of mean force along the committor |
 | **Landscape on a physical scale** | **~5 kT** deep | density-anchored kT calibration |
 | **Fast, scalable core** | **2–6× faster**, 50k cells in seconds | vectorized, bit-identical outputs |
@@ -107,10 +107,14 @@ whole pipeline on synthetic data with no download.
 Can the method separate a directed differentiation from a velocity-shuffled
 equilibrium control? Entropy production does it perfectly (AUROC 1.00); the
 expression-based baselines are at chance because they never look at velocity
-direction. It holds on a second, independent dataset (gastrulation erythroid) and
-is stable across gene count and normalization.
+direction. It holds across **three independent datasets from three tissues**
+(pancreas, gastrulation erythroid, bone marrow — directed p=0.010 on each, the
+shuffled control never significant), and is stable across gene count and
+normalization.
 
 ![irreversibility detection](figures/irreversibility_detection.png)
+
+![generalization across three tissues](figures/generalization.png)
 
 **A commitment coordinate and a free-energy barrier.**
 The committor from transition-path theory is 0 at the progenitor and 1 at the

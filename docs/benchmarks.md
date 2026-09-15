@@ -10,13 +10,13 @@ equilibrium control? Entropy production reaches **AUROC 1.00** while expression-
 based baselines (first principal component, distance from progenitor) sit at
 **0.50 (chance)**, because they never use velocity direction.
 
-This **generalizes** across datasets: significant on pancreatic endocrinogenesis
-(directed p ~ 0.005-0.01) and on an independent mouse gastrulation erythroid
-lineage (directed p ~ 0.01 vs shuffled ~ 0.35). It is robust to gene count
-(20-400) and to log normalization.
+This **generalizes across three tissues**: pancreatic endocrinogenesis,
+mouse gastrulation erythroid, and human bone marrow all give directed p = 0.010
+(beating every permutation) with the shuffled control never significant. It is
+robust to gene count (20-400) and to log normalization.
 
-`benchmarks/irreversibility_detection.py`, `benchmarks/pancreas_entropy_validation.py`,
-`benchmarks/second_dataset_validation.py`.
+`benchmarks/generalization.py`, `benchmarks/irreversibility_detection.py`,
+`benchmarks/pancreas_entropy_validation.py`, `benchmarks/second_dataset_validation.py`.
 
 ## Commitment barrier
 
