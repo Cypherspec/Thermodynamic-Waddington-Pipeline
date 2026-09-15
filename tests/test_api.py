@@ -40,6 +40,29 @@ class TestAnalyze(unittest.TestCase):
                       source_labels=[labs[0]], config=_cfg())
         self.assertTrue(rep.warnings)
 
+    def test_mismatched_labels_do_not_crash(self):
+        rep = analyze(self.ds.expression, self.ds.velocity, labels=self.ds.labels,
+                      source_labels=["nope"], target_labels=["nada"], config=_cfg())
+        self.assertIsInstance(rep, AnalysisReport)
+        self.assertIsNone(rep.commitment_barrier_kt)
+        self.assertTrue(rep.warnings)
+
+    def test_zero_velocity_does_not_crash(self):
+        zero = [[0.0] * 16 for _ in range(120)]
+        rep = analyze(self.ds.expression, zero, config=_cfg())
+        self.assertIsInstance(rep, AnalysisReport)
+
+    def test_tiny_dataset_does_not_crash(self):
+        import numpy as np
+        rng = np.random.default_rng(0)
+        expr = rng.normal(size=(8, 5)).tolist()
+        vel = rng.normal(size=(8, 5)).tolist()
+        cfg = FitConfig(neighbors=3, dimensions=2, seed=1, enable_cycle_decomposition=False,
+                        bootstrap_replicates=2, entropy_production_bootstrap_replicates=2,
+                        entropy_production_permutation_replicates=2)
+        rep = analyze(expr, vel, config=cfg)
+        self.assertEqual(rep.n_cells, 8)
+
 
 if __name__ == "__main__":
     unittest.main()
