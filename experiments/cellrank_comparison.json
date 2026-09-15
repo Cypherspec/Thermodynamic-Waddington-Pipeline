@@ -1,12 +1,12 @@
 {
   "benchmark": "cellrank_comparison_pancreas",
   "n_cells": 150,
-  "metric": "abs Spearman with developmental stage",
-  "scores": {
-    "PC1": 0.915,
-    "CellRank fate to Beta": 0.865,
-    "TW committor": 0.889
+  "seeds": 3,
+  "metric": "abs Spearman with developmental stage (mean over seeds)",
+  "stats": {
+    "PC1": {"mean": 0.922, "std": 0.005, "n": 3},
+    "CellRank fate to Beta": {"mean": 0.607, "std": 0.185, "n": 3},
+    "TW committor": {"mean": 0.929, "std": 0.029, "n": 3}
   },
-  "cellrank_status": "ran",
-  "note": "CellRank fate probability and the committor both estimate probability of reaching Beta; scored on how well each recovers developmental stage. On this clean lineage PC1 edges out both, and the committor is competitive with (slightly ahead of) CellRank. This pipeline additionally provides the entropy-production test and kT barrier that CellRank does not compute. Running CellRank here needs the numpy-2 compat shim and n_jobs=1 included in the script."
+  "note": "CellRank fate probability and the committor both estimate probability of reaching Beta, scored on recovering developmental stage (mean over 3 seeds, 150 cells). The committor (0.93) matches PC1 (0.92) and is far more stable than CellRank fate-to-Beta (0.61, high variance). FAIRNESS CAVEAT: 150 cells with a proxy velocity is a small, non-ideal regime for CellRank's GPCCA fate estimation, which needs more cells; CellRank's high variance here likely reflects that, not a general weakness. A fairer head-to-head would use a larger dataset. This pipeline additionally provides the entropy-production test and kT barrier CellRank does not compute."
 }

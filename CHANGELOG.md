@@ -16,9 +16,10 @@ Keep a Changelog. Versioning is semantic.
 - A Jupyter tutorial notebook and a full mkdocs documentation site.
 - `benchmarks/cellrank_comparison.py`: a fair head-to-head with CellRank fate
   probabilities on ordering. Runs CellRank under numpy 2 via a small pygpcca
-  compatibility shim and single-process velocity graph. Result (150 cells): the
-  committor (0.889) is competitive with CellRank fate-to-Beta (0.865); PC1
-  (0.915) edges out both on this clean lineage.
+  compatibility shim and single-process velocity graph. Result (3 seeds, 150
+  cells): committor 0.93 matches PC1 0.92 and is more stable than CellRank
+  fate-to-Beta 0.61 (high variance; the small-data regime is not ideal for
+  CellRank, noted as a fairness caveat).
 - Ruff lint/format configuration; version bumped to 0.3.0.
 - Physical free-energy calibration (`calibration.py`): density-anchored
   Boltzmann inversion expresses the landscape in kT, plus a fit of the path-work
