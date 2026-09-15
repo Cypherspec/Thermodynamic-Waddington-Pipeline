@@ -52,6 +52,11 @@ Keep a Changelog. Versioning is semantic.
   potential of mean force, giving a commitment barrier of ~1.6 kT [1.4, 1.9].
 - `benchmarks/commitment_barrier.py` and `benchmarks/second_dataset_validation.py`.
 
+### Changed
+- The CellFlux instrument design moved to its own repository
+  (Cypherspec/cellflux); the README links to it. The software repo stays focused
+  on the analysis pipeline.
+
 ### Findings (reported straight)
 - Entropy-production significance is robust to gene count (20-400) and to log
   normalization, and generalizes across three independent datasets from three
