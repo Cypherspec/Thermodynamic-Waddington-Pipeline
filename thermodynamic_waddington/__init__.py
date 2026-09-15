@@ -108,8 +108,8 @@ __all__ += ["CalibrationReport", "basin_barriers_kt", "boltzmann_free_energy", "
 from .developmental import CommitmentReport, FreeEnergyProfile, commitment_profile, committor_free_energy_profile, developmental_coordinate
 __all__ += ["CommitmentReport", "FreeEnergyProfile", "commitment_profile", "committor_free_energy_profile", "developmental_coordinate"]
 
-from .api import AnalysisReport, analyze
-__all__ += ["AnalysisReport", "analyze"]
+from .api import AnalysisReport, analyze, analyze_adata
+__all__ += ["AnalysisReport", "analyze", "analyze_adata"]
 
 from .entropy_production import (
     EntropyProductionConfig, EntropyProductionReport, PairFlux,
