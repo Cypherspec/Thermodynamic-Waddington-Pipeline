@@ -3,7 +3,7 @@
 [![CI](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/tests-197%20passing-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-200%20passing-brightgreen.svg)](tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-online-teal.svg)](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)
 
@@ -32,7 +32,7 @@ transition-path-theory committor as a commitment coordinate.
 | **Commitment barrier** | **1.6 kT** [1.4, 1.9] | potential of mean force along the committor |
 | **Landscape on a physical scale** | **~5 kT** deep | density-anchored kT calibration |
 | **Fast, scalable core** | **2–6× faster**, 50k cells in seconds | vectorized, bit-identical outputs |
-| **Engineering** | **197 tests**, CI, typed, MIT | one-command reproducible |
+| **Engineering** | **200 tests**, CI, typed, MIT | one-command reproducible |
 
 One honest caveat kept front and center: the committor's *ordering* advantage
 over PCA pseudotime holds on pancreas (0.94 vs 0.89, 10/10 seeds, p=0.002) but
@@ -146,7 +146,7 @@ transparent spliced/unspliced proxy).
 
 ```bash
 python benchmarks/run_all.py     # regenerates every experiments/*.json and figures/*.png
-pytest                           # 197 unit tests
+pytest                           # 200 unit tests
 ```
 
 Individual benchmarks (irreversibility, commitment barrier, calibration,
@@ -157,7 +157,7 @@ availability are in [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
 ## Package
 
 - Installable, typed (`py.typed`), MIT, builds a clean wheel and sdist.
-- 197 unit tests, GitHub Actions CI on Python 3.10–3.12, ruff-configured.
+- 200 unit tests, GitHub Actions CI on Python 3.10–3.12, ruff-configured.
 - High-level `analyze()` plus the full module API; console entry points.
 - Contributions welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
