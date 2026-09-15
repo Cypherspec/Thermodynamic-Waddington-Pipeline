@@ -1,12 +1,12 @@
 {
   "benchmark": "cellrank_comparison_pancreas",
-  "n_cells": 600,
+  "n_cells": 150,
   "metric": "abs Spearman with developmental stage",
   "scores": {
-    "PC1": 0.937,
-    "CellRank fate to Beta": null,
-    "TW committor": 0.957
+    "PC1": 0.915,
+    "CellRank fate to Beta": 0.865,
+    "TW committor": 0.889
   },
-  "cellrank_status": "could not run: TypeError from pygpcca (assert_array_equal signature removed in numpy 2.x). CellRank 2.0 needs numpy<2; run the script in that environment for CellRank's number.",
-  "note": "CellRank and the committor both estimate probability of reaching Beta; scored on how well they recover developmental stage. This pipeline additionally provides the entropy-production test and kT barrier that CellRank does not. The CellRank number is absent here only because of the numpy-2 incompatibility, not a failure of the comparison design."
+  "cellrank_status": "ran",
+  "note": "CellRank fate probability and the committor both estimate probability of reaching Beta; scored on how well each recovers developmental stage. On this clean lineage PC1 edges out both, and the committor is competitive with (slightly ahead of) CellRank. This pipeline additionally provides the entropy-production test and kT barrier that CellRank does not compute. Running CellRank here needs the numpy-2 compat shim and n_jobs=1 included in the script."
 }

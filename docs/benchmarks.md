@@ -42,13 +42,14 @@ thermodynamics. `benchmarks/predictive_ordering.py`,
 ## CellRank comparison
 
 `benchmarks/cellrank_comparison.py` compares the committor with CellRank's fate
-probability to the Beta terminal on identical proxy velocity, scored on ordering.
-On the tested machine CellRank's GPCCA step could not run (CellRank 2.0 via
-pygpcca is incompatible with numpy 2.x), so its number is absent and recorded as
-such; the committor scored 0.957 and PC1 0.937 on that run. Run the script in a
-numpy<2 environment for CellRank's value. The point stands regardless: CellRank
-does fate mapping, and this pipeline adds the entropy-production test and kT
-barrier it does not compute.
+probability to the Beta terminal on identical proxy velocity, scored on
+recovering developmental stage. On a 150-cell run the committor (0.889) is
+competitive with, and slightly ahead of, CellRank's fate probability (0.865),
+with plain PC1 edging out both (0.915) on this clean lineage. The script includes
+a numpy-2 compatibility shim (for pygpcca) and runs CellRank single-process to
+avoid a Windows multiprocessing hang. The point holds regardless of the ordering
+numbers: CellRank does fate mapping well, and this pipeline adds the
+entropy-production test and kT barrier it does not compute.
 
 ## Performance and scale
 

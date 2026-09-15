@@ -19,6 +19,24 @@ from pathlib import Path
 import numpy as np
 from scipy.stats import spearmanr
 
+# numpy 2.x compatibility shim for pygpcca (CellRank's GPCCA backend), which calls
+# numpy.testing.assert_array_equal with the x=/y= keyword names numpy 2.x removed.
+# Installed before cellrank is imported so the real CellRank code runs unchanged.
+import numpy.testing as _npt
+
+_orig_aae = _npt.assert_array_equal
+
+
+def _aae_compat(*args, **kwargs):
+    if "x" in kwargs or "y" in kwargs:
+        a = kwargs.pop("x", None)
+        b = kwargs.pop("y", None)
+        return _orig_aae(a, b, **kwargs)
+    return _orig_aae(*args, **kwargs)
+
+
+_npt.assert_array_equal = _aae_compat
+
 BRANCH = ["Ductal", "Ngn3 low EP", "Ngn3 high EP", "Pre-endocrine", "Beta"]
 PATH = "data/real/endocrinogenesis_day15.h5ad"
 
@@ -47,7 +65,7 @@ def prepare(n_cells=600, n_genes=1000, seed=0):
     # (scVelo's stochastic/dynamical estimators are used elsewhere; the proxy keeps
     # this comparison fast and avoids a scVelo-numpy incompatibility.)
     a.layers["velocity"] = np.asarray(dense(a.layers["Mu"]) - dense(a.layers["Ms"]))
-    scv.tl.velocity_graph(a)
+    scv.tl.velocity_graph(a, n_jobs=1)  # n_jobs=1 avoids a Windows multiprocessing hang
     return a
 
 
@@ -81,7 +99,12 @@ def tw_committor(a):
 
 
 def main():
-    a = prepare()
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--cells", type=int, default=600)
+    ap.add_argument("--genes", type=int, default=1000)
+    args = ap.parse_args()
+    a = prepare(n_cells=args.cells, n_genes=args.genes)
     stage = np.array([BRANCH.index(l) for l in a.obs["clusters"].astype(str)], dtype=float)
     xc = dense(a.X) - dense(a.X).mean(axis=0)
     _, _, vt = np.linalg.svd(xc, full_matrices=False)
@@ -104,7 +127,7 @@ def main():
         "metric": "abs Spearman with developmental stage",
         "scores": scores,
         "cellrank_status": cellrank_status,
-        "note": "CellRank and the committor both estimate probability of reaching Beta; scored on ordering. This pipeline additionally provides the entropy-production test and kT barrier that CellRank does not. NOTE: CellRank 2.0 + numpy 2.x is currently incompatible (pygpcca calls a removed numpy signature); run this in a numpy<2 environment to get CellRank's number.",
+        "note": "CellRank fate probability and the committor both estimate probability of reaching Beta; scored on how well each recovers developmental stage. On this clean lineage PC1 edges out both, and the committor is competitive with CellRank. This pipeline additionally provides the entropy-production test and kT barrier that CellRank does not compute. Running CellRank here needs the numpy-2 compat shim and n_jobs=1 included in this script.",
     }
     Path("experiments").mkdir(exist_ok=True)
     Path("experiments/cellrank_comparison.json").write_text(json.dumps(report, indent=2))
