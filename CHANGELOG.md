@@ -9,6 +9,13 @@ Keep a Changelog. Versioning is semantic.
 - High-level `analyze()` API returning a compact, serializable `AnalysisReport`
   (irreversibility test, kT landscape depth, attractors, and the committor
   commitment coordinate and barrier when source/target labels are given).
+- `analyze_adata()`: AnnData-native entry point that reads velocity/expression
+  layers, runs the pipeline, and writes the committor and energy back into
+  `adata.obs` (and the report into `adata.uns`).
+- `plots` module: one-line `committor`, `landscape`, and `free_energy_profile`.
+- A Jupyter tutorial notebook and a full mkdocs documentation site.
+- `benchmarks/cellrank_comparison.py`: a fair head-to-head with CellRank fate
+  probabilities on ordering.
 - Ruff lint/format configuration; version bumped to 0.3.0.
 - Physical free-energy calibration (`calibration.py`): density-anchored
   Boltzmann inversion expresses the landscape in kT, plus a fit of the path-work
