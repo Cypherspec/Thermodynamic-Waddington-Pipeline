@@ -15,7 +15,10 @@ Keep a Changelog. Versioning is semantic.
 - `plots` module: one-line `committor`, `landscape`, and `free_energy_profile`.
 - A Jupyter tutorial notebook and a full mkdocs documentation site.
 - `benchmarks/cellrank_comparison.py`: a fair head-to-head with CellRank fate
-  probabilities on ordering.
+  probabilities on ordering. Runs CellRank under numpy 2 via a small pygpcca
+  compatibility shim and single-process velocity graph. Result (150 cells): the
+  committor (0.889) is competitive with CellRank fate-to-Beta (0.865); PC1
+  (0.915) edges out both on this clean lineage.
 - Ruff lint/format configuration; version bumped to 0.3.0.
 - Physical free-energy calibration (`calibration.py`): density-anchored
   Boltzmann inversion expresses the landscape in kT, plus a fit of the path-work
@@ -51,8 +54,9 @@ Keep a Changelog. Versioning is semantic.
 
 ### Findings (reported straight)
 - Entropy-production significance is robust to gene count (20-400) and to log
-  normalization, and generalizes to a second independent dataset (gastrulation
-  erythroid: directed p=0.01 vs shuffled 0.35).
+  normalization, and generalizes across three independent datasets from three
+  tissues (pancreas, gastrulation erythroid, bone marrow): directed p=0.010 on
+  all three, shuffled control not significant. See `benchmarks/generalization.py`.
 - The committor's ordering advantage is dataset-dependent: it beats PC1 on
   pancreas but loses to PC1 on gastrulation erythroid (0.81 vs 0.94). Not a
   universal win.

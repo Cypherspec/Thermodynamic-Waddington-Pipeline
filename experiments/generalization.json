@@ -1,0 +1,25 @@
+{
+  "benchmark": "irreversibility_generalization",
+  "setup": "500 cells, 50 genes, 5 seeds, 100 permutations, proxy velocity",
+  "results": [
+    {
+      "dataset": "pancreas endocrine",
+      "tissue": "pancreas",
+      "directed_p": 0.01,
+      "shuffled_p": 0.725
+    },
+    {
+      "dataset": "gastrulation erythroid",
+      "tissue": "gastrulation",
+      "directed_p": 0.01,
+      "shuffled_p": 0.347
+    },
+    {
+      "dataset": "bone marrow",
+      "tissue": "hematopoiesis",
+      "directed_p": 0.01,
+      "shuffled_p": 0.352
+    }
+  ],
+  "conclusion": "Entropy production is significant (directed p=0.010, beating all permutations) on all three datasets, while the shuffled-velocity control is not. The irreversibility result generalizes across three tissues."
+}
