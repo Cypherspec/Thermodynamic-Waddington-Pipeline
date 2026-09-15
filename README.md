@@ -87,8 +87,19 @@ report.commitment_barrier_kt    # how hard, in kT
 report.landscape_range_kt       # landscape depth in kT
 ```
 
-New to it? `python examples/tutorial.py` runs the whole pipeline on synthetic
-data with no download and prints each result.
+Already in scanpy/scVelo? Run it on an AnnData and get the results back in `obs`:
+
+```python
+from thermodynamic_waddington import analyze_adata
+
+report = analyze_adata(adata, label_key="clusters",
+                       source=["Ductal"], target=["Beta"])
+adata.obs["tw_committor"]   # per-cell committor, written back
+adata.obs["tw_energy"]      # per-cell free energy
+```
+
+New to it? `python examples/tutorial.py` (or `examples/tutorial.ipynb`) runs the
+whole pipeline on synthetic data with no download.
 
 ## Results
 

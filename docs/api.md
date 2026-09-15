@@ -11,6 +11,13 @@ Runs the pipeline end to end and returns the headline results. Pass `labels` plu
 `source_labels` (progenitor) and `target_labels` (terminal) to also get the
 committor commitment coordinate and barrier.
 
+### `analyze_adata(adata, velocity_layer="velocity", expression_layer=None, label_key=None, source=None, target=None, config=None, n_top_genes=50, key_added="tw") -> AnalysisReport`
+
+The same, directly on an AnnData. Reads the velocity layer (or derives an
+unspliced-minus-spliced proxy), uses the top-`n_top_genes` by variance, and writes
+the per-cell committor and energy to `adata.obs['{key_added}_committor']` and
+`adata.obs['{key_added}_energy']`, with the report in `adata.uns['{key_added}']`.
+
 ### `AnalysisReport`
 
 Dataclass with: `n_cells`, `n_edges`, `n_attractors`, `entropy_production_rate`,
@@ -18,6 +25,17 @@ Dataclass with: `n_cells`, `n_edges`, `n_attractors`, `entropy_production_rate`,
 `path_vs_density_r2`, `committor_order`, `commitment_label`,
 `commitment_barrier_kt`, `transition_state_q`, `warnings`. Methods: `to_dict()`,
 `save(path)`.
+
+## Plotting
+
+`from thermodynamic_waddington import plots` (needs matplotlib):
+
+- `plots.committor(values, coords, ax=None)` - scatter colored by the committor.
+- `plots.landscape(energies, coords, ax=None)` - scatter colored by free energy.
+- `plots.free_energy_profile(values, temperature=1.0, ax=None)` - the commitment
+  barrier curve.
+
+`coords` is any n-by-2 array: a UMAP, a PCA embedding, or `fit.embedding`.
 
 ## Fitting
 
