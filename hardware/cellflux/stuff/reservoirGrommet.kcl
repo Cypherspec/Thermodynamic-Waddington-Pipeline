@@ -1,0 +1,13 @@
+// Reservoir liquid port grommet
+// Nominal four millimetre cap bore with one millimetre tubing passage.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import cylinder from "geometry.kcl"
+stem = cylinder(sizeDiameter = 4mm, height = 3.2mm)
+flange = cylinder(sizeDiameter = 6mm, height = 1mm)
+  |> translate(z = 3mm, global = true)
+stock = union([stem, flange])
+bore = cylinder(sizeDiameter = 1mm, height = 6mm)
+  |> translate(z = -1mm, global = true)
+grommet = subtract(stock, tools = [bore])
+  |> appearance(color = "#383c40")

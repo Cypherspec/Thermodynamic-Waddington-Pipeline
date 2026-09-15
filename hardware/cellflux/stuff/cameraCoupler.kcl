@@ -1,0 +1,7 @@
+// Camera optical coupling tube
+// Hollow spacer between detection cube and camera sensor.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import tube from "geometry.kcl"
+coupler = tube(outerDiameter = 36mm, innerDiameter = 20mm, height = 40mm)
+  |> appearance(color = "#3b4858", metalness = 80)

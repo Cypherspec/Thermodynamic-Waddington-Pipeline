@@ -1,0 +1,13 @@
+// Front access door
+// Windowed door with separate glazing and latch interfaces.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import frame from "geometry.kcl"
+door = frame(
+  width = 400mm,
+  depth = 585mm,
+  openingWidth = 320mm,
+  openingDepth = 450mm,
+  height = 5mm,
+)
+  |> appearance(color = "#e5ebed", metalness = 25)

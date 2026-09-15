@@ -1,0 +1,50 @@
+// Droplet microfluidic chip
+// Real underside flow-focusing channels and five through ports in PDMS.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate, cylinder from "geometry.kcl"
+chipLength = 75mm
+chipWidth = 25mm
+chipThickness = 3mm
+channelDepth = 0.03mm
+nozzleWidth = 0.03mm
+stock = plate(width = chipLength, depth = chipWidth, height = chipThickness)
+aqueousTool = plate(width = 29.51mm, depth = 0.05mm, height = channelDepth + 0.01mm)
+  |> translate(x = -15.245mm, z = -0.01mm, global = true)
+nozzleTool = plate(width = 1.02mm, depth = nozzleWidth, height = channelDepth + 0.01mm)
+  |> translate(z = -0.01mm, global = true)
+outletTool = plate(width = 29.51mm, depth = 0.1mm, height = channelDepth + 0.01mm)
+  |> translate(x = 15.245mm, z = -0.01mm, global = true)
+oilTool = plate(width = 0.04mm, depth = 16mm, height = channelDepth + 0.01mm)
+  |> translate(z = -0.01mm, global = true)
+beadTool = plate(width = 0.05mm, depth = 8mm, height = channelDepth + 0.01mm)
+  |> translate(
+       x = -15mm,
+       y = 4mm,
+       z = -0.01mm,
+       global = true,
+     )
+mainPassage = subtract(stock, tools = [aqueousTool, nozzleTool, outletTool])
+branched = subtract(mainPassage, tools = [oilTool, beadTool])
+portTool = cylinder(sizeDiameter = 1.2mm, height = chipThickness + 0.02mm)
+  |> rotate(axis = Z, angle = 17deg, global = true)
+  |> translate(x = -30mm, z = -0.01mm, global = true)
+outletPort = clone(portTool)
+  |> translate(x = 60mm, global = true)
+oilTopPort = clone(portTool)
+  |> translate(x = 30mm, y = 8mm, global = true)
+oilBottomPort = clone(portTool)
+  |> translate(x = 30mm, y = -8mm, global = true)
+beadPort = clone(portTool)
+  |> translate(x = 15mm, y = 8mm, global = true)
+dropletChip = subtract(
+  branched,
+  tools = [
+    portTool,
+    outletPort,
+    oilTopPort,
+    oilBottomPort,
+    beadPort
+  ],
+)
+  |> appearance(color = "#b6d8dc", opacity = 70)

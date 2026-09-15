@@ -1,0 +1,13 @@
+// Selector support bracket
+// Separate hollow support aligned with the reagent selector footprint.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import frame from "geometry.kcl"
+support = frame(
+  width = 30mm,
+  depth = 50mm,
+  openingWidth = 18mm,
+  openingDepth = 38mm,
+  height = 165mm,
+)
+  |> appearance(color = "#869daa", metalness = 70)

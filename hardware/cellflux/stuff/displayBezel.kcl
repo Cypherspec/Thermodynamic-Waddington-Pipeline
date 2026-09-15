@@ -1,0 +1,10 @@
+// Operator display bezel
+// Recessed touchscreen enclosure mounted on the enclosure front.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate from "geometry.kcl"
+stock = plate(width = 190mm, depth = 105mm, height = 16mm)
+recess = plate(width = 165mm, depth = 80mm, height = 5mm)
+  |> translate(z = 12mm, global = true)
+bezel = subtract(stock, tools = [recess])
+  |> appearance(color = "#334b5c", metalness = 50)

@@ -1,0 +1,7 @@
+// Isolation foot
+// Elastomer cylindrical vibration isolation envelope.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import cylinder from "geometry.kcl"
+foot = cylinder(sizeDiameter = 60mm, height = 30mm)
+  |> appearance(color = "#1e252b", roughness = 90)

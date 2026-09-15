@@ -1,0 +1,14 @@
+// Scientific camera envelope
+// Cooled camera housing with open sensor aperture and rear cooling slots.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate, cylinder from "geometry.kcl"
+stock = plate(width = 90mm, depth = 85mm, height = 60mm)
+sensorTool = cylinder(sizeDiameter = 20mm, height = 12mm)
+  |> translate(z = 50mm, global = true)
+slotTool = plate(width = 55mm, depth = 3mm, height = 6mm)
+  |> translate(y = -30mm, z = -1mm, global = true)
+  |> patternLinear3d(instances = 9, distance = 7mm, axis = Y)
+opened = subtract(stock, tools = [sensorTool])
+camera = subtract(opened, tools = slotTool)
+  |> appearance(color = "#267f99", metalness = 55)

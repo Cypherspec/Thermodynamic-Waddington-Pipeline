@@ -1,0 +1,7 @@
+// Microfluidic supply tube
+// Short vertical hollow tail from each chip connection.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import tube from "geometry.kcl"
+lineTail = tube(outerDiameter = 1mm, innerDiameter = 0.5mm, height = 35mm)
+  |> appearance(color = "#cadde0", opacity = 65)

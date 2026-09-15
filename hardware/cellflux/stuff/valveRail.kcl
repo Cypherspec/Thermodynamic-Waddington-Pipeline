@@ -1,0 +1,7 @@
+// Valve mounting rail
+// Raised wet-side shelf for valve and sensor banks.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate from "geometry.kcl"
+rail = plate(width = 240mm, depth = 90mm, height = 5mm)
+  |> appearance(color = "#8c9fa9", metalness = 70)

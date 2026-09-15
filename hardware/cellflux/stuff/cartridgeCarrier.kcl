@@ -1,0 +1,22 @@
+// Interchangeable cartridge carrier
+// Stepped slide seat, imaging opening, and clamp screw clearances.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate, cylinder from "geometry.kcl"
+stock = plate(width = 95mm, depth = 45mm, height = 4mm)
+aperture = plate(width = 65mm, depth = 18mm, height = 6mm)
+  |> translate(z = -1mm, global = true)
+seat = plate(width = 75.4mm, depth = 25.4mm, height = 2mm)
+  |> translate(z = 3mm, global = true)
+mountTool = cylinder(sizeDiameter = 3.4mm, height = 6mm)
+  |> translate(
+       x = -42mm,
+       y = -17mm,
+       z = -1mm,
+       global = true,
+     )
+  |> patternLinear3d(instances = 2, distance = 84mm, axis = X)
+  |> patternLinear3d(instances = 2, distance = 34mm, axis = Y)
+windowed = subtract(stock, tools = [aperture, seat])
+carrier = subtract(windowed, tools = mountTool)
+  |> appearance(color = "#526779", metalness = 70)

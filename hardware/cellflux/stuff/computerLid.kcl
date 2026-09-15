@@ -1,0 +1,7 @@
+// Computer lid
+// Separate sheet cover for the acquisition computer.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate from "geometry.kcl"
+lid = plate(width = 165mm, depth = 150mm, height = 2mm)
+  |> appearance(color = "#526477", metalness = 65)

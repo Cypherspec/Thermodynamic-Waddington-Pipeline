@@ -1,0 +1,10 @@
+// Inverted objective envelope
+// Stepped barrel with a real optical bore; no prescribed lens prescription.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import tube from "geometry.kcl"
+barrel = tube(outerDiameter = 28mm, innerDiameter = 16mm, height = 45mm)
+tip = tube(outerDiameter = 19mm, innerDiameter = 12mm, height = 9mm)
+  |> translate(z = 44.5mm, global = true)
+objective = union([barrel, tip])
+  |> appearance(color = "#b6bfc6", metalness = 90)

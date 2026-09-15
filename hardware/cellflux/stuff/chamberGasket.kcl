@@ -1,0 +1,13 @@
+// Chamber perimeter gasket
+// Separate compressed gasket geometry for upper and lower hood interfaces.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import frame from "geometry.kcl"
+gasket = frame(
+  width = 280mm,
+  depth = 170mm,
+  openingWidth = 270mm,
+  openingDepth = 160mm,
+  height = 1mm,
+)
+  |> appearance(color = "#30363b", roughness = 90)

@@ -1,0 +1,11 @@
+// Processor heat sink
+// Single machined part with separated cooling fins.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate from "geometry.kcl"
+stock = plate(width = 60mm, depth = 55mm, height = 22mm)
+slots = plate(width = 3mm, depth = 57mm, height = 20mm)
+  |> translate(x = -25mm, z = 4mm, global = true)
+  |> patternLinear3d(instances = 9, distance = 6mm, axis = X)
+heatSink = subtract(stock, tools = slots)
+  |> appearance(color = "#a8b1b8", metalness = 85)

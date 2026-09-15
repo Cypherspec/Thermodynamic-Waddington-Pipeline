@@ -1,0 +1,31 @@
+// Tubing return loop
+// Revolved hollow semicircular hose, dimensioned in its local XZ plane.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+loopRadius = 90mm
+outerRadius = 1.5mm
+innerRadius = 0.75mm
+section = sketch(on = XY) {
+  outside = circle(start = [var -88.5mm, var 0mm], center = [var -90mm, var 0mm])
+  horizontalDistance([ORIGIN, outside.center]) == -loopRadius
+  verticalDistance([ORIGIN, outside.center]) == 0mm
+  horizontal([outside.center, outside.start])
+  radius(outside) == outerRadius
+  inside = circle(start = [var -89.25mm, var 0mm], center = [var -90mm, var 0mm])
+  coincident([inside.center, outside.center])
+  horizontal([inside.center, inside.start])
+  radius(inside) == innerRadius
+}
+hose = revolve(
+  region(
+    point = [
+      -loopRadius + (outerRadius + innerRadius) / 2,
+      0mm
+    ],
+    sketch = section,
+  ),
+  axis = Y,
+  angle = 180deg,
+)
+  |> appearance(color = "#9ec5d1", opacity = 80)
+hide(section)

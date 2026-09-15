@@ -1,0 +1,18 @@
+// Equipment mounting shelf
+// Perforated shelf above the dry electronics bay.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate, cylinder from "geometry.kcl"
+stock = plate(width = 270mm, depth = 190mm, height = 6mm)
+mountTools = cylinder(sizeDiameter = 6mm, height = 8mm)
+  |> rotate(axis = Z, angle = 17deg, global = true)
+  |> translate(
+       x = -120mm,
+       y = -80mm,
+       z = -1mm,
+       global = true,
+     )
+  |> patternLinear3d(instances = 2, distance = 240mm, axis = X)
+  |> patternLinear3d(instances = 2, distance = 160mm, axis = Y)
+shelf = subtract(stock, tools = mountTools)
+  |> appearance(color = "#7a8d9c", metalness = 70)

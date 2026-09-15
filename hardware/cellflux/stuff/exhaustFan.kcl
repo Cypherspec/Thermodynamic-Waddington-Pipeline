@@ -1,0 +1,21 @@
+// Exhaust fan housing
+// Bored enclosure with four mounting passages, bought-part envelope.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate, cylinder from "geometry.kcl"
+stock = plate(width = 120mm, depth = 120mm, height = 25mm)
+vent = cylinder(sizeDiameter = 100mm, height = 27mm)
+  |> translate(z = -1mm, global = true)
+mounts = cylinder(sizeDiameter = 4.5mm, height = 27mm)
+  |> rotate(axis = Z, angle = 17deg, global = true)
+  |> translate(
+       x = -52mm,
+       y = -52mm,
+       z = -1mm,
+       global = true,
+     )
+  |> patternLinear3d(instances = 2, distance = 104mm, axis = X)
+  |> patternLinear3d(instances = 2, distance = 104mm, axis = Y)
+opened = subtract(stock, tools = [vent])
+fan = subtract(opened, tools = mounts)
+  |> appearance(color = "#334655", metalness = 40)

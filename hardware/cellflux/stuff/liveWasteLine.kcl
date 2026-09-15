@@ -1,0 +1,13 @@
+// Live cartridge waste route
+// Local endpoints join the live outlet to the waste lid inlet.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import archTube from "fluidRouting.kcl"
+lineSpan = sqrt(397_ * 397_ + 145_ * 145_) * 1mm
+wasteLine = archTube(
+  span = lineSpan,
+  crest = 65mm,
+  terminalZ = -181.87mm,
+  bendRadius = 10mm,
+)
+  |> appearance(color = "#b79454")

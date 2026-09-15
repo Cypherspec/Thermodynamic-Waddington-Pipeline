@@ -172,6 +172,15 @@ availability are in [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
 - High-level `analyze()` plus the full module API; console entry points.
 - Contributions welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Hardware: the CellFlux instrument
+
+A physical companion lives in [`hardware/`](hardware/): **CellFlux**, a designed
+benchtop microfluidic instrument (Zoo/KCL CAD, 91 parts, with a BOM and a full
+design document) meant to capture single-cell RNA velocity under perturbation and
+feed it straight into this pipeline. It is a design, not a built device, and is
+labeled as such. It closes the loop the software analyzes and would run the
+[preregistered commitment experiment](PREREGISTRATION_commitment.md).
+
 ## Scientific status
 
 Entropy production is significant on two independent datasets (pancreatic

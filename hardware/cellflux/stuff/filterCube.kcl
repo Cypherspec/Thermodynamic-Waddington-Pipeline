@@ -1,0 +1,13 @@
+// Fluorescence filter cube enclosure
+// Perpendicular excitation and detection bores.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate, cylinder from "geometry.kcl"
+stock = plate(width = 55mm, depth = 55mm, height = 45mm)
+verticalTool = cylinder(sizeDiameter = 20mm, height = 47mm)
+  |> translate(z = -1mm, global = true)
+excitationTool = cylinder(sizeDiameter = 14mm, height = 57mm)
+  |> rotate(axis = Y, angle = 90deg, global = true)
+  |> translate(x = -28.5mm, z = 22.5mm, global = true)
+filterCube = subtract(stock, tools = [verticalTool, excitationTool])
+  |> appearance(color = "#29313c", metalness = 70)

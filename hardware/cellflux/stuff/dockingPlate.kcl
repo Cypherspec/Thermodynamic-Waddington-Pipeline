@@ -1,0 +1,23 @@
+// Dual cartridge docking plate
+// Two true optical apertures and matching carrier mounting holes.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate, cylinder from "geometry.kcl"
+stock = plate(width = 240mm, depth = 100mm, height = 6mm)
+windowTools = plate(width = 65mm, depth = 18mm, height = 8mm)
+  |> translate(x = -65mm, z = -1mm, global = true)
+  |> patternLinear3d(instances = 2, distance = 130mm, axis = X)
+mountTools = cylinder(sizeDiameter = 3.4mm, height = 8mm)
+  |> rotate(axis = Z, angle = 17deg, global = true)
+  |> translate(
+       x = -107mm,
+       y = -17mm,
+       z = -1mm,
+       global = true,
+     )
+  |> patternLinear3d(instances = 2, distance = 84mm, axis = X)
+  |> patternLinear3d(instances = 2, distance = 34mm, axis = Y)
+  |> patternLinear3d(instances = 2, distance = 130mm, axis = X)
+opened = subtract(stock, tools = windowTools)
+dock = subtract(opened, tools = mountTools)
+  |> appearance(color = "#99aab4", metalness = 75)

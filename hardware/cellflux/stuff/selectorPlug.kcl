@@ -1,0 +1,10 @@
+// Unused selector port plug
+// Separate blanking plug for the four unassigned selector inputs.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import cylinder from "geometry.kcl"
+stem = cylinder(sizeDiameter = 1.05mm, height = 5.2mm)
+head = cylinder(sizeDiameter = 4mm, height = 2mm)
+  |> translate(z = 5mm, global = true)
+plug = union([stem, head])
+  |> appearance(color = "#b8c4cd", metalness = 70)

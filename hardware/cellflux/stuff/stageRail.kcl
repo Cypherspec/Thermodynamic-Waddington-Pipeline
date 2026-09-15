@@ -1,0 +1,12 @@
+// Linear guide rail
+// Stage support rail with mounting passages.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate, cylinder from "geometry.kcl"
+stock = plate(width = 18mm, depth = 150mm, height = 11mm)
+mountTool = cylinder(sizeDiameter = 4.5mm, height = 13mm)
+  |> rotate(axis = Z, angle = 17deg, global = true)
+  |> translate(y = -60mm, z = -1mm, global = true)
+  |> patternLinear3d(instances = 3, distance = 60mm, axis = Y)
+rail = subtract(stock, tools = mountTool)
+  |> appearance(color = "#b6c4cc", metalness = 90)

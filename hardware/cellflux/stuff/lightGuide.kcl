@@ -1,0 +1,7 @@
+// Excitation light guide
+// Hollow straight coupling sleeve between source and filter cube.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import tube from "geometry.kcl"
+lightGuide = tube(outerDiameter = 14mm, innerDiameter = 10mm, height = 47.5mm)
+  |> appearance(color = "#222d3c", metalness = 55)

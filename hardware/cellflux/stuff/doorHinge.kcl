@@ -1,0 +1,12 @@
+// Door hinge envelope
+// Single bought hinge envelope with two mounting passages.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate, cylinder from "geometry.kcl"
+stock = plate(width = 30mm, depth = 50mm, height = 8mm)
+mounts = cylinder(sizeDiameter = 4mm, height = 10mm)
+  |> rotate(axis = Z, angle = 17deg, global = true)
+  |> translate(y = -16mm, z = -1mm, global = true)
+  |> patternLinear3d(instances = 2, distance = 32mm, axis = Y)
+hinge = subtract(stock, tools = mounts)
+  |> appearance(color = "#6c8190", metalness = 75)

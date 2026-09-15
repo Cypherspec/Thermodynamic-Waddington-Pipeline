@@ -1,0 +1,10 @@
+// Linear stage motor
+// Separate stepper drive installation envelope.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate, cylinder from "geometry.kcl"
+housing = plate(width = 35mm, depth = 35mm, height = 40mm)
+shaft = cylinder(sizeDiameter = 5mm, height = 15mm)
+  |> translate(z = 39mm, global = true)
+motor = union([housing, shaft])
+  |> appearance(color = "#394956", metalness = 65)

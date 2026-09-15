@@ -1,0 +1,18 @@
+// Reagent bottle rack
+// Six open bottle sockets in a removable support plate.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate, cylinder from "geometry.kcl"
+stock = plate(width = 210mm, depth = 140mm, height = 12mm)
+sockets = cylinder(sizeDiameter = 49mm, height = 14mm)
+  |> rotate(axis = Z, angle = 17deg, global = true)
+  |> translate(
+       x = -70mm,
+       y = -35mm,
+       z = -1mm,
+       global = true,
+     )
+  |> patternLinear3d(instances = 3, distance = 70mm, axis = X)
+  |> patternLinear3d(instances = 2, distance = 70mm, axis = Y)
+rack = subtract(stock, tools = sockets)
+  |> appearance(color = "#42949c", metalness = 35)

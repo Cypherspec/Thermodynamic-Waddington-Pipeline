@@ -1,0 +1,13 @@
+// Microscope support column
+// Hollow rigid column supporting stage and illumination arm.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import frame from "geometry.kcl"
+column = frame(
+  width = 65mm,
+  depth = 55mm,
+  openingWidth = 45mm,
+  openingDepth = 35mm,
+  height = 420mm,
+)
+  |> appearance(color = "#d0d9dd", metalness = 65)

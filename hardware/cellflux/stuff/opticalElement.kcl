@@ -1,0 +1,7 @@
+// Optical window element
+// Plane disk representing an optical element, not a ray-traced lens.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import cylinder from "geometry.kcl"
+lens = cylinder(sizeDiameter = 12mm, height = 1.5mm)
+  |> appearance(color = "#449bba", opacity = 55)

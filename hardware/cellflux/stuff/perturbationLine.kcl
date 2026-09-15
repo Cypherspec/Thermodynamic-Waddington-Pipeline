@@ -1,0 +1,13 @@
+// Perturbation reservoir route
+// Connects selector input four to rear-left reservoir dip leg.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import archTube from "fluidRouting.kcl"
+lineSpan = sqrt(123_ * 123_ + 25_ * 25_) * 1mm
+reagentLine = archTube(
+  span = lineSpan,
+  crest = 130mm,
+  terminalZ = -177mm,
+  bendRadius = 10mm,
+)
+  |> appearance(color = "#ceab6b")

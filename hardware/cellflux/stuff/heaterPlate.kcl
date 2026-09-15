@@ -1,0 +1,13 @@
+// Heating plate
+// Dual-cartridge thermal spreader with clear imaging aperture.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import frame from "geometry.kcl"
+heater = frame(
+  width = 260mm,
+  depth = 160mm,
+  openingWidth = 220mm,
+  openingDepth = 60mm,
+  height = 4mm,
+)
+  |> appearance(color = "#bc8647", metalness = 80)

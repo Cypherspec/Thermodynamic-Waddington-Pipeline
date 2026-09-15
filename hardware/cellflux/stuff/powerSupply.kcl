@@ -1,0 +1,11 @@
+// Low voltage power supply envelope
+// Vented separate bought-part representation, no mains circuit design.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate from "geometry.kcl"
+stock = plate(width = 70mm, depth = 150mm, height = 45mm)
+slots = plate(width = 50mm, depth = 3mm, height = 5mm)
+  |> translate(y = -60mm, z = 42mm, global = true)
+  |> patternLinear3d(instances = 15, distance = 8mm, axis = Y)
+supply = subtract(stock, tools = slots)
+  |> appearance(color = "#acb7bd", metalness = 80)

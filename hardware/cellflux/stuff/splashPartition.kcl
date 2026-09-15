@@ -1,0 +1,7 @@
+// Wet-dry splash partition
+// Separate upright divider behind the fluid handling bay.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate from "geometry.kcl"
+partition = plate(width = 290mm, depth = 3mm, height = 195mm)
+  |> appearance(color = "#9eb5be", metalness = 60)

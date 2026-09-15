@@ -1,0 +1,13 @@
+// Bead reagent supply route
+// Continuous tube from reagent reservoir to bead inlet.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import archTube from "fluidRouting.kcl"
+lineSpan = sqrt(448_ * 448_ + 83_ * 83_) * 1mm
+beadLine = archTube(
+  span = lineSpan,
+  crest = 140mm,
+  terminalZ = -271.87mm,
+  bendRadius = 10mm,
+)
+  |> appearance(color = "#b699c7")

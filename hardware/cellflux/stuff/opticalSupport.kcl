@@ -1,0 +1,7 @@
+// Optical support spacer
+// Bored support pad for camera and breadboard mounting.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import tube from "geometry.kcl"
+spacer = tube(outerDiameter = 40mm, innerDiameter = 8mm, height = 20mm)
+  |> appearance(color = "#8c9ba5", metalness = 70)

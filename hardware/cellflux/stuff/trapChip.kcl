@@ -1,0 +1,54 @@
+// Live imaging trap chip
+// Perfusion microchambers with asymmetric endpoint registration marks.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate, cylinder from "geometry.kcl"
+chipLength = 75mm
+chipWidth = 25mm
+chipThickness = 3mm
+channelDepth = 0.03mm
+trapWidth = 0.02mm
+trapPitch = 0.1mm
+trapCount = 48
+stock = plate(width = chipLength, depth = chipWidth, height = chipThickness)
+perfusionTool = plate(width = 60mm, depth = 0.1mm, height = channelDepth + 0.01mm)
+  |> translate(z = -0.01mm, global = true)
+trapTools = plate(width = trapWidth, depth = 0.081mm, height = channelDepth + 0.01mm)
+  |> translate(
+       x = -2.35mm,
+       y = 0.0895mm,
+       z = -0.01mm,
+       global = true,
+     )
+  |> patternLinear3d(instances = trapCount, distance = trapPitch, axis = X)
+portTools = cylinder(sizeDiameter = 1.2mm, height = chipThickness + 0.02mm)
+  |> rotate(axis = Z, angle = 17deg, global = true)
+  |> translate(x = -30mm, z = -0.01mm, global = true)
+  |> patternLinear3d(instances = 2, distance = 60mm, axis = X)
+perfused = subtract(stock, tools = [perfusionTool])
+trapped = subtract(perfused, tools = trapTools)
+ported = subtract(trapped, tools = portTools)
+fiducialDepth = 0.015mm
+leftMarker = cylinder(sizeDiameter = 0.08mm, height = fiducialDepth + 0.01mm)
+  |> translate(
+       x = -3mm,
+       y = -0.6mm,
+       z = -0.01mm,
+       global = true,
+     )
+rightMarker = cylinder(sizeDiameter = 0.12mm, height = fiducialDepth + 0.01mm)
+  |> translate(
+       x = 3mm,
+       y = -0.6mm,
+       z = -0.01mm,
+       global = true,
+     )
+upperMarker = cylinder(sizeDiameter = 0.16mm, height = fiducialDepth + 0.01mm)
+  |> translate(
+       x = -2.5mm,
+       y = 0.6mm,
+       z = -0.01mm,
+       global = true,
+     )
+trapChip = subtract(ported, tools = [leftMarker, rightMarker, upperMarker])
+  |> appearance(color = "#acd5cb", opacity = 70)

@@ -1,0 +1,8 @@
+// Cartridge coverglass
+// Nominal 170 micrometre optical bottom, separate from PDMS.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import plate from "geometry.kcl"
+glassThickness = 0.17mm
+coverglass = plate(width = 75mm, depth = 25mm, height = glassThickness)
+  |> appearance(color = "#a0d8de", opacity = 35)

@@ -1,0 +1,13 @@
+// Side enclosure panel
+// Windowed service panel, drawn flat for fabrication.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import frame from "geometry.kcl"
+panel = frame(
+  width = 580mm,
+  depth = 590mm,
+  openingWidth = 460mm,
+  openingDepth = 430mm,
+  height = 3mm,
+)
+  |> appearance(color = "#dce5e9", metalness = 30)

@@ -1,0 +1,7 @@
+// Chamber optical window
+// Separate 54 mm diameter window seated in the lid counterbore.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import cylinder from "geometry.kcl"
+window = cylinder(sizeDiameter = 53.8mm, height = 1mm)
+  |> appearance(color = "#80c4d5", opacity = 35)

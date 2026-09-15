@@ -1,0 +1,10 @@
+// Door pull handle
+// Curved U-shaped pull made from a bored annular profile.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import tube, plate from "geometry.kcl"
+ring = tube(outerDiameter = 70mm, innerDiameter = 54mm, height = 12mm)
+halfTool = plate(width = 80mm, depth = 45mm, height = 14mm)
+  |> translate(y = -22.5mm, z = -1mm, global = true)
+handle = subtract(ring, tools = [halfTool])
+  |> appearance(color = "#33596b", metalness = 70)

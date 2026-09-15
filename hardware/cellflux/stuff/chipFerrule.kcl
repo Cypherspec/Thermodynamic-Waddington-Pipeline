@@ -1,0 +1,17 @@
+// Cartridge port ferrule
+// Hollow custom tubing adapter; no standardized thread implied.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import cylinder from "geometry.kcl"
+stem = cylinder(sizeDiameter = 1.2mm, height = 3mm)
+head = cylinder(sizeDiameter = 4mm, height = 6mm)
+  |> translate(z = 2.8mm, global = true)
+stock = union([stem, head])
+boreTool = cylinder(sizeDiameter = 0.5mm, height = 10mm)
+  |> rotate(axis = Z, angle = 17deg, global = true)
+  |> translate(z = -0.5mm, global = true)
+tubeSeat = cylinder(sizeDiameter = 1.05mm, height = 3.2mm)
+  |> translate(z = 6mm, global = true)
+drilled = subtract(stock, tools = [boreTool])
+ferrule = subtract(drilled, tools = [tubeSeat])
+  |> appearance(color = "#3f788d", metalness = 50)

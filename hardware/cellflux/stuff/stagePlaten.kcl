@@ -1,0 +1,23 @@
+// Motorized XY stage platen
+// Open optical aperture with four cartridge clamp clearances.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import frame, cylinder from "geometry.kcl"
+stock = frame(
+  width = 300mm,
+  depth = 180mm,
+  openingWidth = 205mm,
+  openingDepth = 80mm,
+  height = 15mm,
+)
+mountTool = cylinder(sizeDiameter = 4.5mm, height = 17mm)
+  |> translate(
+       x = -110mm,
+       y = -55mm,
+       z = -1mm,
+       global = true,
+     )
+  |> patternLinear3d(instances = 2, distance = 220mm, axis = X)
+  |> patternLinear3d(instances = 2, distance = 110mm, axis = Y)
+stage = subtract(stock, tools = mountTool)
+  |> appearance(color = "#293743", metalness = 70)

@@ -1,0 +1,13 @@
+// Droplet sample collection route
+// Local endpoints join encapsulation outlet to separate collection vessel.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import archTube from "fluidRouting.kcl"
+lineSpan = sqrt(383_ * 383_ + 145_ * 145_) * 1mm
+sampleLine = archTube(
+  span = lineSpan,
+  crest = 80mm,
+  terminalZ = -181.87mm,
+  bendRadius = 10mm,
+)
+  |> appearance(color = "#89be9c")

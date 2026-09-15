@@ -1,0 +1,7 @@
+// Brightfield illuminator
+// Bored LED condenser housing above the imaging cartridge.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import tube from "geometry.kcl"
+illuminator = tube(outerDiameter = 45mm, innerDiameter = 25mm, height = 70mm)
+  |> appearance(color = "#425568", metalness = 60)

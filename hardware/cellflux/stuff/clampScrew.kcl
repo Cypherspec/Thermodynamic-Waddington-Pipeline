@@ -1,0 +1,14 @@
+// Cartridge retention screw
+// Custom nominal 3 mm fastener envelope with open drive recess, cosmetic thread.
+@settings(defaultLengthUnit = mm, kclVersion = 2.0)
+
+import cylinder from "geometry.kcl"
+shaft = cylinder(sizeDiameter = 3mm, height = 17.5mm)
+head = cylinder(sizeDiameter = 5.5mm, height = 3mm)
+  |> translate(z = 17.4mm, global = true)
+stock = union([shaft, head])
+drive = cylinder(sizeDiameter = 2.5mm, height = 2mm)
+  |> rotate(axis = Z, angle = 17deg, global = true)
+  |> translate(z = 19mm, global = true)
+screw = subtract(stock, tools = [drive])
+  |> appearance(color = "#c5cdd0", metalness = 90)
