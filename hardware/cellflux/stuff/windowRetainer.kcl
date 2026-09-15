@@ -1,7 +1,0 @@
-// Optical window retainer
-// Separate bonded retainer ring, adhesive process not yet specified.
-@settings(defaultLengthUnit = mm, kclVersion = 2.0)
-
-import tube from "geometry.kcl"
-retainer = tube(outerDiameter = 62mm, innerDiameter = 50mm, height = 1mm)
-  |> appearance(color = "#537c88", metalness = 60)

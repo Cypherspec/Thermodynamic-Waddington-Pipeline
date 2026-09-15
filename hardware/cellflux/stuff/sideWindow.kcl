@@ -1,7 +1,0 @@
-// Side viewing pane
-// Separate transparent insert with a perimeter overlap.
-@settings(defaultLengthUnit = mm, kclVersion = 2.0)
-
-import plate from "geometry.kcl"
-window = plate(width = 480mm, depth = 450mm, height = 3mm)
-  |> appearance(color = "#7dafbc", opacity = 22)

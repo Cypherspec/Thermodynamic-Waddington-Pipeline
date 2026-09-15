@@ -1,7 +1,0 @@
-// Valve shelf support
-// Short bored pillar terminating at the wet-side shelf.
-@settings(defaultLengthUnit = mm, kclVersion = 2.0)
-
-import tube from "geometry.kcl"
-support = tube(outerDiameter = 12mm, innerDiameter = 5mm, height = 130mm)
-  |> appearance(color = "#8b9ba9", metalness = 75)

@@ -1,7 +1,0 @@
-// Camera mounting riser
-// Six millimetre support beneath the acquisition camera.
-@settings(defaultLengthUnit = mm, kclVersion = 2.0)
-
-import plate from "geometry.kcl"
-riser = plate(width = 90mm, depth = 85mm, height = 6mm)
-  |> appearance(color = "#8195a3", metalness = 70)

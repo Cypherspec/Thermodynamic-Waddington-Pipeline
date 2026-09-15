@@ -1,7 +1,0 @@
-// Cartridge backing nut
-// Nominal 3 mm retention hardware; threads represented cosmetically.
-@settings(defaultLengthUnit = mm, kclVersion = 2.0)
-
-import tube from "geometry.kcl"
-backingNut = tube(outerDiameter = 6mm, innerDiameter = 3mm, height = 2.5mm)
-  |> appearance(color = "#c2cbd0", metalness = 80)

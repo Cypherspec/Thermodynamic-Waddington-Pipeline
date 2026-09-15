@@ -178,11 +178,12 @@ availability are in [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
 
 ## Hardware: the CellFlux instrument
 
-A physical companion lives in [`hardware/`](hardware/): **CellFlux**, a designed
-benchtop microfluidic instrument (Zoo/KCL CAD, 91 parts, with a BOM and a full
-design document) meant to capture single-cell RNA velocity under perturbation and
-feed it straight into this pipeline. It is a design, not a built device, and is
-labeled as such. It closes the loop the software analyzes and would run the
+The physical companion is a separate project:
+**[CellFlux](https://github.com/Cypherspec/cellflux)** - a designed benchtop
+microfluidic instrument (Zoo/KCL CAD, 91 parts, with a BOM and a full design
+document) meant to capture single-cell RNA velocity under perturbation and feed
+it straight into this pipeline. It is a design, not a built device. It closes the
+loop the software analyzes and would run the
 [preregistered commitment experiment](PREREGISTRATION_commitment.md).
 
 ## Scientific status

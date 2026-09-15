@@ -1,7 +1,0 @@
-// Optical window seal
-// Annular compressed gasket around the chamber illumination aperture.
-@settings(defaultLengthUnit = mm, kclVersion = 2.0)
-
-import tube from "geometry.kcl"
-seal = tube(outerDiameter = 54mm, innerDiameter = 50mm, height = 0.5mm)
-  |> appearance(color = "#353b40")

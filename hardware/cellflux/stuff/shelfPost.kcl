@@ -1,7 +1,0 @@
-// Equipment standoff
-// Hollow mounting pillar for the equipment shelf and bottle rack.
-@settings(defaultLengthUnit = mm, kclVersion = 2.0)
-
-import tube from "geometry.kcl"
-standoff = tube(outerDiameter = 12mm, innerDiameter = 6mm, height = 200mm)
-  |> appearance(color = "#a6b5c2", metalness = 85)

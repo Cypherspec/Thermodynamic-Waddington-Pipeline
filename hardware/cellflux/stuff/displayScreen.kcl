@@ -1,7 +1,0 @@
-// Operator display glass
-// Separate flat screen insert without modeled text.
-@settings(defaultLengthUnit = mm, kclVersion = 2.0)
-
-import plate from "geometry.kcl"
-screen = plate(width = 164mm, depth = 79mm, height = 1mm)
-  |> appearance(color = "#1a738c", roughness = 15)

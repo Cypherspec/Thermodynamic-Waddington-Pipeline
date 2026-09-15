@@ -1,7 +1,0 @@
-// Front door glazing
-// Separate viewing insert; not a laser safety rating.
-@settings(defaultLengthUnit = mm, kclVersion = 2.0)
-
-import plate from "geometry.kcl"
-window = plate(width = 340mm, depth = 470mm, height = 3mm)
-  |> appearance(color = "#69a9ad", opacity = 18)

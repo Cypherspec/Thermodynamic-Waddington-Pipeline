@@ -1,7 +1,0 @@
-// Board mounting standoff
-// Nine millimetre spacer with clearance through bore.
-@settings(defaultLengthUnit = mm, kclVersion = 2.0)
-
-import tube from "geometry.kcl"
-spacer = tube(outerDiameter = 6mm, innerDiameter = 3.2mm, height = 9mm)
-  |> appearance(color = "#b99b61", metalness = 70)
