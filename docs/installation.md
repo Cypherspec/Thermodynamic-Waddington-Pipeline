@@ -25,7 +25,7 @@ pip install -e ".[all]"         # everything, the tested environment
 
 ```bash
 python -c "import thermodynamic_waddington as t; print(t.__version__)"
-pytest        # 200 unit tests
+pytest        # 203 unit tests
 python examples/tutorial.py   # end-to-end on synthetic data, no download
 ```
 

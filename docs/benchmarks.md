@@ -39,6 +39,17 @@ therefore **not universal**; its value is as a commitment coordinate tied to the
 thermodynamics. `benchmarks/predictive_ordering.py`,
 `benchmarks/statistical_validation.py`.
 
+## CellRank comparison
+
+`benchmarks/cellrank_comparison.py` compares the committor with CellRank's fate
+probability to the Beta terminal on identical proxy velocity, scored on ordering.
+On the tested machine CellRank's GPCCA step could not run (CellRank 2.0 via
+pygpcca is incompatible with numpy 2.x), so its number is absent and recorded as
+such; the committor scored 0.957 and PC1 0.937 on that run. Run the script in a
+numpy<2 environment for CellRank's value. The point stands regardless: CellRank
+does fate mapping, and this pipeline adds the entropy-production test and kT
+barrier it does not compute.
+
 ## Performance and scale
 
 Vectorizing the core made fits **2.2x-6.2x faster** with **bit-identical**
