@@ -1,12 +1,24 @@
 {
   "benchmark": "cellrank_comparison_pancreas",
-  "n_cells": 150,
+  "n_cells": 2000,
   "seeds": 3,
   "metric": "abs Spearman with developmental stage (mean over seeds)",
   "stats": {
-    "PC1": {"mean": 0.922, "std": 0.005, "n": 3},
-    "CellRank fate to Beta": {"mean": 0.607, "std": 0.185, "n": 3},
-    "TW committor": {"mean": 0.929, "std": 0.029, "n": 3}
+    "PC1": {
+      "mean": 0.937,
+      "std": 0.002,
+      "n": 3
+    },
+    "CellRank fate to Beta": {
+      "mean": 0.99,
+      "std": 0.0,
+      "n": 3
+    },
+    "TW committor": {
+      "mean": 0.953,
+      "std": 0.002,
+      "n": 3
+    }
   },
-  "note": "CellRank fate probability and the committor both estimate probability of reaching Beta, scored on recovering developmental stage (mean over 3 seeds, 150 cells). The committor (0.93) matches PC1 (0.92) and is far more stable than CellRank fate-to-Beta (0.61, high variance). FAIRNESS CAVEAT: 150 cells with a proxy velocity is a small, non-ideal regime for CellRank's GPCCA fate estimation, which needs more cells; CellRank's high variance here likely reflects that, not a general weakness. A fairer head-to-head would use a larger dataset. This pipeline additionally provides the entropy-production test and kT barrier CellRank does not compute."
+  "note": "CellRank two-boundary absorption to Beta (Ductal and Beta both absorbing) and the committor compute the same quantity on the same graph, scored on recovering developmental stage (mean over seeds). At 2000 cells, the regime GPCCA is built for, CellRank wins: CellRank ~0.99 > committor ~0.95 > PC1 ~0.94. That is the expected result on a linear lineage with enough cells; the committor beats PC1 and tracks CellRank closely, and ordering is not this pipeline's claim. A single terminal is degenerate on a linear lineage (all cells prob 1), which is why an earlier 150-cell single-terminal setup gave a noisy, non-meaningful fate; this uses two boundaries and supersedes it. This pipeline additionally provides the entropy-production test and kT barrier CellRank does not compute. Running CellRank under numpy 2 needs the pygpcca shim and n_jobs=1 in this script."
 }

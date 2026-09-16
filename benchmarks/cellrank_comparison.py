@@ -1,15 +1,18 @@
 """Head-to-head with CellRank on the pancreas endocrine branch.
 
-A fair, apples-to-apples comparison on CellRank's own turf. Both methods estimate
-a "probability of reaching the terminal fate": CellRank's fate probability to the
-Beta terminal (VelocityKernel + GPCCA) and this pipeline's committor. We score
-each by how well it recovers the known developmental stage, alongside PC1.
+A fair, apples-to-apples comparison on CellRank's own turf. Both methods compute
+the same quantity: the probability of reaching the Beta terminal before falling
+back to the Ductal progenitor. For CellRank that is a two-boundary absorption
+probability (VelocityKernel + ConnectivityKernel + GPCCA, with Ductal and Beta
+both absorbing); for this pipeline it is the transition-path-theory committor. We
+score each by how well it recovers the known developmental stage, alongside PC1.
 
 The point is not to beat CellRank at fate mapping (it is excellent at that); it is
 to show the two agree on ordering while this pipeline additionally provides the
-irreversibility test and kT barrier CellRank does not compute.
+irreversibility test and kT barrier CellRank does not compute. Run at a few
+thousand cells (the regime GPCCA is built for), not the earlier 150.
 
-    python benchmarks/cellrank_comparison.py
+    python benchmarks/cellrank_comparison.py --cells 2000 --genes 1000 --seeds 3
 """
 from __future__ import annotations
 
@@ -70,18 +73,28 @@ def prepare(n_cells=600, n_genes=1000, seed=0):
 
 
 def cellrank_fate_to_beta(a):
+    # Two-boundary absorption: make the progenitor (Ductal) and the terminal (Beta)
+    # both absorbing and read the probability of reaching Beta first. That is exactly
+    # the committor P(reach Beta before Ductal), so the two methods compute the same
+    # quantity on the same graph. A single terminal is degenerate on a linear lineage
+    # (CellRank warns "only 1 terminal state, all cells prob 1"), which is why the
+    # earlier single-terminal setup gave a noisy, near-constant fate. solver="direct"
+    # avoids the gmres non-convergence seen at larger n.
     import cellrank as cr
+    import pandas as pd
     vk = cr.kernels.VelocityKernel(a).compute_transition_matrix()
     ck = cr.kernels.ConnectivityKernel(a).compute_transition_matrix()
     kernel = 0.8 * vk + 0.2 * ck
     g = cr.estimators.GPCCA(kernel)
-    g.compute_schur(n_components=6)
-    g.compute_macrostates(n_states=len(BRANCH), cluster_key="clusters")
-    g.set_terminal_states(["Beta"])
-    g.compute_fate_probabilities()
+    cl = a.obs["clusters"].astype(str)
+    ts = pd.Series(index=a.obs_names, dtype="object")
+    ts[(cl == "Ductal").to_numpy()] = "Ductal"
+    ts[(cl == "Beta").to_numpy()] = "Beta"
+    g.set_terminal_states(ts.astype("category"))
+    g.compute_fate_probabilities(solver="direct")
     fate = g.fate_probabilities
     names = list(fate.names)
-    beta = names.index("Beta") if "Beta" in names else 0
+    beta = names.index("Beta")
     return np.asarray(fate.X[:, beta], dtype=float)
 
 
@@ -144,7 +157,7 @@ def main():
         "seeds": args.seeds,
         "metric": "abs Spearman with developmental stage (mean over seeds)",
         "stats": stats,
-        "note": "CellRank fate probability and the committor both estimate probability of reaching Beta, scored on recovering developmental stage (mean over seeds). The committor matches PC1 and is more stable than CellRank in this run. FAIRNESS CAVEAT: 150 cells with a proxy velocity is a small, non-ideal regime for CellRank's GPCCA fate estimation, which needs more cells; CellRank's high variance here likely reflects that, not a general weakness. Run at larger n for a fairer head-to-head. This pipeline additionally provides the entropy-production test and kT barrier CellRank does not compute. Running CellRank under numpy 2 needs the pygpcca shim and n_jobs=1 in this script.",
+        "note": "CellRank two-boundary absorption to Beta (Ductal and Beta both absorbing) and the committor compute the same quantity on the same graph, scored on recovering developmental stage (mean over seeds). At 2000 cells, the regime GPCCA is built for, CellRank wins: CellRank ~0.99 > committor ~0.95 > PC1 ~0.94. That is the expected result on a linear lineage with enough cells; the committor beats PC1 and tracks CellRank closely, and ordering is not this pipeline's claim. A single terminal is degenerate on a linear lineage (all cells prob 1), which is why an earlier 150-cell single-terminal setup gave a noisy, non-meaningful fate; this uses two boundaries and supersedes it. This pipeline additionally provides the entropy-production test and kT barrier CellRank does not compute. Running CellRank under numpy 2 needs the pygpcca shim and n_jobs=1 in this script.",
     }
     Path("experiments").mkdir(exist_ok=True)
     Path("experiments/cellrank_comparison.json").write_text(json.dumps(report, indent=2))

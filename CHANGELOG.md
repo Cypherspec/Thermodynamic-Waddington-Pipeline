@@ -14,12 +14,17 @@ Keep a Changelog. Versioning is semantic.
   `adata.obs` (and the report into `adata.uns`).
 - `plots` module: one-line `committor`, `landscape`, and `free_energy_profile`.
 - A Jupyter tutorial notebook and a full mkdocs documentation site.
-- `benchmarks/cellrank_comparison.py`: a fair head-to-head with CellRank fate
-  probabilities on ordering. Runs CellRank under numpy 2 via a small pygpcca
-  compatibility shim and single-process velocity graph. Result (3 seeds, 150
-  cells): committor 0.93 matches PC1 0.92 and is more stable than CellRank
-  fate-to-Beta 0.61 (high variance; the small-data regime is not ideal for
-  CellRank, noted as a fairness caveat).
+- `benchmarks/cellrank_comparison.py`: a fair head-to-head with CellRank on the
+  same quantity (probability of reaching Beta before the Ductal progenitor: a
+  two-boundary absorption for CellRank, the committor here). Runs CellRank under
+  numpy 2 via a small pygpcca compatibility shim and single-process velocity
+  graph. Result at 2,000 cells (3 seeds, the regime GPCCA is built for): CellRank
+  0.99 > committor 0.95 > PC1 0.94. CellRank wins on this linear lineage, as it
+  should; the committor beats PC1 and tracks CellRank closely. Reported straight:
+  ordering is not this pipeline's claim, the entropy-production test and kT
+  barrier are. (An earlier 150-cell single-terminal run was degenerate - one
+  terminal on a linear lineage gives probability 1 everywhere - and is superseded
+  by this two-boundary run.)
 - Ruff lint/format configuration; version bumped to 0.3.0.
 - Physical free-energy calibration (`calibration.py`): density-anchored
   Boltzmann inversion expresses the landscape in kT, plus a fit of the path-work
@@ -72,6 +77,10 @@ Keep a Changelog. Versioning is semantic.
 ### Fixed
 - Iterative SCC decomposition (`topology/cycles.py`) so deep graphs no longer
   overflow the Python recursion limit.
+- Diffusion-tensor estimation no longer materializes a dense genes-by-genes matrix
+  per cell (it is scalar-diagonal and only its trace is used), so fit memory scales
+  with cells instead of cells times genes^2. Outputs are identical; the full fit
+  now runs at a few thousand cells without exhausting memory.
 
 ## [0.2.0] - 2026-09-13
 

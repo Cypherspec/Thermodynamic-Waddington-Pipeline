@@ -41,18 +41,29 @@ thermodynamics. `benchmarks/predictive_ordering.py`,
 
 ## CellRank comparison
 
-`benchmarks/cellrank_comparison.py` compares the committor with CellRank's fate
-probability to the Beta terminal on identical proxy velocity, scored on
-recovering developmental stage. Across 3 seeds (150 cells) the committor
-(0.93 +/- 0.03) matches PC1 (0.92 +/- 0.01) and is far more stable than CellRank's
-fate probability (0.61 +/- 0.19). **Fairness caveat:** 150 cells with a proxy
-velocity is a small, non-ideal regime for CellRank's GPCCA fate estimation, which
-needs more cells, so its high variance here likely reflects the regime rather than
-a general weakness - do not read this as CellRank being worse in general. The
-script includes a numpy-2 compatibility shim (for pygpcca) and runs CellRank
-single-process to avoid a Windows multiprocessing hang. The durable point:
-CellRank does fate mapping well, and this pipeline adds the entropy-production
-test and kT barrier it does not compute.
+`benchmarks/cellrank_comparison.py` puts the committor and CellRank on the same
+footing: both compute the probability of reaching the Beta terminal before falling
+back to the Ductal progenitor (a two-boundary absorption for CellRank's
+VelocityKernel + GPCCA, the transition-path committor here) on identical proxy
+velocity, scored on recovering developmental stage. Run at **2,000 cells** (3
+seeds), the regime GPCCA is built for:
+
+| method | abs Spearman with stage |
+|---|---|
+| CellRank two-boundary absorption | **0.99 +/- 0.00** |
+| TW committor | 0.95 +/- 0.00 |
+| PC1 | 0.94 +/- 0.00 |
+
+**CellRank wins**, and it should: on a linear lineage with enough cells its
+absorption probability is exactly the tool for the job. The committor beats PC1
+and tracks CellRank closely, but ordering was never this pipeline's claim. A
+single terminal is degenerate on a linear lineage (CellRank returns probability 1
+everywhere), so the comparison uses two boundaries; an earlier 150-cell,
+single-terminal run gave a noisy, non-meaningful CellRank number and is
+superseded. The script includes a numpy-2 compatibility shim (for pygpcca) and
+runs CellRank single-process to avoid a Windows multiprocessing hang. The durable
+point: CellRank does fate mapping well, and this pipeline adds the
+entropy-production test and kT barrier it does not compute.
 
 ## Performance and scale
 
