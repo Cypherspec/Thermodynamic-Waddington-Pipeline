@@ -51,20 +51,24 @@ def velocity_residuals(points: Sequence[Sequence[float]], velocities: Sequence[S
     return residuals
 
 
-def estimate_diffusion_tensor(residuals: Sequence[Sequence[float]], graph: NeighborGraph, floor: float) -> list[list[list[float]]]:
-    tensors: list[list[list[float]]] = []
+def estimate_diffusion_tensor(residuals: Sequence[Sequence[float]], graph: NeighborGraph, floor: float) -> list[float]:
+    # the tensor is scalar-diagonal (one scale on the diagonal), so the only thing
+    # downstream ever reads is its trace. accumulate that directly instead of
+    # building a dense G x G matrix per cell, which keeps memory O(cells) rather
+    # than O(cells * genes^2). the summed order matches the old diagonal sum, so
+    # the trace is identical.
+    traces: list[float] = []
     for index, residual in enumerate(residuals):
         neighbours = graph.neighbors[index]
         if not neighbours:
-            tensors.append([[floor if row == column else 0.0 for column in range(len(residual))] for row in range(len(residual))])
-            continue
-        scale = max(floor, sum(value * value for value in residual) / max(1, len(residual)))
-        tensors.append([[scale if row == column else 0.0 for column in range(len(residual))] for row in range(len(residual))])
-    return tensors
+            value = floor
+        else:
+            value = max(floor, sum(v * v for v in residual) / max(1, len(residual)))
+        traces.append(float(sum(value for _ in range(len(residual)))))
+    return traces
 
 
-def tensor_summary(tensors: Sequence[Sequence[Sequence[float]]]) -> dict[str, object]:
-    traces = [sum(row[index] for index, row in enumerate(tensor) if index < len(row)) for tensor in tensors]
+def tensor_summary(traces: Sequence[float]) -> dict[str, object]:
     if not traces:
         return {"cells": 0, "trace_mean": 0.0, "trace_min": 0.0, "trace_max": 0.0, "model": "local diagonal residual covariance proxy"}
     return {"cells": len(traces), "trace_mean": mean(traces), "trace_min": min(traces), "trace_max": max(traces), "model": "local diagonal residual covariance proxy", "warning": "replicate-aware diffusion calibration is required for physical interpretation"}

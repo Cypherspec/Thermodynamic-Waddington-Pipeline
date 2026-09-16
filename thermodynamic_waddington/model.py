@@ -107,7 +107,7 @@ def fit_landscape(expression: Sequence[Sequence[float]], velocity: Sequence[Sequ
     densities = local_density(points, graph, config.density_bandwidth)
     diffusions = estimate_local_diffusion(graph, velocity, config.diffusion_floor)
     residuals = velocity_residuals(points, velocity, graph)
-    diffusion_tensors = estimate_diffusion_tensor(residuals, graph, config.diffusion_floor)
+    diffusion_traces = estimate_diffusion_tensor(residuals, graph, config.diffusion_floor)
     edges = annotate_edges(points, velocity, graph, densities, diffusions, config.temperature, config.velocity_scale, config.edge_alignment_threshold)
 
     # multi-source propagation: propagates from the highest-degree node in
@@ -203,7 +203,7 @@ def fit_landscape(expression: Sequence[Sequence[float]], velocity: Sequence[Sequ
         except Exception as exc:
             diagnostics["divergence"] = {"error": str(exc)}
     audit_metadata = dict(source_metadata)
-    audit_metadata.update({"path_work": path_sample_summary(path_samples, config.temperature), "path_protocol": protocol_sanity_checks(path_samples), "diffusion_tensor": tensor_summary(diffusion_tensors), "current": current_summary(currents)})
+    audit_metadata.update({"path_work": path_sample_summary(path_samples, config.temperature), "path_protocol": protocol_sanity_checks(path_samples), "diffusion_tensor": tensor_summary(diffusion_traces), "current": current_summary(currents)})
     diagnostics["scientific_audit"] = scientific_audit(points, velocity, graph, edges, diffusions, config.diffusion_floor, config.temperature, audit_metadata)
     diagnostics["scientific_audit"]["velocity_observed"] = velocity_observed
     diagnostics["scientific_audit"]["velocity_status"] = velocity_status
@@ -250,7 +250,7 @@ def fit_landscape(expression: Sequence[Sequence[float]], velocity: Sequence[Sequ
             "path_work": path_sample_summary(path_samples, config.temperature),
             "path_protocol": protocol_sanity_checks(path_samples),
             "path_work_bootstrap": bootstrap_path_work(edges, config.effective_bootstrap_replicates(), config.seed + 771),
-            "diffusion_tensor": tensor_summary(diffusion_tensors),
+            "diffusion_tensor": tensor_summary(diffusion_traces),
             "current": current_summary(currents),
             "interpretation": "effective stochastic path-work analysis; physical kT claims require calibration, a specified protocol, and held-out experimental validation",
         },
