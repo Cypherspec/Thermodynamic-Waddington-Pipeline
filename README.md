@@ -28,7 +28,7 @@ transition-path-theory committor as a commitment coordinate.
 | result | number | notes |
 |---|---|---|
 | **Detects irreversibility** | **AUROC 1.00** vs 0.50 baselines | directed vs velocity-shuffled control |
-| **Generalizes across tissues** | directed **p=0.010**, shuffled not sig. | pancreas, gastrulation, *and* bone marrow |
+| **Generalizes across tissues** | directed **p=0.0025**, shuffled not sig. | pancreas, gastrulation, *and* bone marrow; 5/5 seeds each |
 | **Commitment barrier** | **1.6 kT** [1.4, 1.9] | potential of mean force along the committor |
 | **Landscape on a physical scale** | **~5 kT** deep | density-anchored kT calibration |
 | **Fast, scalable core** | **2–6× faster**, 50k cells in seconds | vectorized, bit-identical outputs |
@@ -108,8 +108,10 @@ Can the method separate a directed differentiation from a velocity-shuffled
 equilibrium control? Entropy production does it perfectly (AUROC 1.00); the
 expression-based baselines are at chance because they never look at velocity
 direction. It holds across **three independent datasets from three tissues**
-(pancreas, gastrulation erythroid, bone marrow — directed p=0.010 on each, the
-shuffled control never significant), and is stable across gene count and
+(pancreas, gastrulation erythroid, bone marrow), recomputed at 1,500 cells with
+400 permutations over 5 seeds each: directed entropy production beats every
+permutation in every seed (p=0.0025, the permutation floor) while the shuffled
+control is never significant. It is also stable across gene count and
 normalization.
 
 ![irreversibility detection](figures/irreversibility_detection.png)

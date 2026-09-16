@@ -66,8 +66,12 @@ Keep a Changelog. Versioning is semantic.
 ### Findings (reported straight)
 - Entropy-production significance is robust to gene count (20-400) and to log
   normalization, and generalizes across three independent datasets from three
-  tissues (pancreas, gastrulation erythroid, bone marrow): directed p=0.010 on
-  all three, shuffled control not significant. See `benchmarks/generalization.py`.
+  tissues (pancreas, gastrulation erythroid, bone marrow). `generalization.py`
+  now recomputes this from scratch at 1,500 cells, 100 genes, 400 permutations
+  and 5 seeds per tissue (it previously redrew stored constants): directed
+  entropy production beats every permutation in every seed (p=0.0025, the
+  permutation floor) on all three, shuffled control never significant. Stronger
+  than the earlier 100-permutation p=0.010 and fully reproduced, not stored.
 - The committor's ordering advantage is dataset-dependent: it beats PC1 on
   pancreas but loses to PC1 on gastrulation erythroid (0.81 vs 0.94). Not a
   universal win.

@@ -11,9 +11,12 @@ based baselines (first principal component, distance from progenitor) sit at
 **0.50 (chance)**, because they never use velocity direction.
 
 This **generalizes across three tissues**: pancreatic endocrinogenesis,
-mouse gastrulation erythroid, and human bone marrow all give directed p = 0.010
-(beating every permutation) with the shuffled control never significant. It is
-robust to gene count (20-400) and to log normalization.
+mouse gastrulation erythroid, and human bone marrow. Recomputed from scratch at
+**1,500 cells, 100 genes, 400 permutations, 5 seeds each**, directed entropy
+production beats **every one of the 400 permutations in every seed** (p = 0.0025,
+the permutation floor) on all three tissues, while the shuffled-velocity control
+is never significant (best-case shuffled p = 0.14, 0.32, 0.17). It is also robust
+to gene count (20-400) and to log normalization.
 
 `benchmarks/generalization.py`, `benchmarks/irreversibility_detection.py`,
 `benchmarks/pancreas_entropy_validation.py`, `benchmarks/second_dataset_validation.py`.
