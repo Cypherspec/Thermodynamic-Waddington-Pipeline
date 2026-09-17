@@ -67,9 +67,9 @@ Keep a Changelog. Versioning is semantic.
 - Entropy-production significance is robust to gene count (20-400) and to log
   normalization, and generalizes across three independent datasets from three
   tissues (pancreas, gastrulation erythroid, bone marrow). `generalization.py`
-  now recomputes this from scratch at 1,500 cells, 100 genes, 400 permutations
+  now recomputes this from scratch at 1,500 cells, 100 genes, 1,000 permutations
   and 5 seeds per tissue (it previously redrew stored constants): directed
-  entropy production beats every permutation in every seed (p=0.0025, the
+  entropy production beats every permutation in every seed (p=0.0010, the
   permutation floor) on all three, shuffled control never significant. Stronger
   than the earlier 100-permutation p=0.010 and fully reproduced, not stored.
 - The committor's ordering advantage is dataset-dependent: it beats PC1 on

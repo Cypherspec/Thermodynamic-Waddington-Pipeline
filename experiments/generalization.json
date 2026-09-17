@@ -1,7 +1,7 @@
 {
   "benchmark": "irreversibility_generalization",
-  "setup": "1500 cells, 100 genes, 5 seeds, 400 permutations, proxy velocity",
-  "permutation_floor": 0.0025,
+  "setup": "1500 cells, 100 genes, 5 seeds, 1000 permutations, proxy velocity",
+  "permutation_floor": 0.001,
   "results": [
     {
       "dataset": "pancreas endocrine",
@@ -9,21 +9,21 @@
       "n_cells": 1500,
       "lineage_cells": 3003,
       "directed_p": [
-        0.0025,
-        0.0025,
-        0.0025,
-        0.0025,
-        0.0025
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001
       ],
       "shuffled_p": [
-        0.6783,
-        0.1446,
-        0.1372,
-        0.3392,
-        0.3491
+        0.7213,
+        0.1359,
+        0.1489,
+        0.3407,
+        0.3626
       ],
-      "directed_p_worst": 0.0025,
-      "shuffled_p_best": 0.1372
+      "directed_p_worst": 0.001,
+      "shuffled_p_best": 0.1359
     },
     {
       "dataset": "gastrulation erythroid",
@@ -31,21 +31,21 @@
       "n_cells": 1500,
       "lineage_cells": 9815,
       "directed_p": [
-        0.0025,
-        0.0025,
-        0.0025,
-        0.0025,
-        0.0025
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001
       ],
       "shuffled_p": [
-        0.5536,
-        0.3741,
-        0.3167,
-        0.3815,
-        0.4564
+        0.5395,
+        0.3766,
+        0.3027,
+        0.4106,
+        0.4535
       ],
-      "directed_p_worst": 0.0025,
-      "shuffled_p_best": 0.3167
+      "directed_p_worst": 0.001,
+      "shuffled_p_best": 0.3027
     },
     {
       "dataset": "bone marrow erythroid",
@@ -53,21 +53,21 @@
       "n_cells": 1500,
       "lineage_cells": 3775,
       "directed_p": [
-        0.0025,
-        0.0025,
-        0.0025,
-        0.0025,
-        0.0025
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001
       ],
       "shuffled_p": [
-        0.4389,
-        0.1721,
-        0.818,
-        0.9352,
-        0.202
+        0.4545,
+        0.1688,
+        0.8132,
+        0.9421,
+        0.1998
       ],
-      "directed_p_worst": 0.0025,
-      "shuffled_p_best": 0.1721
+      "directed_p_worst": 0.001,
+      "shuffled_p_best": 0.1688
     }
   ],
   "conclusion": "Entropy production is significant on all three tissues (directed p at or near the permutation floor in every seed, worst-case p below 0.05), while the shuffled-velocity control is not. The irreversibility result generalizes across three tissues and holds at larger n with more permutations."
