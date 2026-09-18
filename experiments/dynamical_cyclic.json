@@ -1,0 +1,17 @@
+{
+  "benchmark": "dynamical_vs_proxy_cyclic_fraction",
+  "dataset": "pancreas endocrine",
+  "n_cells": 800,
+  "n_genes_fit": 66,
+  "proxy": {
+    "cyclic_fraction": 0.1402,
+    "floor": 0.1436,
+    "excess": -0.0034
+  },
+  "dynamical": {
+    "cyclic_fraction": 0.1424,
+    "floor": 0.1436,
+    "excess": -0.0012
+  },
+  "note": "Cyclic fraction of proxy vs scVelo dynamical velocity on the same pancreas cells. If dynamical velocity carried circulation the proxy misses, its excess over the reversible floor would be larger."
+}
