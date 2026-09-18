@@ -1,0 +1,37 @@
+{
+  "benchmark": "irreversibility_real_cyclic_fraction",
+  "setup": "1500 cells, 100 genes, 5 seeds, PCA(6) space, proxy velocity",
+  "results": [
+    {
+      "dataset": "pancreas endocrine",
+      "tissue": "pancreas",
+      "n_cells": 1500,
+      "cyclic_fraction_real": 0.1507,
+      "cyclic_fraction_real_std": 0.0087,
+      "gradient_floor": 0.0994,
+      "random_ceiling": 0.2898,
+      "excess_over_floor": 0.0513
+    },
+    {
+      "dataset": "gastrulation erythroid",
+      "tissue": "gastrulation",
+      "n_cells": 1500,
+      "cyclic_fraction_real": 0.0798,
+      "cyclic_fraction_real_std": 0.0069,
+      "gradient_floor": 0.0851,
+      "random_ceiling": 0.353,
+      "excess_over_floor": -0.0053
+    },
+    {
+      "dataset": "bone marrow erythroid",
+      "tissue": "hematopoiesis",
+      "n_cells": 1500,
+      "cyclic_fraction_real": 0.1083,
+      "cyclic_fraction_real_std": 0.0127,
+      "gradient_floor": 0.0965,
+      "random_ceiling": 0.304,
+      "excess_over_floor": 0.0118
+    }
+  ],
+  "note": "Cyclic fraction of real velocity vs a matched gradient (reversible) floor and a shuffled ceiling on the same cells. Excess over the floor indicates circulation beyond what a reversible field produces at this sample size. Descriptive placement, not a calibrated p-value."
+}

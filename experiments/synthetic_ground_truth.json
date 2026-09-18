@@ -1,0 +1,73 @@
+{
+  "benchmark": "synthetic_ground_truth_irreversibility",
+  "model": "linear diffusion dx=-Bx dt+sqrt(2D)dW, B=aI+wJ; true EP ~ w^2, zero at w=0",
+  "n_cells": 400,
+  "seeds": 15,
+  "permutations": 100,
+  "per_omega": [
+    {
+      "omega": 0.0,
+      "old_ep_rate_mean": 10.7499,
+      "old_ep_frac_significant": 1.0,
+      "cyclic_fraction_mean": 0.1168,
+      "cyclic_fraction_std": 0.0024,
+      "coherence_mean": 0.948
+    },
+    {
+      "omega": 0.25,
+      "old_ep_rate_mean": 15.5461,
+      "old_ep_frac_significant": 1.0,
+      "cyclic_fraction_mean": 0.1541,
+      "cyclic_fraction_std": 0.0039,
+      "coherence_mean": 0.948
+    },
+    {
+      "omega": 0.5,
+      "old_ep_rate_mean": 39.931,
+      "old_ep_frac_significant": 1.0,
+      "cyclic_fraction_mean": 0.2478,
+      "cyclic_fraction_std": 0.0078,
+      "coherence_mean": 0.948
+    },
+    {
+      "omega": 1.0,
+      "old_ep_rate_mean": 1260.2994,
+      "old_ep_frac_significant": 1.0,
+      "cyclic_fraction_mean": 0.4664,
+      "cyclic_fraction_std": 0.0152,
+      "coherence_mean": 0.948
+    },
+    {
+      "omega": 2.0,
+      "old_ep_rate_mean": 9228076.5019,
+      "old_ep_frac_significant": 1.0,
+      "cyclic_fraction_mean": 0.7165,
+      "cyclic_fraction_std": 0.0206,
+      "coherence_mean": 0.948
+    },
+    {
+      "omega": 4.0,
+      "old_ep_rate_mean": 2351851386.9505,
+      "old_ep_frac_significant": 1.0,
+      "cyclic_fraction_mean": 0.8475,
+      "cyclic_fraction_std": 0.0227,
+      "coherence_mean": 0.948
+    }
+  ],
+  "old_seifert_ep": {
+    "false_positive_rate_at_equilibrium": 1.0,
+    "nominal_alpha": 0.05,
+    "auroc_equilibrium_vs_noneq": 0.44,
+    "verdict": "miscalibrated: fires on equilibrium fields because it scores against the density proxy, not the stationary current"
+  },
+  "cyclic_fraction": {
+    "equilibrium_floor": 0.1168,
+    "auroc_equilibrium_vs_noneq": 1.0,
+    "monotonic_in_drive": true,
+    "verdict": "calibrated: low and flat at equilibrium, rises monotonically with the known drive"
+  },
+  "velocity_coherence": {
+    "auroc_equilibrium_vs_noneq": 0.533,
+    "verdict": "cannot separate: both fields are coherent"
+  }
+}
