@@ -41,6 +41,7 @@ class AnalysisReport:
     is_irreversible: bool | None
     landscape_range_kt: float | None
     path_vs_density_r2: float | None
+    irreversibility_cyclic_fraction: float | None = None
     committor_order: list[str] | None = None
     commitment_label: str | None = None
     commitment_barrier_kt: float | None = None
@@ -52,6 +53,32 @@ class AnalysisReport:
 
     def save(self, path: str | Path) -> None:
         Path(path).write_text(json.dumps(self.to_dict(), indent=2))
+
+
+def _cyclic_fraction(expression, velocity, dims):
+    """Calibrated irreversibility: cyclic fraction of the velocity flow in PCA space.
+
+    This is the ground-truth-validated measure. Unlike the density-based Seifert
+    permutation test (`entropy_production_pvalue`), it does not false-positive on
+    conservative fields. Low means the flow is gradient-like (reversible); high
+    means it carries real circulation.
+    """
+    import numpy as np
+
+    from .graph import build_knn
+    from .irreversibility import cyclic_irreversibility
+
+    X = np.asarray(expression, dtype=float)
+    V = np.asarray(velocity, dtype=float)
+    if len(X) < 4:
+        return None
+    Xc = X - X.mean(axis=0)
+    _, _, vt = np.linalg.svd(Xc, full_matrices=False)
+    comp = vt[: max(2, dims)].T
+    pts = Xc @ comp
+    vpca = V @ comp
+    graph = build_knn(pts.tolist(), min(20, len(pts) - 1))
+    return cyclic_irreversibility(pts, vpca, graph).cyclic_fraction
 
 
 def _report_from_fit(fit, config, labels, source_labels, target_labels, significance):
@@ -112,6 +139,11 @@ def analyze(
     """Fit the landscape and return the headline thermodynamic results."""
     fit = fit_landscape(expression, velocity, config=config, labels=labels)
     report, _ = _report_from_fit(fit, config, labels, source_labels, target_labels, significance)
+    try:
+        report.irreversibility_cyclic_fraction = _cyclic_fraction(
+            expression, velocity, (config or FitConfig()).dimensions)
+    except Exception as exc:
+        report.warnings.append(f"cyclic fraction unavailable: {exc}")
     return report
 
 
@@ -173,6 +205,11 @@ def analyze_adata(
 
     fit = fit_landscape(expr.tolist(), vel.tolist(), config=config, labels=labels)
     report, committor = _report_from_fit(fit, config, labels, source, target, significance)
+    try:
+        report.irreversibility_cyclic_fraction = _cyclic_fraction(
+            expr, vel, (config or FitConfig()).dimensions)
+    except Exception as exc:
+        report.warnings.append(f"cyclic fraction unavailable: {exc}")
 
     try:
         adata.obs[f"{key_added}_energy"] = np.asarray(fit.energies, dtype=float)
