@@ -3,41 +3,44 @@
 [![CI](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/tests-203%20passing-brightgreen.svg)](tests)
+[![Tests](https://img.shields.io/badge/tests-210%20passing-brightgreen.svg)](tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-online-teal.svg)](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)
 
 **Nischay Kommisetty · MIT Kellis Lab** · **[Full documentation](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)**
 
-> **Is cell differentiation thermodynamically irreversible?**
-> Trajectory tools tell you *where* a cell is going. This one tells you whether
-> the journey can run backwards, by measuring the **entropy production** of the
-> process from RNA velocity, with a permutation test rather than a headline
-> number.
+> **How far from equilibrium is differentiation, and can you measure it correctly?**
+> Trajectory tools tell you *where* a cell is going. This one adds a calibrated
+> thermodynamic layer: a committor commitment coordinate with a kT barrier, and a
+> ground-truth-validated irreversibility measure that, unlike a naive
+> entropy-production test, does not false-positive on reversible flow.
 
 Differentiation is a driven, non-equilibrium process, but the standard toolkit
 (scVelo, CellRank, Palantir, Waddington-OT) measures its *geometry* (order,
-fate probabilities, transport), not its *irreversibility*. This package brings
-the machinery of stochastic thermodynamics to single-cell data: it builds a
-free-energy landscape from a Jarzynski path-work functional, estimates the
-Seifert entropy-production rate against an equilibrium null, and derives a
-transition-path-theory committor as a commitment coordinate.
+fate probabilities, transport), not its *irreversibility*. This package brings the
+machinery of stochastic thermodynamics to single-cell data: a free-energy
+landscape from a Jarzynski path-work functional, a transition-path-theory
+committor as a commitment coordinate, and a Hodge-decomposition irreversibility
+measure that is calibrated on ground truth.
 
 ## At a glance
 
 | result | number | notes |
 |---|---|---|
-| **Detects irreversibility** | **AUROC 1.00** vs 0.50 baselines | directed vs velocity-shuffled control |
-| **Generalizes across tissues** | directed **p=0.0010**, shuffled not sig. | pancreas, gastrulation, *and* bone marrow; 5/5 seeds each |
+| **Calibrated irreversibility measure** | **AUROC 1.00** on ground truth | separates equilibrium from non-equilibrium; the old density-based EP test scores 0.44 |
+| **Corrects a common artifact** | old EP false-positive rate **1.0** at equilibrium | naive velocity-shuffle EP over-detects; the calibrated measure does not |
 | **Commitment barrier** | **1.6 kT** [1.4, 1.9] | potential of mean force along the committor |
 | **Landscape on a physical scale** | **~5 kT** deep | density-anchored kT calibration |
 | **Fast, scalable core** | **2–6× faster**, 50k cells in seconds | vectorized, bit-identical outputs |
-| **Engineering** | **203 tests**, CI, typed, MIT | one-command reproducible |
+| **Engineering** | **210 tests**, CI, typed, MIT | one-command reproducible |
 
-One honest caveat kept front and center: the committor's *ordering* advantage
-over PCA pseudotime holds on pancreas (0.94 vs 0.89, 10/10 seeds, p=0.002) but
-**does not generalize** to the gastrulation lineage (PC1 wins there). The robust,
-cross-dataset result is the irreversibility detection, not ordering.
+Two honest caveats kept front and center. The committor's *ordering* advantage
+over PCA pseudotime holds on pancreas (0.94 vs 0.89, 10/10 seeds) but **not** on
+gastrulation (PC1 wins). And the calibrated irreversibility measure shows real
+developmental lineages are **close to reversible (gradient-like)** — a linear
+lineage has an arrow of time but little circulation. The value here is a *correct*
+thermodynamic readout, not a claim that differentiation is strongly irreversible;
+an earlier version over-claimed that from a miscalibrated test, now fixed.
 
 ## What makes it different
 
@@ -49,9 +52,9 @@ and optimal transport well. This pipeline answers a question they leave open:
 |---|:---:|:---:|
 | Pseudotime / fate probabilities | yes | yes |
 | Optimal transport across stages | yes | WOT only |
-| **Entropy-production estimate** | **yes** | no |
+| **Calibrated irreversibility measure (Hodge)** | **yes** | no |
 | **Cycle-resolved irreversibility (Schnakenberg)** | **yes** | no |
-| **Permutation test for non-equilibrium** | **yes** | no |
+| **Ground-truth-validated (equilibrium vs driven)** | **yes** | n/a |
 | **Committor commitment coordinate + kT barrier** | **yes** | no |
 | Free energy on a physical kT scale | yes | n/a |
 
@@ -80,8 +83,7 @@ from thermodynamic_waddington import analyze
 report = analyze(expression, velocity, labels=labels,
                  source_labels=["Ductal"], target_labels=["Beta"])
 
-report.is_irreversible          # True / False, from the permutation test
-report.entropy_production_pvalue
+report.irreversibility_cyclic_fraction  # calibrated: ~0 reversible, higher = circulation
 report.commitment_label         # where fate commits (committor crosses 0.5)
 report.commitment_barrier_kt    # how hard, in kT
 report.landscape_range_kt       # landscape depth in kT
@@ -103,20 +105,20 @@ whole pipeline on synthetic data with no download.
 
 ## Results
 
-**Irreversibility detection — the robust, generalizing result.**
-Can the method separate a directed differentiation from a velocity-shuffled
-equilibrium control? Entropy production does it perfectly (AUROC 1.00); the
-expression-based baselines are at chance because they never look at velocity
-direction. It holds across **three independent datasets from three tissues**
-(pancreas, gastrulation erythroid, bone marrow), recomputed at 1,500 cells with
-1,000 permutations over 5 seeds each: directed entropy production beats every
-permutation in every seed (p=0.0010, the permutation floor) while the shuffled
-control is never significant. It is also stable across gene count and
-normalization.
+**Irreversibility, measured correctly — the methodological result.**
+A naive density-based entropy-production test (shuffle velocity across cells)
+scores AUROC 1.00 against that control, but so does a one-line velocity-coherence
+heuristic, and on a synthetic *equilibrium* field it false-positives every time
+(FPR 1.0). The calibrated measure here — a Hodge decomposition of the velocity
+flow into reversible (gradient) and irreversible (cyclic) parts — is validated on
+ground truth: AUROC **1.00** separating equilibrium from non-equilibrium with
+monotonic recovery of a known drive, where the old test scores 0.44 and coherence
+0.53. Applied to real proxy velocity, the three developmental lineages are close
+to gradient-like (pancreas carries a modest excess over the reversible floor,
+gastrulation and bone marrow essentially none) — the correct, honest reading: a
+linear lineage has an arrow of time but little circulation.
 
-![irreversibility detection](figures/irreversibility_detection.png)
-
-![generalization across three tissues](figures/generalization.png)
+![irreversibility ground truth](figures/synthetic_ground_truth.png)
 
 **A commitment coordinate and a free-energy barrier.**
 The committor from transition-path theory is 0 at the progenitor and 1 at the
@@ -151,8 +153,8 @@ lineage, plain PC1 wins. Shown, not hidden.
 - builds a kNN graph over cells in PCA space (exact KD-tree, scales to 50k cells)
 - annotates each velocity-aligned edge with a Jarzynski path-work value (density, drift, diffusion)
 - propagates effective free energies with multi-source Jarzynski averaging
-- estimates entropy production (Seifert) with bootstrap CIs and a label-permutation null
-- decomposes it into Schnakenberg cycles; adds divergence and gradient-alignment proxies
+- measures irreversibility as the cyclic (non-gradient) fraction of the velocity flow, via a Hodge decomposition calibrated on ground truth
+- decomposes the flow into Schnakenberg cycles; also reports the legacy Seifert EP (kept for comparison, but it over-detects — see the benchmarks)
 - computes the committor commitment coordinate, its potential of mean force, and MFPT timescales
 - calibrates the landscape to kT via density-anchored Boltzmann inversion
 
@@ -163,7 +165,7 @@ transparent spliced/unspliced proxy).
 
 ```bash
 python benchmarks/run_all.py     # regenerates every experiments/*.json and figures/*.png
-pytest                           # 203 unit tests
+pytest                           # 210 unit tests
 ```
 
 Individual benchmarks (irreversibility, commitment barrier, calibration,
@@ -174,7 +176,7 @@ availability are in [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
 ## Package
 
 - Installable, typed (`py.typed`), MIT, builds a clean wheel and sdist.
-- 203 unit tests, GitHub Actions CI on Python 3.10–3.12, ruff-configured.
+- 210 unit tests, GitHub Actions CI on Python 3.10–3.12, ruff-configured.
 - High-level `analyze()` plus the full module API; console entry points.
 - Contributions welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -190,14 +192,20 @@ loop the software analyzes and would run the
 
 ## Scientific status
 
-Entropy production is significant on two independent datasets (pancreatic
-endocrinogenesis and gastrulation erythroid) and is robust to gene count and
-normalization. It did **not** replicate on dentate gyrus neurogenesis across 7
-independent tests including a preregistered confirmatory test; that negative is
-documented in `RESEARCH_NOTE_entropy_production_pancreas.md`. The committor
-ordering advantage is dataset-dependent. The landscape is a density-based
-pseudopotential in kT, not a molecular free energy. A falsifiable test of the
-commitment prediction is preregistered in `PREREGISTRATION_commitment.md`.
+The irreversibility measure is calibrated on synthetic ground truth (correct FPR,
+AUROC 1.0, monotonic recovery). On real proxy velocity it shows the three
+developmental lineages are close to gradient-like (reversible): only pancreas
+carries a modest cyclic excess. This **corrects** an earlier claim: the
+density-based Seifert permutation test reported significant entropy production
+across tissues, but it over-detects (100% false-positive rate on equilibrium
+ground truth), so that reading did not survive calibration. The legacy EP test and
+its dentate-gyrus non-replication remain documented in
+`RESEARCH_NOTE_entropy_production_pancreas.md`. The committor ordering advantage
+over PC1 is dataset-dependent (wins pancreas, loses gastrulation), and CellRank's
+fate probability edges out the committor at ordering on pancreas at scale. The
+landscape is a density-based pseudopotential in kT, not a molecular free energy. A
+falsifiable test of the commitment prediction is preregistered in
+`PREREGISTRATION_commitment.md`.
 
 ## Citation
 

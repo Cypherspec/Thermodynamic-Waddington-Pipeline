@@ -3,23 +3,44 @@
 Every number here reproduces with `python benchmarks/run_all.py`. Results are
 reported straight, negatives included.
 
-## Irreversibility detection (the robust result)
+## Irreversibility, measured correctly
 
-Can the method separate a directed differentiation from a velocity-shuffled
-equilibrium control? Entropy production reaches **AUROC 1.00** while expression-
-based baselines (first principal component, distance from progenitor) sit at
-**0.50 (chance)**, because they never use velocity direction.
+Two ways to ask "is the differentiation irreversible", with different answers.
 
-This **generalizes across three tissues**: pancreatic endocrinogenesis,
-mouse gastrulation erythroid, and human bone marrow. Recomputed from scratch at
-**1,500 cells, 100 genes, 1,000 permutations, 5 seeds each**, directed entropy
-production beats **every one of the 1,000 permutations in every seed** (p = 0.0010,
-the permutation floor) on all three tissues, while the shuffled-velocity control
-is never significant (best-case shuffled p = 0.14, 0.30, 0.17). It is also robust
-to gene count (20-400) and to log normalization.
+**The naive test over-detects.** The density-based Seifert entropy-production
+permutation test (shuffle velocity across cells) reaches AUROC 1.00 against that
+control, but so does a one-line velocity-coherence score, because the shuffle
+destroys all velocity structure, not just irreversibility. On a synthetic
+equilibrium field whose true entropy production is zero it fires every time
+(false-positive rate 1.0; AUROC 0.44 for equilibrium vs non-equilibrium). It is
+detecting velocity-position coupling, not broken detailed balance.
 
-`benchmarks/generalization.py`, `benchmarks/irreversibility_detection.py`,
-`benchmarks/pancreas_entropy_validation.py`, `benchmarks/second_dataset_validation.py`.
+**The calibrated measure.** `irreversibility.cyclic_irreversibility` splits the
+velocity flow (discrete Hodge decomposition) into a gradient (reversible) part and
+a cyclic (irreversible) part and reports the cyclic energy fraction. On the same
+ground truth it is calibrated: an equilibrium floor of 0.12 rising monotonically
+to 0.85 under a known rotational drive, **AUROC 1.00** separating equilibrium from
+non-equilibrium where coherence sits at 0.53. `benchmarks/synthetic_ground_truth.py`.
+
+**What the real tissues show (reported straight).** On real proxy velocity the
+three developmental lineages are close to gradient-like:
+
+| tissue | cyclic fraction | reversible floor | excess |
+|---|---|---|---|
+| pancreas endocrine | 0.151 | 0.099 | **+0.051** |
+| gastrulation erythroid | 0.080 | 0.085 | -0.005 |
+| bone marrow erythroid | 0.108 | 0.097 | +0.012 |
+
+Only pancreas carries a modest excess over the reversible floor; gastrulation and
+bone marrow essentially none. A linear lineage has an arrow of time but little
+circulation, so low cyclic entropy production is the expected, correct result.
+Injecting known rotation into the real geometry raises the fraction, so a
+near-floor result reflects the biology, not a dead measure.
+`benchmarks/irreversibility_real.py`.
+
+The directional progression is captured by the committor. The strong "irreversible
+across three tissues" reading of the old permutation test does not survive
+calibration, and is corrected here. `benchmarks/generalization.py`.
 
 ## Commitment barrier
 

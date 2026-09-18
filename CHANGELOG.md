@@ -6,6 +6,14 @@ Keep a Changelog. Versioning is semantic.
 ## [0.3.0] - 2026-09-14
 
 ### Added
+- Calibrated irreversibility measure (`irreversibility.cyclic_irreversibility`): a
+  discrete Hodge decomposition splits the velocity flow into a gradient
+  (reversible) part and a cyclic (irreversible) part; the cyclic energy fraction
+  is the irreversibility. Reported as `analyze().irreversibility_cyclic_fraction`.
+  `benchmarks/synthetic_ground_truth.py` validates it on a linear diffusion with
+  known entropy production: AUROC 1.0 separating equilibrium from non-equilibrium
+  and monotonic recovery of the drive, versus AUROC 0.44 (below chance) and a 100%
+  false-positive rate at equilibrium for the old density-based Seifert EP test.
 - High-level `analyze()` API returning a compact, serializable `AnalysisReport`
   (irreversibility test, kT landscape depth, attractors, and the committor
   commitment coordinate and barrier when source/target labels are given).
@@ -64,6 +72,18 @@ Keep a Changelog. Versioning is semantic.
   on the analysis pipeline.
 
 ### Findings (reported straight)
+- Correction from the calibrated measure: the density-based Seifert EP permutation
+  test over-detects. On synthetic ground truth it fires on conservative
+  (equilibrium) fields (false-positive rate 1.0), because it scores against the
+  density proxy rather than the stationary current, so its cross-tissue
+  significance largely reflects velocity-position coupling, not broken detailed
+  balance. Under the calibrated cyclic-fraction measure the three developmental
+  lineages are close to gradient-like (reversible): pancreas carries a modest
+  excess over the reversible floor, gastrulation and bone marrow essentially none.
+  A linear lineage has an arrow of time but little circulation, so low cyclic
+  entropy production is the expected, correct result. The committor still captures
+  the directional progression; the strong "irreversible across three tissues"
+  reading of the old EP test does not survive calibration.
 - Entropy-production significance is robust to gene count (20-400) and to log
   normalization, and generalizes across three independent datasets from three
   tissues (pancreas, gastrulation erythroid, bone marrow). `generalization.py`
