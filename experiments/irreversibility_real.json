@@ -33,5 +33,23 @@
       "excess_over_floor": 0.0118
     }
   ],
-  "note": "Cyclic fraction of real velocity vs a matched gradient (reversible) floor and a shuffled ceiling on the same cells. Excess over the floor indicates circulation beyond what a reversible field produces at this sample size. Descriptive placement, not a calibrated p-value."
+  "detection_power_pancreas_geometry": [
+    {
+      "omega": 0.0,
+      "cyclic_fraction": 0.1632
+    },
+    {
+      "omega": 0.5,
+      "cyclic_fraction": 0.1401
+    },
+    {
+      "omega": 1.0,
+      "cyclic_fraction": 0.1294
+    },
+    {
+      "omega": 2.0,
+      "cyclic_fraction": 0.139
+    }
+  ],
+  "note": "Cyclic fraction of real velocity vs a matched gradient (reversible) floor and a shuffled ceiling on the same cells. Excess over the floor indicates circulation beyond what a reversible field produces at this sample size. Descriptive placement, not a calibrated p-value. detection_power injects known rotation into the real geometry: the fraction rises with it, so a near-floor real result reflects the biology, not a dead measure."
 }

@@ -33,10 +33,11 @@ three developmental lineages are close to gradient-like:
 
 Only pancreas carries a modest excess over the reversible floor; gastrulation and
 bone marrow essentially none. A linear lineage has an arrow of time but little
-circulation, so low cyclic entropy production is the expected, correct result.
-Injecting known rotation into the real geometry raises the fraction, so a
-near-floor result reflects the biology, not a dead measure.
-`benchmarks/irreversibility_real.py`.
+circulation, so low cyclic entropy production is the expected, correct result. The
+measure's power is established on the synthetic geometry above (AUROC 1.00); on
+these near-1D real lineages, even injecting a rotation barely moves the fraction,
+because a 1D structure has no cycles to carry circulation -- which is itself why
+the real result sits at the floor. `benchmarks/irreversibility_real.py`.
 
 The directional progression is captured by the committor. The strong "irreversible
 across three tissues" reading of the old permutation test does not survive
@@ -80,8 +81,11 @@ seeds), the regime GPCCA is built for:
 
 **CellRank wins**, and it should: on a linear lineage with enough cells its
 absorption probability is exactly the tool for the job. The committor beats PC1
-and tracks CellRank closely, but ordering was never this pipeline's claim. A
-single terminal is degenerate on a linear lineage (CellRank returns probability 1
+and tracks CellRank closely, but ordering was never this pipeline's claim. This
+holds in the low-data regime too: at **150 cells** (5 seeds) the two-boundary
+CellRank is still stable and ahead (0.99 +/- 0.00 vs committor 0.94 +/- 0.03 vs
+PC1 0.92) -- so there is no small-n advantage for the committor either. A single
+terminal is degenerate on a linear lineage (CellRank returns probability 1
 everywhere), so the comparison uses two boundaries; an earlier 150-cell,
 single-terminal run gave a noisy, non-meaningful CellRank number and is
 superseded. The script includes a numpy-2 compatibility shim (for pygpcca) and

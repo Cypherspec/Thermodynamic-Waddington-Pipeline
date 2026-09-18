@@ -93,7 +93,7 @@ def run(cells=1500, genes=100, seeds=5):
         "setup": f"{cells} cells, {genes} genes, {seeds} seeds, PCA(6) space, proxy velocity",
         "results": results,
         "detection_power_pancreas_geometry": power,
-        "note": "Cyclic fraction of real velocity vs a matched gradient (reversible) floor and a shuffled ceiling on the same cells. Excess over the floor indicates circulation beyond what a reversible field produces at this sample size. Descriptive placement, not a calibrated p-value. detection_power injects known rotation into the real geometry: the fraction rises with it, so a near-floor real result reflects the biology, not a dead measure.",
+        "note": "Cyclic fraction of real velocity vs a matched gradient (reversible) floor and a shuffled ceiling on the same cells. Excess over the floor indicates circulation beyond what a reversible field produces at this sample size. Descriptive placement, not a calibrated p-value. detection_power injects a PC1-PC2 rotation into the real geometry: it barely moves the fraction, because these lineages are near-1D and a 1D structure has no cycles to carry circulation. The measure's power is established on the 2D synthetic ground truth (AUROC 1.0), not here; this null is consistent with the near-floor real result.",
     }
     Path("experiments").mkdir(exist_ok=True)
     Path("experiments/irreversibility_real.json").write_text(json.dumps(report, indent=2))
