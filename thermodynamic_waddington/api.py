@@ -68,12 +68,12 @@ def _cyclic_fraction(expression, velocity, dims):
     import numpy as np
 
     from .graph import build_knn
-    from .irreversibility import cycle_affinities, cyclic_irreversibility
+    from .irreversibility import cycle_affinities, cyclic_flow_per_cell, cyclic_irreversibility
 
     X = np.asarray(expression, dtype=float)
     V = np.asarray(velocity, dtype=float)
     if len(X) < 4:
-        return None, None
+        return None, None, None
     Xc = X - X.mean(axis=0)
     _, _, vt = np.linalg.svd(Xc, full_matrices=False)
     comp = vt[: max(2, dims)].T
@@ -82,7 +82,8 @@ def _cyclic_fraction(expression, velocity, dims):
     graph = build_knn(pts.tolist(), min(20, len(pts) - 1))
     frac = cyclic_irreversibility(pts, vpca, graph).cyclic_fraction
     aff = cycle_affinities(pts, vpca, graph).rms_affinity_kt
-    return frac, aff
+    per_cell = cyclic_flow_per_cell(pts, vpca, graph)
+    return frac, aff, per_cell
 
 
 def _report_from_fit(fit, config, labels, source_labels, target_labels, significance):
@@ -144,7 +145,7 @@ def analyze(
     fit = fit_landscape(expression, velocity, config=config, labels=labels)
     report, _ = _report_from_fit(fit, config, labels, source_labels, target_labels, significance)
     try:
-        frac, aff = _cyclic_fraction(expression, velocity, (config or FitConfig()).dimensions)
+        frac, aff, _ = _cyclic_fraction(expression, velocity, (config or FitConfig()).dimensions)
         report.irreversibility_cyclic_fraction = frac
         report.irreversibility_cycle_affinity_kt = aff
     except Exception as exc:
@@ -210,8 +211,9 @@ def analyze_adata(
 
     fit = fit_landscape(expr.tolist(), vel.tolist(), config=config, labels=labels)
     report, committor = _report_from_fit(fit, config, labels, source, target, significance)
+    per_cell_irrev = None
     try:
-        frac, aff = _cyclic_fraction(expr, vel, (config or FitConfig()).dimensions)
+        frac, aff, per_cell_irrev = _cyclic_fraction(expr, vel, (config or FitConfig()).dimensions)
         report.irreversibility_cyclic_fraction = frac
         report.irreversibility_cycle_affinity_kt = aff
     except Exception as exc:
@@ -221,6 +223,8 @@ def analyze_adata(
         adata.obs[f"{key_added}_energy"] = np.asarray(fit.energies, dtype=float)
         if committor is not None:
             adata.obs[f"{key_added}_committor"] = np.asarray(committor, dtype=float)
+        if per_cell_irrev is not None:
+            adata.obs[f"{key_added}_irreversibility"] = np.asarray(per_cell_irrev, dtype=float)
         adata.uns[key_added] = report.to_dict()
     except Exception as exc:  # writing back is best-effort
         report.warnings.append(f"could not write results into adata: {exc}")

@@ -6,6 +6,10 @@ Keep a Changelog. Versioning is semantic.
 ## [0.3.0] - 2026-09-14
 
 ### Added
+- Per-cell irreversibility map (`irreversibility.cyclic_flow_per_cell`): the cyclic
+  (non-gradient) flow energy incident on each cell, so you can see *where* along a
+  lineage circulation concentrates. `analyze_adata` writes it to
+  `adata.obs['tw_irreversibility']` next to the committor and energy.
 - The cyclic-fraction irreversibility measure now scales: the gradient projection
   uses a sparse least-squares solve instead of a dense n-by-n pseudo-inverse, so it
   runs in O(nnz) rather than O(cells^3). Bit-identical to the old result (max diff

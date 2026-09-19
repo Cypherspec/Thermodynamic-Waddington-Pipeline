@@ -173,6 +173,39 @@ def cyclic_irreversibility(pts, vels, graph, bootstrap=0, seed=0):
     return IrreversibilityReport(obs, ci, len(pairs), n)
 
 
+def cyclic_flow_per_cell(pts, vels, graph):
+    """Per-cell irreversibility density: the cyclic (non-gradient) flow energy
+    incident on each cell, normalized to sum to 1. Zero for a gradient field;
+    concentrates where the velocity field carries local circulation. Useful as an
+    `obs` map showing *where* along a lineage irreversibility lives.
+    """
+    pts = np.asarray(pts, dtype=float)
+    vels = np.asarray(vels, dtype=float)
+    n = len(pts)
+    pairs = _pairs(graph)
+    per = np.zeros(n)
+    if len(pairs) == 0 or n < 3:
+        return per
+    f = _edge_flow(pts, vels, pairs)
+    try:
+        from scipy.sparse.linalg import lsqr
+        B = _incidence(pairs, n)
+        cyclic = f - B.dot(lsqr(B, f, atol=1e-9, btol=1e-9, iter_lim=5000)[0])
+    except Exception:
+        Lp = _laplacian_pinv(pairs, n)
+        i, j = pairs[:, 0], pairs[:, 1]
+        Btf = np.zeros(n)
+        np.add.at(Btf, i, f)
+        np.add.at(Btf, j, -f)
+        phi = Lp @ Btf
+        cyclic = f - (phi[i] - phi[j])
+    e2 = cyclic * cyclic
+    np.add.at(per, pairs[:, 0], e2)
+    np.add.at(per, pairs[:, 1], e2)
+    total = per.sum()
+    return per / total if total > 0 else per
+
+
 def _spanning_tree_potential(pairs, f, n):
     # BFS spanning forest; psi accumulates the flow along tree edges so that
     # psi[a]-psi[b] is the flow along the unique tree path b->a.

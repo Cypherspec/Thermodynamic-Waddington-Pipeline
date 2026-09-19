@@ -5,7 +5,11 @@ import unittest
 import numpy as np
 
 from thermodynamic_waddington.graph import build_knn
-from thermodynamic_waddington.irreversibility import cycle_affinities, cyclic_irreversibility
+from thermodynamic_waddington.irreversibility import (
+    cycle_affinities,
+    cyclic_flow_per_cell,
+    cyclic_irreversibility,
+)
 
 J = np.array([[0.0, -1.0], [1.0, 0.0]])
 
@@ -105,6 +109,22 @@ class TestCycleAffinities(unittest.TestCase):
         rep = cycle_affinities(np.zeros((2, 2)), np.zeros((2, 2)), g)
         self.assertEqual(rep.n_cycles, 0)
         self.assertEqual(rep.rms_affinity_kt, 0.0)
+
+
+class TestPerCellMap(unittest.TestCase):
+    def test_shape_nonneg_normalized(self):
+        pts, vel = _sample(2.0, 0)
+        g = build_knn(pts.tolist(), 20)
+        per = cyclic_flow_per_cell(pts, vel, g)
+        self.assertEqual(per.shape, (len(pts),))
+        self.assertTrue((per >= 0).all())
+        self.assertAlmostEqual(float(per.sum()), 1.0, places=6)
+
+    def test_degenerate_returns_zeros(self):
+        g = build_knn([[0.0, 0.0], [1.0, 0.0]], 1)
+        per = cyclic_flow_per_cell(np.zeros((2, 2)), np.zeros((2, 2)), g)
+        self.assertEqual(per.shape, (2,))
+        self.assertEqual(float(per.sum()), 0.0)
 
 
 if __name__ == "__main__":
