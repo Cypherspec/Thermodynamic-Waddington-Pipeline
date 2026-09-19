@@ -96,6 +96,27 @@ def _edge_flow(pts, vels, pairs):
     return 0.5 * (np.einsum("kd,kd->k", vels[i], e) + np.einsum("kd,kd->k", vels[j], e))
 
 
+def _incidence(pairs, n):
+    # sparse oriented incidence B (edges x nodes): +1 at i, -1 at j
+    from scipy.sparse import csr_matrix
+
+    m = len(pairs)
+    rows = np.repeat(np.arange(m), 2)
+    cols = pairs.reshape(-1)
+    data = np.tile(np.array([1.0, -1.0]), m)
+    return csr_matrix((data, (rows, cols)), shape=(m, n))
+
+
+def _frac_sparse(B, f):
+    # gradient (curl-free) projection by sparse least squares: phi = argmin ||B phi - f||^2.
+    # scales as O(nnz) per iteration instead of the O(n^3) dense pseudo-inverse.
+    from scipy.sparse.linalg import lsqr
+
+    phi = lsqr(B, f, atol=1e-9, btol=1e-9, iter_lim=5000)[0]
+    cyclic = f - B.dot(phi)
+    return float(cyclic @ cyclic / (float(f @ f) + 1e-12))
+
+
 def _laplacian_pinv(pairs, n):
     L = np.zeros((n, n))
     i, j = pairs[:, 0], pairs[:, 1]
@@ -106,16 +127,14 @@ def _laplacian_pinv(pairs, n):
     return np.linalg.pinv(L)
 
 
-def _cyclic_fraction(pairs, f, n, Lp):
+def _frac_dense(pairs, f, n, Lp):
     i, j = pairs[:, 0], pairs[:, 1]
     Btf = np.zeros(n)
     np.add.at(Btf, i, f)
     np.add.at(Btf, j, -f)
     phi = Lp @ Btf
-    grad = phi[i] - phi[j]          # B phi
-    cyclic = f - grad
-    denom = float(np.sum(f * f)) + 1e-12
-    return float(np.sum(cyclic * cyclic) / denom)
+    cyclic = f - (phi[i] - phi[j])
+    return float(np.sum(cyclic * cyclic) / (float(np.sum(f * f)) + 1e-12))
 
 
 def cyclic_irreversibility(pts, vels, graph, bootstrap=0, seed=0):
@@ -130,9 +149,17 @@ def cyclic_irreversibility(pts, vels, graph, bootstrap=0, seed=0):
     pairs = _pairs(graph)
     if len(pairs) == 0 or n < 3:
         return IrreversibilityReport(0.0, None, len(pairs), n)
-    Lp = _laplacian_pinv(pairs, n)
     f = _edge_flow(pts, vels, pairs)
-    obs = _cyclic_fraction(pairs, f, n, Lp)
+
+    try:  # sparse least-squares scales to large graphs; dense pinv is the fallback
+        B = _incidence(pairs, n)
+        estimate = lambda pr, fv, sub: _frac_sparse(sub, fv)  # noqa: E731
+        obs = estimate(pairs, f, B)
+    except Exception:
+        Lp = _laplacian_pinv(pairs, n)
+        B = None
+        estimate = lambda pr, fv, sub: _frac_dense(pr, fv, n, Lp)  # noqa: E731
+        obs = estimate(pairs, f, None)
 
     ci = None
     if bootstrap > 1:
@@ -141,7 +168,7 @@ def cyclic_irreversibility(pts, vels, graph, bootstrap=0, seed=0):
         vals = np.empty(bootstrap)
         for b in range(bootstrap):
             sel = rng.integers(0, m, size=m)
-            vals[b] = _cyclic_fraction(pairs[sel], f[sel], n, Lp)
+            vals[b] = estimate(pairs[sel], f[sel], B[sel] if B is not None else None)
         ci = (float(np.quantile(vals, 0.025)), float(np.quantile(vals, 0.975)))
     return IrreversibilityReport(obs, ci, len(pairs), n)
 

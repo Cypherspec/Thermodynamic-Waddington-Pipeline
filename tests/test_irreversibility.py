@@ -63,6 +63,19 @@ class TestCyclicIrreversibility(unittest.TestCase):
         rep = cyclic_irreversibility(pts, np.zeros((2, 2)), g)
         self.assertEqual(rep.cyclic_fraction, 0.0)
 
+    def test_sparse_matches_dense(self):
+        # the scalable sparse projection must reproduce the dense pseudo-inverse
+        from thermodynamic_waddington.irreversibility import (
+            _edge_flow, _frac_dense, _frac_sparse, _incidence, _laplacian_pinv, _pairs,
+        )
+        pts, vel = _sample(1.0, 5, n=500)
+        g = build_knn(pts.tolist(), 20)
+        pairs = _pairs(g)
+        f = _edge_flow(pts, vel, pairs)
+        sparse = _frac_sparse(_incidence(pairs, 500), f)
+        dense = _frac_dense(pairs, f, 500, _laplacian_pinv(pairs, 500))
+        self.assertAlmostEqual(sparse, dense, places=6)
+
 
 def _affinity(omega, seed):
     pts, vel = _sample(omega, seed)
