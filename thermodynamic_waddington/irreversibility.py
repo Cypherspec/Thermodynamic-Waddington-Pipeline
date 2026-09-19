@@ -27,9 +27,36 @@ open problem, so the equilibrium floor is reported as a calibration reference.
 """
 from __future__ import annotations
 
+from collections import deque
 from dataclasses import dataclass
 
 import numpy as np
+
+
+@dataclass
+class CycleAffinityReport:
+    """Schnakenberg cycle affinities of the velocity flow, in kT units.
+
+    Each fundamental cycle of the kNN graph carries a thermodynamic affinity
+    A = sum around the cycle of log(k_ij / k_ji), the entropy produced per turn of
+    that cycle. With rates from the edge-projected velocity this equals twice the
+    circulation of the flow, so it is exactly zero for a gradient (reversible)
+    field (Kolmogorov's criterion) and non-zero when the flow has curl.
+    """
+
+    n_cycles: int
+    rms_affinity_kt: float
+    max_affinity_kt: float
+    mean_abs_affinity_kt: float
+
+    def to_dict(self):
+        return {
+            "n_cycles": self.n_cycles,
+            "rms_affinity_kt": self.rms_affinity_kt,
+            "max_affinity_kt": self.max_affinity_kt,
+            "mean_abs_affinity_kt": self.mean_abs_affinity_kt,
+            "method": "schnakenberg_fundamental_cycle_affinities",
+        }
 
 
 @dataclass
@@ -117,3 +144,55 @@ def cyclic_irreversibility(pts, vels, graph, bootstrap=0, seed=0):
             vals[b] = _cyclic_fraction(pairs[sel], f[sel], n, Lp)
         ci = (float(np.quantile(vals, 0.025)), float(np.quantile(vals, 0.975)))
     return IrreversibilityReport(obs, ci, len(pairs), n)
+
+
+def _spanning_tree_potential(pairs, f, n):
+    # BFS spanning forest; psi accumulates the flow along tree edges so that
+    # psi[a]-psi[b] is the flow along the unique tree path b->a.
+    adj = [[] for _ in range(n)]
+    for e, (a, b) in enumerate(pairs):
+        adj[a].append((b, f[e], e))
+        adj[b].append((a, -f[e], e))
+    psi = np.full(n, np.nan)
+    is_tree = np.zeros(len(pairs), dtype=bool)
+    for s in range(n):
+        if not np.isnan(psi[s]):
+            continue
+        psi[s] = 0.0
+        dq = deque([s])
+        while dq:
+            u = dq.popleft()
+            for v, fl, e in adj[u]:
+                if np.isnan(psi[v]):
+                    psi[v] = psi[u] + fl
+                    is_tree[e] = True
+                    dq.append(v)
+    return psi, is_tree
+
+
+def cycle_affinities(pts, vels, graph, temperature=1.0, velocity_scale=1.0):
+    """Thermodynamic affinity of every fundamental cycle, in kT.
+
+    Zero for a conservative (reversible) field, non-zero with real circulation.
+    """
+    pts = np.asarray(pts, dtype=float)
+    vels = np.asarray(vels, dtype=float)
+    n = len(pts)
+    pairs = _pairs(graph)
+    if len(pairs) < 1 or n < 3:
+        return CycleAffinityReport(0, 0.0, 0.0, 0.0)
+    f = _edge_flow(pts, vels, pairs)
+    psi, is_tree = _spanning_tree_potential(pairs, f, n)
+    nt = ~is_tree
+    if not nt.any():
+        return CycleAffinityReport(0, 0.0, 0.0, 0.0)
+    a, b = pairs[nt, 0], pairs[nt, 1]
+    circ = f[nt] + psi[a] - psi[b]                # circulation around each fundamental cycle
+    beta = velocity_scale / max(temperature, 1e-9)
+    aff = np.abs(2.0 * beta * circ)               # affinity = 2 * beta * circulation
+    return CycleAffinityReport(
+        n_cycles=int(nt.sum()),
+        rms_affinity_kt=float(np.sqrt(np.mean(aff * aff))),
+        max_affinity_kt=float(aff.max()),
+        mean_abs_affinity_kt=float(aff.mean()),
+    )

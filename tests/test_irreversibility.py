@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 
 from thermodynamic_waddington.graph import build_knn
-from thermodynamic_waddington.irreversibility import cyclic_irreversibility
+from thermodynamic_waddington.irreversibility import cycle_affinities, cyclic_irreversibility
 
 J = np.array([[0.0, -1.0], [1.0, 0.0]])
 
@@ -62,6 +62,36 @@ class TestCyclicIrreversibility(unittest.TestCase):
         g = build_knn([[0.0, 0.0], [1.0, 0.0]], 1)
         rep = cyclic_irreversibility(pts, np.zeros((2, 2)), g)
         self.assertEqual(rep.cyclic_fraction, 0.0)
+
+
+def _affinity(omega, seed):
+    pts, vel = _sample(omega, seed)
+    g = build_knn(pts.tolist(), 20)
+    return cycle_affinities(pts, vel, g).rms_affinity_kt
+
+
+class TestCycleAffinities(unittest.TestCase):
+    def test_nonneg_and_has_cycles(self):
+        pts, vel = _sample(1.0, 0)
+        g = build_knn(pts.tolist(), 20)
+        rep = cycle_affinities(pts, vel, g)
+        self.assertGreater(rep.n_cycles, 0)
+        self.assertGreaterEqual(rep.rms_affinity_kt, 0.0)
+        self.assertGreaterEqual(rep.max_affinity_kt, rep.mean_abs_affinity_kt)
+
+    def test_rotational_exceeds_gradient(self):
+        self.assertGreater(_affinity(4.0, 1), 3.0 * _affinity(0.0, 1))
+
+    def test_monotonic_in_drive(self):
+        vals = [_affinity(w, 2) for w in (0.0, 0.5, 1.0, 2.0, 4.0)]
+        for i in range(len(vals) - 1):
+            self.assertLessEqual(vals[i], vals[i + 1] + 1e-6)
+
+    def test_degenerate(self):
+        g = build_knn([[0.0, 0.0], [1.0, 0.0]], 1)
+        rep = cycle_affinities(np.zeros((2, 2)), np.zeros((2, 2)), g)
+        self.assertEqual(rep.n_cycles, 0)
+        self.assertEqual(rep.rms_affinity_kt, 0.0)
 
 
 if __name__ == "__main__":

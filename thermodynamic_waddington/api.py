@@ -42,6 +42,7 @@ class AnalysisReport:
     landscape_range_kt: float | None
     path_vs_density_r2: float | None
     irreversibility_cyclic_fraction: float | None = None
+    irreversibility_cycle_affinity_kt: float | None = None
     committor_order: list[str] | None = None
     commitment_label: str | None = None
     commitment_barrier_kt: float | None = None
@@ -56,29 +57,32 @@ class AnalysisReport:
 
 
 def _cyclic_fraction(expression, velocity, dims):
-    """Calibrated irreversibility: cyclic fraction of the velocity flow in PCA space.
+    """Calibrated irreversibility in PCA space: (cyclic fraction, cycle affinity in kT).
 
-    This is the ground-truth-validated measure. Unlike the density-based Seifert
-    permutation test (`entropy_production_pvalue`), it does not false-positive on
-    conservative fields. Low means the flow is gradient-like (reversible); high
-    means it carries real circulation.
+    Both are ground-truth-validated. Unlike the density-based Seifert permutation
+    test (`entropy_production_pvalue`), neither false-positives on conservative
+    fields. The cyclic fraction is the non-gradient share of the flow (0..1); the
+    cycle affinity is the Schnakenberg thermodynamic force per cycle in kT. Low
+    means gradient-like (reversible); high means real circulation.
     """
     import numpy as np
 
     from .graph import build_knn
-    from .irreversibility import cyclic_irreversibility
+    from .irreversibility import cycle_affinities, cyclic_irreversibility
 
     X = np.asarray(expression, dtype=float)
     V = np.asarray(velocity, dtype=float)
     if len(X) < 4:
-        return None
+        return None, None
     Xc = X - X.mean(axis=0)
     _, _, vt = np.linalg.svd(Xc, full_matrices=False)
     comp = vt[: max(2, dims)].T
     pts = Xc @ comp
     vpca = V @ comp
     graph = build_knn(pts.tolist(), min(20, len(pts) - 1))
-    return cyclic_irreversibility(pts, vpca, graph).cyclic_fraction
+    frac = cyclic_irreversibility(pts, vpca, graph).cyclic_fraction
+    aff = cycle_affinities(pts, vpca, graph).rms_affinity_kt
+    return frac, aff
 
 
 def _report_from_fit(fit, config, labels, source_labels, target_labels, significance):
@@ -140,10 +144,11 @@ def analyze(
     fit = fit_landscape(expression, velocity, config=config, labels=labels)
     report, _ = _report_from_fit(fit, config, labels, source_labels, target_labels, significance)
     try:
-        report.irreversibility_cyclic_fraction = _cyclic_fraction(
-            expression, velocity, (config or FitConfig()).dimensions)
+        frac, aff = _cyclic_fraction(expression, velocity, (config or FitConfig()).dimensions)
+        report.irreversibility_cyclic_fraction = frac
+        report.irreversibility_cycle_affinity_kt = aff
     except Exception as exc:
-        report.warnings.append(f"cyclic fraction unavailable: {exc}")
+        report.warnings.append(f"irreversibility measures unavailable: {exc}")
     return report
 
 
@@ -206,10 +211,11 @@ def analyze_adata(
     fit = fit_landscape(expr.tolist(), vel.tolist(), config=config, labels=labels)
     report, committor = _report_from_fit(fit, config, labels, source, target, significance)
     try:
-        report.irreversibility_cyclic_fraction = _cyclic_fraction(
-            expr, vel, (config or FitConfig()).dimensions)
+        frac, aff = _cyclic_fraction(expr, vel, (config or FitConfig()).dimensions)
+        report.irreversibility_cyclic_fraction = frac
+        report.irreversibility_cycle_affinity_kt = aff
     except Exception as exc:
-        report.warnings.append(f"cyclic fraction unavailable: {exc}")
+        report.warnings.append(f"irreversibility measures unavailable: {exc}")
 
     try:
         adata.obs[f"{key_added}_energy"] = np.asarray(fit.energies, dtype=float)

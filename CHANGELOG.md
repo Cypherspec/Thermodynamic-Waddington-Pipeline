@@ -6,6 +6,13 @@ Keep a Changelog. Versioning is semantic.
 ## [0.3.0] - 2026-09-14
 
 ### Added
+- Schnakenberg cycle-affinity entropy production (`irreversibility.cycle_affinities`):
+  the thermodynamic affinity of every fundamental cycle of the kNN graph, in kT,
+  computed from a spanning-tree potential in O(edges). Zero for a conservative
+  field (Kolmogorov's criterion), rising with real circulation; validated on the
+  synthetic ground truth (monotonic in the known drive). Reported as
+  `analyze().irreversibility_cycle_affinity_kt`, a physical-units companion to the
+  cyclic fraction.
 - Calibrated irreversibility measure (`irreversibility.cyclic_irreversibility`): a
   discrete Hodge decomposition splits the velocity flow into a gradient
   (reversible) part and a cyclic (irreversible) part; the cyclic energy fraction
