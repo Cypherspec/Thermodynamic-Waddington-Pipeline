@@ -1,0 +1,70 @@
+{
+  "benchmark": "irreversibility_scaling",
+  "setup": "synthetic rotational field, k=20 neighbors, sparse vs dense Hodge projection",
+  "rows": [
+    {
+      "n_cells": 500,
+      "cyclic_fraction": 0.48,
+      "cycle_affinity_kt": 2.725,
+      "t_cyclic_fraction_s": 0.114,
+      "t_cycle_affinity_s": 0.035,
+      "t_dense_projection_s": 0.805,
+      "speedup_vs_dense": 7.1
+    },
+    {
+      "n_cells": 1000,
+      "cyclic_fraction": 0.4812,
+      "cycle_affinity_kt": 3.146,
+      "t_cyclic_fraction_s": 0.033,
+      "t_cycle_affinity_s": 0.094,
+      "t_dense_projection_s": 1.651,
+      "speedup_vs_dense": 50.1
+    },
+    {
+      "n_cells": 2000,
+      "cyclic_fraction": 0.4836,
+      "cycle_affinity_kt": 3.577,
+      "t_cyclic_fraction_s": 0.112,
+      "t_cycle_affinity_s": 0.189,
+      "t_dense_projection_s": 9.948,
+      "speedup_vs_dense": 88.8
+    },
+    {
+      "n_cells": 5000,
+      "cyclic_fraction": 0.4877,
+      "cycle_affinity_kt": 4.046,
+      "t_cyclic_fraction_s": 0.232,
+      "t_cycle_affinity_s": 0.561,
+      "t_dense_projection_s": null,
+      "speedup_vs_dense": null
+    },
+    {
+      "n_cells": 10000,
+      "cyclic_fraction": 0.4929,
+      "cycle_affinity_kt": 4.985,
+      "t_cyclic_fraction_s": 0.764,
+      "t_cycle_affinity_s": 0.815,
+      "t_dense_projection_s": null,
+      "speedup_vs_dense": null
+    },
+    {
+      "n_cells": 25000,
+      "cyclic_fraction": 0.4966,
+      "cycle_affinity_kt": 6.056,
+      "t_cyclic_fraction_s": 2.271,
+      "t_cycle_affinity_s": 1.983,
+      "t_dense_projection_s": null,
+      "speedup_vs_dense": null
+    },
+    {
+      "n_cells": 50000,
+      "cyclic_fraction": 0.5021,
+      "cycle_affinity_kt": 6.601,
+      "t_cyclic_fraction_s": 6.53,
+      "t_cycle_affinity_s": 5.555,
+      "t_dense_projection_s": null,
+      "speedup_vs_dense": null
+    }
+  ],
+  "note": "The sparse least-squares projection is bit-identical to the dense pseudo-inverse but O(nnz); the cyclic fraction and cycle affinity both scale to 50k cells in about a second, where the dense projection is cubic and infeasible."
+}

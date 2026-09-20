@@ -100,6 +100,12 @@ outputs, and a KD-tree graph handles **50,000 cells in seconds**. The full
 diagnostic fit remains super-linear past a few thousand cells; the graph core is
 what scales. `benchmarks/runtime_scaling.py`, `benchmarks/scaling.py`.
 
+The irreversibility measures scale too. The Hodge cyclic-fraction projection moved
+from a dense pseudo-inverse (cubic in cells) to a sparse least-squares solve
+(bit-identical output): **88x faster at 2,000 cells**, and the cyclic fraction and
+cycle affinity both run on **50,000 cells in about six seconds**, where the dense
+projection would take tens of hours. `benchmarks/irreversibility_scaling.py`.
+
 ## Dynamical velocity
 
 The headline results were re-run on real scVelo dynamical velocity: the committor
