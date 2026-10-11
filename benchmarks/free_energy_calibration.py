@@ -49,7 +49,7 @@ def run(path, cells, genes, seed, permutations):
         "entropy_production_p": ep.get("permutation_p_value"),
         "basin_depth_kt": {k: bb[k]["mean_kt"] for k in BRANCH if k in bb},
         "assumptions": rep.assumptions,
-        "note": "Low path-vs-density R^2 reflects non-equilibrium structure the density landscape misses; entropy production is significant on the same data.",
+        "note": "Low path-vs-density R^2 reflects non-equilibrium structure the density landscape misses; the legacy entropy-production test is significant on the same data, but it over-detects (false-positive rate 1.0 on equilibrium ground truth; see synthetic_ground_truth.json).",
     }
     return summary, fit, rep, fb, bb
 

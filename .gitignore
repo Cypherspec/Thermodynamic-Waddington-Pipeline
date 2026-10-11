@@ -9,3 +9,4 @@ dist/
 site/
 .ruff_cache/
 .bench_*.json
+paper/manuscript.typ

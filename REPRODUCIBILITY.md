@@ -33,6 +33,12 @@ This regenerates the JSON in `experiments/` and the figures in `figures/`.
 Individual benchmarks are listed in the README. Synthetic benchmarks need no
 data; the real-data benchmarks need the datasets below.
 
+## The paper
+
+`paper/manuscript.md` is the single source of the paper; `python paper/build.py`
+typesets it to `paper/manuscript.pdf` (needs pandoc >= 3.1.2 and
+`pip install typst`), reading the figures from `figures/`.
+
 ## Data availability
 
 All datasets are public and obtained through scVelo; none are redistributed here.

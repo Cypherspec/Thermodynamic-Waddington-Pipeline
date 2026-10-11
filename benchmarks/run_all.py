@@ -20,7 +20,7 @@ SYNTHETIC = [
     ["benchmarks/runtime_scaling.py"],
     ["benchmarks/plot_scaling.py"],
     ["benchmarks/scaling.py"],
-    ["benchmarks/generalization.py"],
+    ["benchmarks/generalization.py", "--permutations", "1000"],  # the published setting
     ["benchmarks/noise_matched_ground_truth.py"],
 ]
 REAL_DATA = [

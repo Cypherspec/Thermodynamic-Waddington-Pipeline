@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-online-teal.svg)](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)
 
-**Nischay Kommisetty · MIT Kellis Lab** · **[Full documentation](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)**
+**Nischay Kommisetty · MIT Kellis Lab** · **[Full documentation](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)** · **[Paper (PDF)](paper/manuscript.pdf)**
 
 > **How far from equilibrium is differentiation, and can you measure it correctly?**
 > Trajectory tools tell you *where* a cell is going. This one adds a calibrated

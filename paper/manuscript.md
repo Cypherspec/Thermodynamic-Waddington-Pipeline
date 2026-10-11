@@ -1,272 +1,144 @@
-# Non-equilibrium thermodynamics of single-cell fate: calibrated irreversibility and commitment from RNA velocity
-
-**Nischay Kommisetty**
-
-*Affiliation to be confirmed by the author before submission.*
-
-Correspondence: nischay.kommisetty@gmail.com
-Code: https://github.com/Cypherspec/Thermodynamic-Waddington-Pipeline
-
+---
+title: "Velocity noise masquerades as irreversibility: a calibrated thermodynamic readout of cell fate from single-cell RNA velocity"
+author: "Nischay Kommisetty"
+affiliation: "Affiliation to be confirmed by the author before submission"
+correspondence: "nischay.kommisetty@gmail.com"
+code: "https://github.com/Cypherspec/Thermodynamic-Waddington-Pipeline"
+keywords: "stochastic thermodynamics; RNA velocity; Hodge decomposition; committor; cell fate; single-cell transcriptomics"
+abstract: |
+  Differentiation is a driven, non-equilibrium process, yet single-cell trajectory methods measure its geometry (order, fate probabilities, transport) and not how far it is from equilibrium. Bringing stochastic thermodynamics to RNA velocity, we find that the measurement itself is the hard part. A natural irreversibility test, an entropy-production rate tested against velocity shuffled across cells, is significant in every run on synthetic data that is exactly at equilibrium (false-positive rate 1.00). A calibrated alternative, the cyclic fraction of a discrete Hodge decomposition of the velocity flow (AUROC 1.00 on ground truth), still mistakes measurement noise for circulation: against a noise-free reversible floor, noisy equilibrium data false-positives in every run. We introduce a noise-matched null, built from each dataset's own reversible flow and residual noise and bias-corrected by a parametric double bootstrap, which removes this failure (false-positive rate 1.00 to 0.00 at every noise level; pooled AUROC 0.76 to 0.96). Applied to four developmental lineages in two phyla (mouse pancreatic endocrinogenesis, mouse gastrulation erythropoiesis, human bone marrow erythropoiesis, and Drosophila spermatogenesis, for which we build velocity from the Fly Cell Atlas raw reads), none circulates beyond its own noise; an apparent pancreas excess and an apparent post-meiotic excess in fly spermatids are both explained as noise. A transition-path-theory committor locates commitment and gives a free-energy barrier in units of kT (1.6 kT [1.4, 1.9] in pancreas), and on fly spermatogenesis it orders the germline far better than principal-component pseudotime (Spearman 0.78 vs 0.47, 8/8 subsamples). The work provides a calibrated, open, tested framework for thermodynamic claims about cell fate, and shows why such claims require calibration against the data's own noise.
 ---
 
-## Abstract
+# Introduction
 
-Trajectory-inference tools reconstruct the order and branching of single-cell
-differentiation, but they do not quantify how far the process is from
-thermodynamic equilibrium. We present a pipeline that treats differentiation as a
-stochastic process on a kNN graph annotated with a Jarzynski path-work functional
-derived from RNA velocity, and that computes stochastic-thermodynamic observables
-directly: a calibrated irreversibility measure, Schnakenberg cycle affinities in
-kT, an effective free-energy landscape, a transition-path-theory committor as a
-commitment coordinate, and the potential of mean force along it. We first show
-that a natural irreversibility test - a Seifert entropy-production rate with a
-velocity-shuffle permutation null - is miscalibrated: on synthetic equilibrium
-ground truth it is significant in every run (false-positive rate 1.0; AUROC 0.44
-for equilibrium versus driven), because the shuffle destroys velocity-position
-coupling rather than detailed balance. We replace it with a discrete Hodge
-decomposition of the velocity flow into gradient (reversible) and cyclic
-(irreversible) parts. The cyclic fraction is calibrated on the same ground truth
-(AUROC 1.00, monotonic in a known drive, equilibrium floor 0.12). Applied to three
-developmental lineages (pancreatic endocrinogenesis, gastrulation erythropoiesis,
-bone marrow erythropoiesis), it shows they are close to reversible. Against a
-noise-free gradient floor pancreas appears to carry a small excess (0.05), but a
-noise-matched null, which we introduce because noise itself looks cyclic, shows
-that none of the lineages circulates beyond its own noise. The
-same holds in a second phylum: on Drosophila spermatogenesis (Fly Cell Atlas),
-with velocity built from the raw reads, the germline is near-reversible, and the
-committor orders it far better than principal-component pseudotime. On
-pancreas the committor locates commitment at the Pre-endocrine stage with a
-commitment barrier of 1.6 kT [1.4, 1.9]; we report that its ordering advantage
-over principal-component pseudotime does not generalize to gastrulation, and that
-CellRank orders the pancreas lineage better. We release a tested,
-one-command-reproducible package and a preregistered falsifiable test. The
-contribution is a correct thermodynamic readout of differentiation, including the
-correction of an artifact that a naive analysis would report as a discovery.
+C. H. Waddington pictured development as cells rolling downhill into fates [1]. Single-cell transcriptomics and RNA velocity [2, 3] have made that picture quantitative: scVelo estimates the direction of each cell's transcriptional change [3], CellRank turns velocity into fate probabilities [4], Palantir orders differentiation [5], and Waddington-OT links stages by optimal transport [6]. These methods answer *where* a cell is going. They leave open a distinct, physically meaningful question: *how far from equilibrium is the journey?* A process can be ordered yet close to equilibrium, or strongly driven and dissipative. The difference is entropy production, a central quantity of stochastic thermodynamics [7], and in a Markovian description it is carried entirely by probability currents that circulate around cycles of states [8].
 
-## 1. Introduction
+Measuring this from single-cell data is harder than it looks, and this paper is about why. RNA velocity supplies a per-cell drift, so it is tempting to estimate an entropy-production rate from it and test the result against velocity shuffled across cells. We show that such a test is significant on fields that are exactly at equilibrium: shuffling destroys the coupling between velocity and position, not detailed balance, so the test detects coherent flow rather than irreversibility. A calibrated replacement exists. A discrete Hodge decomposition splits the velocity flow on a cell graph into a gradient part, which is reversible, and a cyclic part, which circulates and breaks detailed balance [9]. Its cyclic fraction is calibrated on ground truth. But it, too, fails in a second, subtler way: measured velocity is noisy, noise looks cyclic, and against the usual noise-free reversible reference, noisy equilibrium data reads as circulating every time.
 
-C. H. Waddington's epigenetic landscape is a metaphor of cells rolling downhill
-into fates. Modern single-cell methods have made the landscape quantitative
-through pseudotime and RNA velocity: scVelo (Bergen et al., 2020), CellRank
-(Lange et al., 2022), Palantir (Setty et al., 2019), and Waddington-OT
-(Schiebinger et al., 2019) estimate ordering, fate probabilities, and transport
-between stages. These tools answer *where* a cell is going. They do not answer a
-distinct, physically meaningful question: *how far from equilibrium is the
-journey?* A process can be ordered yet close to equilibrium, or strongly driven
-and dissipative; the difference is the entropy production, a central quantity of
-stochastic thermodynamics (Seifert, 2012).
+We make three contributions. First, a calibrated irreversibility readout that is robust to velocity noise and sequencing depth: a *noise-matched null* built from each dataset's own reversible flow and residual noise, with its bias removed by a parametric double bootstrap. Second, a thermodynamic commitment coordinate, the transition-path-theory committor [10], with a free-energy barrier in units of kT along it. Third, an application to four developmental lineages in two phyla, including Drosophila spermatogenesis, for which we build spliced and unspliced counts from the Fly Cell Atlas [11] raw reads. We report negative and dataset-dependent results alongside positive ones; everything is open, tested, and reproducible in one command.
 
-We bring the non-equilibrium toolkit to single-cell data, and find that the
-measurement itself is the hard part. Because RNA velocity supplies a per-cell
-drift, it is tempting to estimate entropy production from it and test against a
-null that shuffles velocity across cells. We show that this test fires on
-reversible flow, so a "significant" result is not evidence of irreversibility.
-Our central claim is methodological and testable: the cyclic (non-gradient)
-fraction of the velocity flow from a discrete Hodge decomposition is a
-calibrated irreversibility measure, and under it real developmental lineages are
-close to gradient-like. We add a transition-path-theory committor (E and
-Vanden-Eijnden, 2006) as a principled commitment coordinate, and a potential of
-mean force that turns the landscape into a commitment barrier in units of kT.
+# Results
 
-## 2. Methods
+## A thermodynamic layer for trajectory analysis
 
-**Graph and path work.** Cells are embedded by PCA; a k-nearest-neighbor graph
-is built with an exact KD-tree. Each velocity-aligned directed edge is annotated
-with a path-work value combining a local density ratio, the velocity drift along
-the edge, and a diffusion noise term, scaled by an effective temperature.
+The pipeline takes expression and RNA velocity, from scVelo or a spliced-minus-unspliced proxy, and builds an exact k-nearest-neighbour graph of cells in principal-component space (Fig. 1). The velocity induces a flow along every edge, from which three readouts follow: (i) the Hodge decomposition of that flow into reversible and irreversible parts, read against a noise-matched null; (ii) the committor between chosen progenitor and terminal states, and the potential of mean force along it; and (iii) a Jarzynski path-work free-energy landscape [12] placed on a kT scale by a density-anchored Boltzmann inversion. The pipeline complements, rather than replaces, existing trajectory tools.
 
-**Free-energy landscape.** Effective free energies are propagated by multi-source
-Jarzynski exponential averaging, assigning every cell a value from the
-minimum-work path in its weakly connected component. Attractor basins and barrier
-heights follow.
+![**Overview.** Expression and RNA velocity define a flow on an exact kNN cell graph. A discrete Hodge decomposition splits the flow into gradient (reversible) and cyclic (irreversible) parts, read against a noise-matched null; transition-path theory gives a committor and a commitment barrier in kT; Jarzynski path work gives a free-energy landscape on a kT scale.](../figures/tw_pipeline_overview.png){width=100%}
 
-**Calibrated irreversibility.** The velocity field induces an edge flow
-f_ij = (v_i + v_j)/2 . (x_j - x_i) on the undirected kNN graph. Any edge flow
-splits uniquely into a gradient component B psi, the flow of a node potential,
-which is reversible, and an orthogonal cyclic remainder, which circulates and
-breaks detailed balance (discrete Hodge decomposition). The potential is the
-least-squares solution of B psi = f, solved sparsely in O(edges). The
-irreversibility is the cyclic energy fraction ||f - B psi||^2 / ||f||^2, with an
-edge-bootstrap confidence interval. Because a finite graph gives a small non-zero
-fraction even for a pure gradient field, real data are compared with a matched
-gradient floor on the same cells. A per-cell map assigns each cell the cyclic
-flow energy on its incident edges.
+## A common style of irreversibility test is miscalibrated
 
-**Cycle affinities.** Following Schnakenberg (1976), the thermodynamic affinity of
-each fundamental cycle is computed in kT from a spanning-tree potential; it is
-zero for a conservative field (Kolmogorov's criterion) and grows with
-circulation.
+We first built ground truth with known entropy production: a linear diffusion $dx = -Bx\,dt + \sqrt{2D}\,dW$ with $B = aI + \omega J$, which is at equilibrium for $\omega = 0$ and produces entropy growing as $\omega^2$ otherwise. A Seifert pair-flux entropy-production rate tested against velocity permuted across cells was significant at $\alpha = 0.05$ in every equilibrium run (false-positive rate 1.00) and separated equilibrium from driven fields worse than chance (AUROC 0.44; Fig. 2). A direction-only velocity-coherence score also failed (AUROC 0.53), because both kinds of field are coherent. On real pancreas data the same test separates true from shuffled velocity with AUROC 1.00, which is exactly the problem: any statistic sensitive to velocity-position coupling does so, whether or not detailed balance is broken.
 
-**Legacy entropy production.** For comparison we retain Seifert's discrete-state
-pair-flux entropy-production rate with a label-permutation null that shuffles
-velocity across cells.
+The Hodge cyclic fraction behaves as a calibrated measure should. It is low and flat at equilibrium (0.12, the finite-graph floor) and rises monotonically with the drive (0.15, 0.25, 0.47, 0.72, 0.85 for $\omega$ = 0.25 to 4), separating equilibrium from driven fields with AUROC 1.00 (Fig. 2). Schnakenberg cycle affinities in kT [8], computed from a spanning-tree potential, are likewise zero for conservative fields and monotonic in the drive.
 
-**Ground-truth validation.** A linear diffusion dx = -Bx dt + sqrt(2D) dW with
-B = aI + wJ has zero entropy production at w = 0 (equilibrium) and entropy
-production growing as w^2 otherwise. We sample 400 cells per field over 15 seeds
-and drives w in {0, 0.25, 0.5, 1, 2, 4}, and score each method on separating
-equilibrium from driven fields.
+![**A common irreversibility test is miscalibrated; the Hodge cyclic fraction is not.** Ground truth: linear diffusion with rotational drive $\omega$ (true entropy production zero at $\omega = 0$), 400 cells, 15 seeds. Left: the cyclic fraction rises monotonically with the drive from a flat equilibrium floor, while velocity coherence cannot tell the fields apart. Right: AUROC for separating equilibrium from driven fields; the velocity-shuffle entropy-production test scores 0.44 and is significant in every equilibrium run.](../figures/synthetic_ground_truth.png){width=100%}
 
-**Commitment coordinate.** Given progenitor (source) and terminal (target) cell
-sets, the forward committor q(x) - the probability of reaching the terminal fate
-before returning to the progenitor - is obtained by fixed-point iteration of the
-harmonic equation on the directed graph, weighted by the landscape. The
-potential of mean force F(q) = -kT ln P(q), estimated by kernel density along q,
-gives the commitment barrier; its maximum is the transition state. Mean
-first-passage times (Kemeny and Snell, 1960) give commitment timescales.
+## Velocity noise masquerades as circulation
 
-**Physical calibration.** The landscape is placed on a kT scale by a
-density-anchored Boltzmann inversion, F = -kT ln P over a kernel density of the
-embedding, the standard Waddington pseudopotential. We report the agreement
-(R^2) between the path-work landscape and this equilibrium reference as a
-diagnostic of non-equilibrium departure.
+The cyclic fraction is read against a reversible reference on the same cells, because a finite graph gives a small non-zero fraction even for a perfect gradient field. The usual reference is a clean radial gradient field. Real velocity is noisy, and noise, being uncorrelated between neighbours, is mostly cyclic. Adding measurement noise to the ground truth, uniform or uneven (half the cells ten times noisier than the other half, as for shallow-sequenced cells), the excess over the clean floor false-positived in every equilibrium run at every non-zero noise level (Fig. 3).
 
-**Implementation.** The numeric core is vectorized (numpy) with an exact KD-tree
-graph; results are bit-identical to a pure-Python reference. Graph construction
-and both irreversibility measures run on 50,000 cells in seconds. The package is
-typed, lint-clean, tested (230 unit tests), and reproducible in one command.
+We therefore build the null from the data itself. We fit a node potential $U$ to the work along every edge by least squares, and take its local gradient as a reversible per-cell velocity; we take each cell's residual noise as its velocity minus its neighbourhood mean; and each null field is the reversible velocity plus residuals re-drawn from neighbouring cells with random signs. Because each null field passes through the identical edge-flow and Hodge steps as the data, it carries both the graph's discretisation floor and the dataset's own noise. Running the identical procedure on reference datasets that are reversible by construction estimates the method's own small bias, which is subtracted (a parametric double bootstrap; Methods).
 
-## 3. Results
+Across 200 ground-truth runs (5 drives, 4 noise settings, 10 seeds), the noise-matched excess had a false-positive rate of 0.00 at equilibrium at every noise level, against 1.00 for the clean-floor excess at every noise level with noise; pooled over noise levels, AUROC for equilibrium versus driven rose from 0.76 to 0.96 (Fig. 3). A noisy equilibrium field outranked a clean weak drive in 100% of comparisons for the clean-floor excess and 0% for the noise-matched excess. Per cell, under uneven noise at equilibrium, the clean-floor excess in the noisy half was +0.46 and the noise-matched excess $-0.001$. Power falls with noise, as it should: under heavy uneven noise a weak drive is no longer detectable, while strong drives remain so.
 
-**The naive entropy-production test is miscalibrated.** On the synthetic ground
-truth, the Seifert permutation test is significant at alpha = 0.05 in every
-equilibrium run (false-positive rate 1.0) and separates equilibrium from driven
-fields no better than chance (AUROC 0.44). A direction-only velocity-coherence
-score also fails (AUROC 0.53), since both kinds of field are coherent. On real
-pancreas data the same test separates true velocity from shuffled velocity with
-AUROC 1.00 - but so would any statistic sensitive to velocity-position coupling,
-which the shuffle destroys whether or not detailed balance is broken.
+![**Velocity noise masquerades as circulation; a noise-matched null removes it.** Ground truth with measurement noise: none, uniform, uneven (half the cells 10x noisier), and uneven-high; 5 drives x 4 noise settings x 10 seeds. Left: excess over a clean radial floor rises with noise even at equilibrium ($\omega = 0$). Middle: the noise-matched excess is about zero at equilibrium at every noise level and rises with the drive, with power decreasing as noise grows. Right: pooled AUROC, equilibrium versus driven.](../figures/noise_matched_ground_truth.png){width=100%}
 
-**The cyclic fraction is calibrated.** On the same ground truth the cyclic
-fraction is low and flat at equilibrium (0.12) and rises monotonically with the
-drive (0.15, 0.25, 0.47, 0.72, 0.85 for w = 0.25 to 4), separating equilibrium
-from driven fields with AUROC 1.00. Cycle affinities in kT are likewise monotonic
-in the drive.
+## Four lineages in two phyla are reversible within their own noise
 
-**Real lineages are close to reversible.** At 1,500 cells over five subsamples,
-the cyclic fraction of real proxy velocity against a matched gradient floor is
-0.151 vs 0.099 on pancreatic endocrinogenesis (Bastidas-Ponce et al., 2019;
-excess +0.051), 0.080 vs 0.085 on gastrulation erythropoiesis (Pijuan-Sala et
-al., 2019; -0.005), and 0.108 vs 0.097 on bone marrow erythropoiesis (Setty et al., 2019; +0.012),
-all far below a shuffled ceiling of 0.29-0.35. Against the noise-matched null
-introduced below, the excess is -0.011, -0.005 and -0.010 (|z| <= 1): the
-pancreas excess over the clean floor is noise. On 800 pancreas cells, scVelo
-dynamical velocity gives the same reading as the proxy (excess -0.001 vs -0.003).
-A linear lineage has an arrow of time, carried by the committor, but little
-circulation. We note a limit on this null: injecting a rotation into the real
-near-1D pancreas geometry barely moves the fraction, because a 1D structure has
-few cycles to carry circulation, so detection power rests on the synthetic
-benchmark rather than on these geometries.
+We applied both readouts to three vertebrate lineages, using the same setup throughout (1,500 cells, 100 genes, proxy velocity, five subsamples): mouse pancreatic endocrinogenesis [13], mouse gastrulation erythropoiesis [14] and human bone marrow erythropoiesis [5]; and to Drosophila spermatogenesis (below). Against the clean floor, pancreas showed a small excess (+0.051), and an earlier version of this work reported it as modest real circulation. Against the noise-matched null, it is $-0.011$ (z = $-1.0$). No lineage circulates beyond its own noise (Table 1, Fig. 4). On pancreas, scVelo dynamical velocity gives the same reading as the proxy.
 
-**A commitment coordinate and barrier.** On pancreas, the committor recovers the
-lineage order unsupervised (Ductal to Ngn3 to Pre-endocrine to Beta), places the
-commitment transition (q crosses 0.5) at the Pre-endocrine stage, and yields a
-potential-of-mean-force barrier of 1.6 kT [1.4, 1.9] across eight subsamples, with
-the transition state at q ~ 0.43. The density-anchored landscape is about 5 kT
-deep, and its low agreement with the path-work landscape (R^2 ~ 0.14) quantifies
-the flow structure a density landscape cannot see.
+| lineage | cyclic fraction | clean floor | excess over clean floor | noise-matched excess (z) |
+|---|---|---|---|---|
+| mouse pancreatic endocrinogenesis | 0.151 | 0.099 | +0.051 | $-0.011$ ($-1.0$) |
+| mouse gastrulation erythropoiesis | 0.080 | 0.085 | $-0.005$ | $-0.005$ ($-0.5$) |
+| human bone marrow erythropoiesis | 0.108 | 0.097 | +0.012 | $-0.010$ ($-0.8$) |
+| Drosophila spermatogenesis (germline) | 0.097 | 0.086 | +0.011 | $-0.007$ ($-0.6$) |
 
-**An honest limit on ordering.** On pancreas the committor orders cells better
-than principal-component pseudotime (Spearman 0.94 +/- 0.02 vs 0.89, winning
-10/10 subsamples, paired p = 0.002). This advantage does not generalize: on the
-gastrulation erythroid lineage, principal-component pseudotime wins (0.94 vs
-0.81). In a like-for-like comparison at 2,000 pancreas cells, CellRank's
-two-boundary absorption probability orders best (0.99), ahead of the committor
-(0.95) and PC1 (0.94). We therefore do not claim the committor as a better
-ordering method; its value is as a commitment coordinate tied to the
-thermodynamics.
+: **Table 1.** Calibrated irreversibility of four developmental lineages. Cyclic fraction of the velocity flow, the clean reversible floor on the same cells, and the noise-matched excess with its z-score. Shuffled-velocity ceilings are 0.29 to 0.52.
 
-**A noise-matched null.** The matched gradient floor is noise-free, but
-measured velocity is not, and noise looks cyclic. Adding measurement noise to
-the ground truth (uniform, or uneven with half the cells 10x noisier), the
-clean-floor excess false-positives in every equilibrium run. We therefore build
-the null from the data: a reversible velocity, the local gradient of the
-potential that best fits the work along each edge, plus the observed residuals
-(velocity minus its neighbourhood mean) re-drawn among neighbours with random
-signs; the method's own bias is estimated on reference datasets that are
-reversible by construction and subtracted. Across 200 ground-truth runs the
-false-positive rate at equilibrium falls from 1.00 to 0.00 at every noise level,
-and pooled equilibrium-vs-driven AUROC rises from 0.76 to 0.96, with power
-decreasing with noise as expected. Applied to all four real lineages, it finds no
-circulation beyond noise in any of them.
+The reading is a property of the measurement as well as of the biology, and we state its limit. These lineages are nearly one-dimensional, and a one-dimensional structure has few cycles to carry circulation: injecting a known rotation into the real pancreas geometry barely moves the noise-matched excess, even at the strongest drive (+0.010, z = 1.0). The result is therefore "no circulation detected beyond noise", not proof of zero circulation. It is consistent with differentiation as descent on a landscape, with an arrow of time carried by the committor rather than by circulating currents.
 
-**A second phylum: Drosophila spermatogenesis.** The Fly Cell Atlas testis (Li
-et al., 2022) provides no spliced/unspliced layers, so we built them from the
-raw reads: 61.8M reads (about 10% of library FCA59) streamed from the unaligned
-10x BAMs and quantified with kallisto | bustools (88.6% pseudoaligned), matched to
-the atlas annotation by barcode (7,335 germline cells). The velocity passes a
-biological check: the unspliced fraction falls from 0.19 in spermatocytes to 0.04
-in spermatids, the known post-meiotic transcription shutdown. The cyclic fraction
-is 0.097 against a 0.086 floor (excess +0.011). The committor orders the germline
-stages with Spearman 0.78 +/- 0.05 against 0.47 for PC1, winning 8/8 subsamples,
-and places commitment within the spermatocyte program in 7/8; the barrier is 2.1
-kT [1.6, 2.6]. Genes that switch across q = 0.5 form a reproducible ranking (top-50
-overlap 0.36 between independent fits against 0.011 by chance), but a regulator
-list fixed in advance is not enriched in it. The analysis also exposed an
-artifact in a per-cell map: cyclic flow *energy* tracks sequencing depth (Spearman
-+0.84 across stages) and produced a spurious late-spermatocyte peak. A
-magnitude-invariant per-cell cyclic fraction removes it. Against the clean
-floor, post-meiotic spermatids still showed an excess (+0.12) that ran opposite
-to depth; against the noise-matched null it is -0.010, and the germline as a
-whole is -0.007 (z = -0.6): reversible within its own noise.
+![**Four developmental lineages in two phyla are reversible within their own noise.** Excess cyclic fraction over the clean reversible floor (grey) and over the noise-matched null (teal, mean and s.d. over five subsamples). The apparent pancreas excess disappears against the noise-matched null.](../figures/irreversibility_four_tissues.png){width=82%}
 
-**Prior negative result.** The legacy entropy-production signal did not replicate
-on dentate gyrus neurogenesis across seven independent tests, including a
-preregistered confirmatory test; this is retained in the research note.
+## A commitment coordinate and a barrier in kT
 
-## 4. Discussion
+Given progenitor and terminal states, the forward committor $q(x)$ is the probability that a cell at $x$ reaches the terminal fate before returning to the progenitor: the principled reaction coordinate of transition-path theory [10]. On pancreas (Ductal to Beta), it recovers the lineage order without supervision (Ductal, Ngn3, Pre-endocrine, Beta) and crosses 0.5 at the Pre-endocrine stage. The potential of mean force $F(q) = -k_BT \ln P(q)$ along it gives a commitment barrier of 1.6 kT [1.4, 1.9] across eight subsamples, with the transition state at $q \approx 0.43$ (Fig. 5). A density-anchored Boltzmann inversion places the landscape about 5 kT deep; its low agreement with the path-work landscape ($R^2 \approx 0.14$) quantifies flow structure that a density landscape cannot see.
 
-The pipeline occupies a niche the trajectory tools leave open: it measures the
-non-equilibrium character of differentiation rather than its geometry. Its
-strongest result is a calibration result. A permutation test that shuffles
-velocity looks like a test of irreversibility and reports striking significance
-on real tissues, but it is equally significant on reversible ground truth. The
-Hodge cyclic fraction is calibrated, and it reads real developmental lineages as
-close to gradient-like. That reading is consistent with the picture of
-differentiation as descent on a landscape, and it is also the reading a
-miscalibrated test would have hidden.
+Ordering is dataset-dependent and we report it as such. On pancreas the committor ranks developmental stage better than the first principal component (Spearman 0.94 $\pm$ 0.02 vs 0.89; 10/10 subsamples; paired Wilcoxon $p = 0.002$), but on gastrulation the first principal component wins (0.94 vs 0.81), and in a like-for-like comparison at 2,000 pancreas cells CellRank's two-boundary absorption probability orders best (0.99, against 0.95 for the committor and 0.94 for PC1). The committor's value is as a commitment coordinate tied to the thermodynamics, not as a better pseudotime.
 
-Limitations are explicit. The free-energy magnitude is a density-based
-pseudopotential, not a molecular free energy. The cyclic fraction is a property
-of the velocity field on a finite graph, so it must be read against a matched
-floor, and its power on near-1D real geometries is low. Most results use an
-unspliced-minus-spliced velocity proxy, with one dynamical-velocity check;
-broader velocity models remain to be tested. Validation spans three vertebrate
-lineages, Drosophila spermatogenesis (one library at reduced depth), synthetic
-ground truth, and one documented negative. The committor
-ordering advantage is dataset-dependent. These are stated because a method that
-reports where it fails is more useful than one that does not.
+![**A commitment barrier in kT.** Potential of mean force along the committor from Ductal progenitors ($q = 0$) to Beta cells ($q = 1$) in pancreatic endocrinogenesis; eight subsamples (thin) and mean (thick). The barrier is 1.6 kT [1.4, 1.9], with the transition state at $q \approx 0.43$.](../figures/commitment_barrier.png){width=88%}
 
-## 5. Reproducibility
+## Drosophila spermatogenesis from raw reads
 
-All results reproduce from the released code with `python benchmarks/run_all.py`;
-individual benchmarks and figures are listed in the README. The package installs
-with `pip install -e .`, passes 230 unit tests, and pins its numerical core to
-bit-identical outputs across versions. Public datasets are obtained through
-scVelo. An end-to-end tutorial runs on synthetic data with no download.
+To test the framework outside vertebrates, we turned to the Drosophila male germline in the Fly Cell Atlas [11], which runs from spermatogonia through the spermatocyte programme to elongating spermatids. The atlas publishes no spliced/unspliced layers, so we built them: we streamed an evenly spaced sample of 61.8 million reads (about 10% of library FCA59) out of the unaligned 10x BAMs at ArrayExpress E-MTAB-10519 over HTTP range requests, quantified nascent and mature RNA with kallisto | bustools [15] against Ensembl BDGP6.46 (88.6% of reads pseudoaligned), and matched all 15,292 atlas cells of the library by barcode. Genes carry FlyBase identifiers. The analysis uses 7,335 germline cells with the atlas annotation as stage labels.
 
-## 6. Preregistration
+The velocity passes a biological check (Fig. 6D): the unspliced fraction falls from 0.19 in spermatocytes to 0.04 in spermatids, the known shutdown of transcription after meiosis in Drosophila, recovered from reads we quantified. The committor orders the sixteen germline stages with Spearman 0.78 $\pm$ 0.05, against 0.47 for the first principal component, winning in 8/8 subsamples (Fig. 6A), and places commitment within the spermatocyte programme in 7/8 subsamples; the barrier is 2.1 kT [1.6, 2.6] (Fig. 6B). The flow is reversible within its noise (Table 1, Fig. 6C).
 
-We preregister a falsifiable test of the commitment prediction
-(`PREREGISTRATION_commitment.md`): a perturbation applied at the transition
-state (Pre-endocrine, q ~ 0.5) should change terminal-fate outcome more than the
-same perturbation at the progenitor state, with a pre-specified effect size,
-paired test, and stated falsification criterion.
+Two per-cell artifacts surfaced and were removed. The per-cell cyclic flow *energy* first showed a seven-fold "peak" of circulation in late spermatocytes; because it is an energy it grows with velocity magnitude, and across stages it tracked sequencing depth (Spearman +0.84). A magnitude-invariant local cyclic fraction removes it. Against the clean floor, post-meiotic spermatids then showed an excess of +0.12 that ran opposite to depth ($-0.77$) and to the unspliced fraction ($-0.75$), appearing exactly where the velocity signal vanishes; against the noise-matched null it is $-0.010$, and the per-stage noise-matched excess no longer tracks depth (+0.06).
 
-## References
+Genes whose expression switches as cells cross $q = 0.5$ form a reproducible ranking: top-50 lists from independent committor fits overlap by 0.36, against 0.011 expected by chance (Fig. 6E, F; FlyBase-linked). A list of canonical spermatocyte-programme regulators fixed before the analysis (tMAC and tTAF components, bam, bgcn, and spermatid genes) is not enriched in it (0 of 14 in the top 5%), consistent with those regulators acting where the spermatocyte programme begins rather than where it ends; we report the ranking as candidates for perturbation, not as causal evidence.
 
-- Waddington, C. H. (1957). *The Strategy of the Genes.*
-- Jarzynski, C. (1997). Nonequilibrium equality for free energy differences. *Phys. Rev. Lett.*
-- Schnakenberg, J. (1976). Network theory of microscopic and macroscopic behavior of master equation systems. *Rev. Mod. Phys.*
-- Kemeny, J. G., Snell, J. L. (1960). *Finite Markov Chains.*
-- Seifert, U. (2012). Stochastic thermodynamics, fluctuation theorems and molecular machines. *Rep. Prog. Phys.*
-- E, W., Vanden-Eijnden, E. (2006). Towards a theory of transition paths. *J. Stat. Phys.*
-- La Manno, G. et al. (2018). RNA velocity of single cells. *Nature.*
-- Bergen, V. et al. (2020). Generalizing RNA velocity to transient cell states (scVelo). *Nat. Biotechnol.*
-- Lange, M. et al. (2022). CellRank for directed single-cell fate mapping. *Nat. Methods.*
-- Setty, M. et al. (2019). Characterization of cell fate probabilities (Palantir). *Nat. Biotechnol.*
-- Schiebinger, G. et al. (2019). Optimal-transport analysis of developmental trajectories (Waddington-OT). *Cell.*
-- Bastidas-Ponce, A. et al. (2019). Comprehensive single-cell mRNA profiling of pancreatic endocrinogenesis. *Development.*
-- Pijuan-Sala, B. et al. (2019). A single-cell molecular map of mouse gastrulation. *Nature.*
-- Li, H. et al. (2022). Fly Cell Atlas: a single-nucleus transcriptomic atlas of the adult fruit fly. *Science.*
-- Bray, N. L. et al. (2016). Near-optimal probabilistic RNA-seq quantification (kallisto). *Nat. Biotechnol.*
+![**Drosophila spermatogenesis (Fly Cell Atlas), velocity built from raw reads.** (A) Committor on the atlas UMAP, from spermatogonia ($q = 0$) to late elongating spermatids ($q = 1$). (B) Potential of mean force along the committor, eight subsamples. (C) Cyclic fraction against the clean floor and shuffled ceiling, beside the three vertebrate lineages. (D) Velocity check: the unspliced fraction collapses after meiosis; per-stage local excess against the clean floor (grey) and against the noise-matched null (teal). (E, F) Genes that switch on and off across $q = 0.5$ with the same sign in all five independent fits; candidates for follow-up, not causal.](../figures/fly_testis.png){width=100%}
+
+# Discussion
+
+The central result of this work is a calibration result, and it generalises beyond the method presented here. Two measurements that look like tests of irreversibility, a velocity-shuffle entropy-production test and a cyclic fraction read against a noise-free reversible reference, are both significant on data that is at equilibrium: the first because it detects coherent flow, the second because it detects noise. Each would have reported a discovery. Read against a null that carries the data's own noise, four developmental lineages in two phyla show no circulation beyond that noise. That reading agrees with the classical picture of differentiation as descent on a landscape, and it is the reading that the uncalibrated tests would have hidden. Thermodynamic claims about cell fate, in either direction, should be calibrated against the data's own noise.
+
+The framework also gives fate commitment a physical scale. The committor locates where commitment happens and the potential of mean force along it gives a barrier in kT, comparable across systems; in Drosophila spermatogenesis the committor recovers the stage order far better than a principal-component axis and locates commitment within the spermatocyte programme, and the switching genes are a ranked, FlyBase-linked list for perturbation. Drosophila is a particularly good system to test that prediction, because stage-specific drivers and RNAi lines make the preregistered experiment (perturbing at the transition state versus the progenitor) practical.
+
+The limits are stated plainly. The free energy is a density-anchored pseudopotential in units of kT, not a molecular free energy. Power to detect circulation on nearly one-dimensional lineages is low, so a null result means "not detected", not "absent". Most results use a spliced-minus-unspliced velocity proxy, with dynamical-velocity checks on pancreas; the Drosophila analysis uses one library at about 10% of its reads; the committor's ordering advantage is dataset-dependent and CellRank orders the pancreas lineage better; and the legacy entropy-production signal did not replicate on dentate gyrus neurogenesis across seven tests, a negative result we retain. These limits are part of the result: a method that reports where it fails is more useful than one that does not.
+
+# Methods
+
+**Graph and edge flow.** Expression is projected onto its leading principal components (six by default) and velocity onto the same axes. An exact k-nearest-neighbour graph ($k = 20$) is built with a KD-tree. For each undirected edge $(i, j)$ with unit direction $e_{ij}$, the edge flow is $f_{ij} = \tfrac{1}{2}(v_i + v_j) \cdot e_{ij}$.
+
+**Hodge cyclic fraction.** With $B$ the oriented edge-node incidence matrix, any edge flow splits uniquely as $f = B\phi + c$, where $B\phi$ is the gradient (reversible) part and $c$, orthogonal to the range of $B$, is the cyclic part. $\phi$ is the sparse least-squares solution of $B\phi = f$ (LSQR, $O(\text{edges})$ per iteration). The irreversibility is $\lVert c \rVert^2 / \lVert f \rVert^2 \in [0, 1]$, scale-invariant and free of any rate model. The per-cell cyclic fraction is, over the edges incident to a cell, cyclic energy divided by cyclic plus gradient energy; it is invariant to velocity magnitude.
+
+**Noise-matched null.** A node potential $U$ is fitted by least squares to the work along each edge, $U_j - U_i \approx \tfrac{1}{2}(v_i + v_j)\cdot(x_j - x_i)$, and the reversible velocity of cell $i$ is the least-squares gradient of $U$ over its neighbours. Residual noise is $r_i = v_i - \bar v_{N(i)}$, with $\bar v_{N(i)}$ the mean over the cell and its neighbours. A null field is $\tilde v_i = v^{\mathrm{rev}}_i + s_i\, r_{\pi(i)}$, with $\pi(i)$ drawn uniformly from the cell and its neighbours and $s_i = \pm 1$ at random. The null mean is taken over draws ($10$ by default). To correct the procedure's own bias, $R$ reference datasets ($5$ by default) are drawn the same way, which makes them reversible by construction; the identical procedure is applied to each, and the mean of (reference cyclic fraction minus its null mean) is subtracted. The excess is the observed fraction minus the null mean minus the bias, and $z$ divides it by the combined null and reference spread plus a systematic term of 0.01, the largest residual bias seen on ground truth. Per-cell excesses are computed the same way with the per-cell cyclic fraction.
+
+**Cycle affinities.** Following Schnakenberg [8], the affinity of each fundamental cycle of the graph is computed in kT from a spanning-tree potential; it is zero for a conservative field (Kolmogorov's criterion) and grows with circulation.
+
+**Legacy entropy production.** For comparison, Seifert's discrete-state pair-flux entropy-production rate is computed with bootstrap confidence intervals and a permutation null that shuffles velocity across cells [7].
+
+**Ground truth.** Cells are sampled from the stationary distribution of $dx = -Bx\,dt + \sqrt{2D}\,dW$, $B = aI + \omega J$, with velocity $-Bx$ (400 cells). Measurement noise is Gaussian with standard deviation 0 ("none"), 0.5 ("uniform"), or 0.5 scaled by 3 and 0.3 in the two half-planes ("uneven"; 1.0 for "uneven-high"). Positives are $\omega > 0$ and negatives $\omega = 0$, pooled over noise levels; detection is $z > 2$.
+
+**Committor and barrier.** With source and target cell sets, the committor solves the harmonic equation on the directed, landscape-weighted graph with $q = 0$ on the source and $q = 1$ on the target, by fixed-point iteration. The potential of mean force is $F(q) = -k_BT \ln P(q)$ with $P$ a kernel density along $q$; its maximum is the transition state and its height the barrier. Mean first-passage times follow Kemeny and Snell [16].
+
+**Free-energy landscape and calibration.** Each velocity-aligned edge carries a path-work value combining a density ratio, the velocity drift along the edge and a diffusion term; effective free energies are propagated by multi-source Jarzynski exponential averaging [12]. The kT scale comes from a Boltzmann inversion $F = -k_BT \ln P$ of a kernel density of the embedding, and the $R^2$ between the two landscapes is reported.
+
+**Datasets and velocity.** Pancreatic endocrinogenesis (E15.5) [13], gastrulation erythropoiesis [14] and human bone marrow [5] were obtained as scVelo datasets with spliced and unspliced layers. Unless stated, velocity is the spliced-minus-unspliced proxy on the 100 genes with the highest spliced variance; dynamical velocity is from scVelo [3]. For Drosophila, reads from library FCA59 of the Fly Cell Atlas [11] (ArrayExpress E-MTAB-10519; four sequencing runs) were streamed from evenly spaced byte ranges of the unaligned BAMs, converted to 10x v3 FASTQ, and quantified with kallisto | bustools in nascent/ambiguous/mature mode against Ensembl BDGP6.46; spliced counts are mature plus ambiguous and unspliced counts nascent. Cells were matched to the atlas annotation (10x, relaxed) by barcode.
+
+**Commitment-driver genes.** Over five independent committor fits on random subsamples of 3,000 germline cells, each gene's switch score is the change in mean log-normalised expression between cells with $q \in [0.3, 0.5)$ and $q \in [0.5, 0.7]$, in units of its standard deviation. Genes are reported if the sign agrees in all fits; reproducibility is the mean overlap of top-50 lists between fits. The regulator list was fixed before the analysis was run.
+
+**Statistics.** Results are means over seeded random subsamples, with standard deviations or 95% intervals as stated. Ordering is the absolute Spearman correlation with annotated stage; paired comparisons use the Wilcoxon signed-rank test.
+
+# Data availability
+
+All datasets are public: the scVelo pancreas, gastrulation and bone marrow datasets, and the Fly Cell Atlas testis (annotation from flycellatlas.org; raw reads at ArrayExpress E-MTAB-10519). The scripts that fetch and prepare them are in the repository.
+
+# Code availability
+
+The Thermodynamic Waddington Pipeline is open source under the MIT license at https://github.com/Cypherspec/Thermodynamic-Waddington-Pipeline. It installs with `pip`, is typed and lint-checked, has 230 unit tests run in continuous integration on Python 3.10 to 3.12, and reproduces every benchmark and figure with `python benchmarks/run_all.py`.
+
+# Preregistration
+
+A falsifiable test of the commitment prediction is preregistered in the repository (`PREREGISTRATION_commitment.md`): a perturbation applied at the transition state ($q \approx 0.5$) should change terminal-fate outcome more than the same perturbation at the progenitor state, with a pre-specified effect size, paired test and falsification criterion.
+
+# References
+
+1. Waddington, C. H. *The Strategy of the Genes* (Allen & Unwin, 1957).
+2. La Manno, G. et al. RNA velocity of single cells. *Nature* **560**, 494-498 (2018).
+3. Bergen, V. et al. Generalizing RNA velocity to transient cell states through dynamical modeling. *Nat. Biotechnol.* **38**, 1408-1414 (2020).
+4. Lange, M. et al. CellRank for directed single-cell fate mapping. *Nat. Methods* **19**, 159-170 (2022).
+5. Setty, M. et al. Characterization of cell fate probabilities in single-cell data with Palantir. *Nat. Biotechnol.* **37**, 451-460 (2019).
+6. Schiebinger, G. et al. Optimal-transport analysis of single-cell gene expression identifies developmental trajectories in reprogramming. *Cell* **176**, 928-943 (2019).
+7. Seifert, U. Stochastic thermodynamics, fluctuation theorems and molecular machines. *Rep. Prog. Phys.* **75**, 126001 (2012).
+8. Schnakenberg, J. Network theory of microscopic and macroscopic behavior of master equation systems. *Rev. Mod. Phys.* **48**, 571-585 (1976).
+9. Lim, L.-H. Hodge Laplacians on graphs. *SIAM Rev.* **62**, 685-715 (2020).
+10. E, W. & Vanden-Eijnden, E. Towards a theory of transition paths. *J. Stat. Phys.* **123**, 503-523 (2006).
+11. Li, H. et al. Fly Cell Atlas: a single-nucleus transcriptomic atlas of the adult fruit fly. *Science* **375**, eabk2432 (2022).
+12. Jarzynski, C. Nonequilibrium equality for free energy differences. *Phys. Rev. Lett.* **78**, 2690-2693 (1997).
+13. Bastidas-Ponce, A. et al. Comprehensive single cell mRNA profiling reveals a detailed roadmap for pancreatic endocrinogenesis. *Development* **146**, dev173849 (2019).
+14. Pijuan-Sala, B. et al. A single-cell molecular map of mouse gastrulation and early organogenesis. *Nature* **566**, 490-495 (2019).
+15. Bray, N. L., Pimentel, H., Melsted, P. & Pachter, L. Near-optimal probabilistic RNA-seq quantification. *Nat. Biotechnol.* **34**, 525-527 (2016).
+16. Kemeny, J. G. & Snell, J. L. *Finite Markov Chains* (Van Nostrand, 1960).

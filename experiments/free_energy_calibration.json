@@ -14,5 +14,5 @@
     "Beta": 2.065225608564691
   },
   "assumptions": "Density-anchored pseudopotential (F = -ln P) as an equilibrium reference; kT is the thermal-energy convention, valid up to steady-state occupancy. Not a molecular free-energy measurement.",
-  "note": "Low path-vs-density R^2 reflects non-equilibrium structure the density landscape misses; entropy production is significant on the same data."
+  "note": "Low path-vs-density R^2 reflects non-equilibrium structure the density landscape misses; the legacy entropy-production test is significant on the same data, but it over-detects (false-positive rate 1.0 on equilibrium ground truth; see synthetic_ground_truth.json)."
 }

@@ -5,6 +5,15 @@ Keep a Changelog. Versioning is semantic.
 
 ## [1.3.0] - 2026-10-11
 
+### Added
+- The paper: `paper/manuscript.md` rewritten as a full article (six figures,
+  Table 1, Methods with equations, data/code availability, numbered
+  references) and typeset to `paper/manuscript.pdf` by `paper/build.py`
+  (pandoc + Typst, `paper/template.typ`).
+- `benchmarks/run_all.py` runs the cross-tissue benchmark with the published
+  1,000 permutations (it used 400, so the published p-values did not reproduce
+  through it).
+
 ### Changed
 - The noise-matched readout now runs on all four lineages
   (`benchmarks/irreversibility_real.py`, new figure
