@@ -2,8 +2,8 @@
 
 [![CI](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/tests-218%20passing-brightgreen.svg)](tests)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](CHANGELOG.md)
+[![Tests](https://img.shields.io/badge/tests-225%20passing-brightgreen.svg)](tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-online-teal.svg)](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)
 
@@ -32,11 +32,13 @@ measure that is calibrated on ground truth.
 | **Commitment barrier** | **1.6 kT** [1.4, 1.9] | potential of mean force along the committor |
 | **Landscape on a physical scale** | **~5 kT** deep | density-anchored kT calibration |
 | **Fast, scalable core** | **2–6× faster**, 50k cells in seconds | vectorized, bit-identical outputs |
-| **Engineering** | **218 tests**, lint-clean CI, typed, MIT | one-command reproducible |
+| **Second phylum: Drosophila** | committor beats PC1 **8/8** (0.78 vs 0.47) | Fly Cell Atlas testis, velocity built from raw reads |
+| **Engineering** | **225 tests**, lint-clean CI, typed, MIT | one-command reproducible |
 
 Two honest caveats kept front and center. The committor's *ordering* advantage
 over PCA pseudotime holds on pancreas (0.94 vs 0.89, 10/10 seeds) but **not** on
-gastrulation (PC1 wins). And the calibrated irreversibility measure shows real
+gastrulation (PC1 wins); on Drosophila spermatogenesis it wins decisively. And
+the calibrated irreversibility measure shows real
 developmental lineages are **close to reversible (gradient-like)** — a linear
 lineage has an arrow of time but little circulation. The value here is a *correct*
 thermodynamic readout, not a claim that differentiation is strongly irreversible;
@@ -148,6 +150,20 @@ lineage, plain PC1 wins. Shown, not hidden.
 
 ![ordering across seeds](figures/statistical_validation.png)
 
+**A second phylum: Drosophila spermatogenesis.**
+The Fly Cell Atlas testis has no spliced/unspliced layers, so the pipeline builds
+them from the raw ArrayExpress reads (61.8M reads streamed, kallisto | bustools,
+FlyBase gene IDs). The velocity passes a biological check: the unspliced fraction
+drops 5x after meiosis, the known post-meiotic transcription shutdown. The
+committor orders the germline far better than PC1 (Spearman 0.78 vs 0.47, 8/8
+subsamples) and places commitment inside the spermatocyte program; the flow is
+near-reversible (+0.011 over the floor), as in vertebrates. It also caught a
+second artifact: a per-cell irreversibility peak that tracked sequencing depth,
+removed by the new magnitude-invariant `cyclic_fraction_per_cell`. Details in
+[docs/benchmarks.md](docs/benchmarks.md).
+
+![fly testis](figures/fly_testis.png)
+
 ## How it works
 
 - builds a kNN graph over cells in PCA space (exact KD-tree, scales to 50k cells)
@@ -165,7 +181,7 @@ transparent spliced/unspliced proxy).
 
 ```bash
 python benchmarks/run_all.py     # regenerates every experiments/*.json and figures/*.png
-pytest                           # 218 unit tests
+pytest                           # 225 unit tests
 ```
 
 Individual benchmarks (irreversibility, commitment barrier, calibration,
@@ -176,7 +192,7 @@ availability are in [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
 ## Package
 
 - Installable, typed (`py.typed`), MIT, builds a clean wheel and sdist.
-- 218 unit tests and ruff lint, both enforced by GitHub Actions CI on Python 3.10–3.12.
+- 225 unit tests and ruff lint, both enforced by GitHub Actions CI on Python 3.10–3.12.
 - High-level `analyze()` plus the full module API; console entry points.
 - Contributions welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -203,7 +219,10 @@ its dentate-gyrus non-replication remain documented in
 `RESEARCH_NOTE_entropy_production_pancreas.md`. The committor ordering advantage
 over PC1 is dataset-dependent (wins pancreas, loses gastrulation), and CellRank's
 fate probability edges out the committor at ordering on pancreas at scale. The
-landscape is a density-based pseudopotential in kT, not a molecular free energy. A
+landscape is a density-based pseudopotential in kT, not a molecular free energy.
+The Drosophila analysis uses one library at about 10% read depth with proxy
+velocity, and its commitment-driver genes are a reproducible ranking, not causal
+evidence; a pre-chosen list of known regulators was not enriched. A
 falsifiable test of the commitment prediction is preregistered in
 `PREREGISTRATION_commitment.md`.
 
@@ -213,7 +232,7 @@ falsifiable test of the commitment prediction is preregistered in
 @software{kommisetty_thermodynamic_waddington,
   author  = {Kommisetty, Nischay},
   title   = {Thermodynamic Waddington Pipeline},
-  version = {1.0.0},
+  version = {1.1.0},
   year    = {2026},
   url     = {https://github.com/Cypherspec/Thermodynamic-Waddington-Pipeline},
   license = {MIT}

@@ -6,7 +6,7 @@ from importlib.metadata import version as _pkg_version
 try:
     __version__ = _pkg_version("thermodynamic-waddington")
 except PackageNotFoundError:
-    __version__ = "1.0.0"
+    __version__ = "1.1.0"
 
 from .causal import InterventionEffect, intervention_scan, rank_targets
 from .config import FitConfig

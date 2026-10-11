@@ -30,7 +30,10 @@ decomposition of the velocity flow into gradient (reversible) and cyclic
 developmental lineages (pancreatic endocrinogenesis, gastrulation erythropoiesis,
 bone marrow erythropoiesis), it shows they are close to reversible: pancreas
 carries a modest excess of 0.05 over a matched gradient floor, the other two
-essentially none, under both a velocity proxy and scVelo dynamical velocity. On
+essentially none, under both a velocity proxy and scVelo dynamical velocity. The
+same holds in a second phylum: on Drosophila spermatogenesis (Fly Cell Atlas),
+with velocity built from the raw reads, the germline is near-reversible, and the
+committor orders it far better than principal-component pseudotime. On
 pancreas the committor locates commitment at the Pre-endocrine stage with a
 commitment barrier of 1.6 kT [1.4, 1.9]; we report that its ordering advantage
 over principal-component pseudotime does not generalize to gastrulation, and that
@@ -120,7 +123,7 @@ diagnostic of non-equilibrium departure.
 **Implementation.** The numeric core is vectorized (numpy) with an exact KD-tree
 graph; results are bit-identical to a pure-Python reference. Graph construction
 and both irreversibility measures run on 50,000 cells in seconds. The package is
-typed, lint-clean, tested (218 unit tests), and reproducible in one command.
+typed, lint-clean, tested (225 unit tests), and reproducible in one command.
 
 ## 3. Results
 
@@ -170,6 +173,24 @@ two-boundary absorption probability orders best (0.99), ahead of the committor
 ordering method; its value is as a commitment coordinate tied to the
 thermodynamics.
 
+**A second phylum: Drosophila spermatogenesis.** The Fly Cell Atlas testis (Li
+et al., 2022) provides no spliced/unspliced layers, so we built them from the
+raw reads: 61.8M reads (about 10% of library FCA59) streamed from the unaligned
+10x BAMs and quantified with kallisto | bustools (88.6% pseudoaligned), matched to
+the atlas annotation by barcode (7,335 germline cells). The velocity passes a
+biological check: the unspliced fraction falls from 0.19 in spermatocytes to 0.04
+in spermatids, the known post-meiotic transcription shutdown. The cyclic fraction
+is 0.097 against a 0.086 floor (excess +0.011). The committor orders the germline
+stages with Spearman 0.78 +/- 0.05 against 0.47 for PC1, winning 8/8 subsamples,
+and places commitment within the spermatocyte program in 7/8; the barrier is 2.1
+kT [1.6, 2.6]. Genes that switch across q = 0.5 form a reproducible ranking (top-50
+overlap 0.36 between independent fits against 0.011 by chance), but a regulator
+list fixed in advance is not enriched in it. The analysis also exposed an
+artifact in a per-cell map: cyclic flow *energy* tracks sequencing depth (Spearman
++0.84 across stages) and produced a spurious late-spermatocyte peak. A
+magnitude-invariant per-cell cyclic fraction, read against a local reversible
+floor, removes it.
+
 **Prior negative result.** The legacy entropy-production signal did not replicate
 on dentate gyrus neurogenesis across seven independent tests, including a
 preregistered confirmatory test; this is retained in the research note.
@@ -191,8 +212,9 @@ pseudopotential, not a molecular free energy. The cyclic fraction is a property
 of the velocity field on a finite graph, so it must be read against a matched
 floor, and its power on near-1D real geometries is low. Most results use an
 unspliced-minus-spliced velocity proxy, with one dynamical-velocity check;
-broader velocity models remain to be tested. Validation spans three real
-lineages, synthetic ground truth, and one documented negative. The committor
+broader velocity models remain to be tested. Validation spans three vertebrate
+lineages, Drosophila spermatogenesis (one library at reduced depth), synthetic
+ground truth, and one documented negative. The committor
 ordering advantage is dataset-dependent. These are stated because a method that
 reports where it fails is more useful than one that does not.
 
@@ -200,7 +222,7 @@ reports where it fails is more useful than one that does not.
 
 All results reproduce from the released code with `python benchmarks/run_all.py`;
 individual benchmarks and figures are listed in the README. The package installs
-with `pip install -e .`, passes 218 unit tests, and pins its numerical core to
+with `pip install -e .`, passes 225 unit tests, and pins its numerical core to
 bit-identical outputs across versions. Public datasets are obtained through
 scVelo. An end-to-end tutorial runs on synthetic data with no download.
 
@@ -227,3 +249,5 @@ paired test, and stated falsification criterion.
 - Schiebinger, G. et al. (2019). Optimal-transport analysis of developmental trajectories (Waddington-OT). *Cell.*
 - Bastidas-Ponce, A. et al. (2019). Comprehensive single-cell mRNA profiling of pancreatic endocrinogenesis. *Development.*
 - Pijuan-Sala, B. et al. (2019). A single-cell molecular map of mouse gastrulation. *Nature.*
+- Li, H. et al. (2022). Fly Cell Atlas: a single-nucleus transcriptomic atlas of the adult fruit fly. *Science.*
+- Bray, N. L. et al. (2016). Near-optimal probabilistic RNA-seq quantification (kallisto). *Nat. Biotechnol.*

@@ -3,6 +3,30 @@
 All notable changes to this project are documented here. Format loosely follows
 Keep a Changelog. Versioning is semantic.
 
+## [1.1.0] - 2026-10-11
+
+### Added
+- Drosophila spermatogenesis benchmark (`benchmarks/fly_testis.py`) on the Fly
+  Cell Atlas testis germline, 7,335 cells: velocity sanity check (unspliced
+  fraction drops 5x after meiosis), calibrated irreversibility (+0.011 over the
+  reversible floor), committor ordering (beats PC1 in 8/8 subsamples, 0.78 vs
+  0.47), commitment barrier, and reproducible FlyBase-linked commitment-driver
+  genes with a pre-registered regulator check (not enriched; reported).
+- `benchmarks/fly_testis_prepare.py`: builds spliced/unspliced counts from the
+  Fly Cell Atlas raw reads (unaligned 10x BAMs at ArrayExpress E-MTAB-10519)
+  by streaming HTTP byte ranges and quantifying with kallisto | bustools (nac),
+  with barcode matching to the atlas annotation. Parser tests in
+  `tests/test_fly_prepare.py`.
+- `irreversibility.cyclic_fraction_per_cell`: magnitude-invariant local cyclic
+  fraction in [0, 1]. `analyze_adata` writes it to
+  `adata.obs['tw_cyclic_fraction']`.
+
+### Fixed
+- The per-cell cyclic-energy map (`cyclic_flow_per_cell`) grows with velocity
+  magnitude and so can track sequencing depth; on the fly testis it produced a
+  spurious 7x late-spermatocyte peak (Spearman +0.84 with depth). Documented,
+  and superseded for comparisons by `cyclic_fraction_per_cell`.
+
 ## [1.0.0] - 2026-10-11
 
 First stable release.

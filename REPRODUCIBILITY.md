@@ -16,7 +16,7 @@ pip install -e ".[all]"
 ## Tests
 
 ```bash
-pytest        # 218 unit tests
+pytest        # 225 unit tests
 ruff check .  # lint, also enforced in CI
 ```
 
@@ -45,6 +45,13 @@ All datasets are public and obtained through scVelo; none are redistributed here
   `data/real/gastrulation_erythroid.h5ad`.
 - Human bone marrow erythroid: Setty et al., *Nat. Biotechnol.* 2019, via
   `scvelo.datasets.bonemarrow()`. Place at `data/real/bonemarrow.h5ad`.
+- Drosophila testis (Fly Cell Atlas; Li et al., *Science* 2022): annotation
+  from the 10x Relaxed testis h5ad at
+  https://cloud.flycellatlas.org/index.php/s/Tcya9yE9CMwScdR, placed at
+  `data/fly/fca_testis.h5ad`. Spliced/unspliced counts are built from the raw
+  reads (ArrayExpress E-MTAB-10519, library FCA59) by
+  `python benchmarks/fly_testis_prepare.py` (needs `kb-python`; streams ~4.8 GB),
+  then `python benchmarks/fly_testis.py`.
 - Dentate gyrus (documented negative control): Hochgerner et al., 2018, via
   `scvelo.datasets.dentategyrus()`.
 

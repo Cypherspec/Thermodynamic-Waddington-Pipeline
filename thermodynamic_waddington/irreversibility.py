@@ -173,19 +173,14 @@ def cyclic_irreversibility(pts, vels, graph, bootstrap=0, seed=0):
     return IrreversibilityReport(obs, ci, len(pairs), n)
 
 
-def cyclic_flow_per_cell(pts, vels, graph):
-    """Per-cell irreversibility density: the cyclic (non-gradient) flow energy
-    incident on each cell, normalized to sum to 1. Zero for a gradient field;
-    concentrates where the velocity field carries local circulation. Useful as an
-    `obs` map showing *where* along a lineage irreversibility lives.
-    """
+def _cyclic_edge_flow(pts, vels, graph):
+    """Edge pairs, edge flow, and its cyclic (non-gradient) component."""
     pts = np.asarray(pts, dtype=float)
     vels = np.asarray(vels, dtype=float)
     n = len(pts)
     pairs = _pairs(graph)
-    per = np.zeros(n)
     if len(pairs) == 0 or n < 3:
-        return per
+        return pairs, None, None
     f = _edge_flow(pts, vels, pairs)
     try:
         from scipy.sparse.linalg import lsqr
@@ -199,11 +194,50 @@ def cyclic_flow_per_cell(pts, vels, graph):
         np.add.at(Btf, j, -f)
         phi = Lp @ Btf
         cyclic = f - (phi[i] - phi[j])
-    e2 = cyclic * cyclic
-    np.add.at(per, pairs[:, 0], e2)
-    np.add.at(per, pairs[:, 1], e2)
+    return pairs, f, cyclic
+
+
+def _incident(pairs, values, n):
+    per = np.zeros(n)
+    np.add.at(per, pairs[:, 0], values)
+    np.add.at(per, pairs[:, 1], values)
+    return per
+
+
+def cyclic_flow_per_cell(pts, vels, graph):
+    """Per-cell irreversibility density: the cyclic (non-gradient) flow energy
+    incident on each cell, normalized to sum to 1. Zero for a gradient field;
+    concentrates where the velocity field carries local circulation. Useful as an
+    `obs` map showing *where* along a lineage irreversibility lives.
+
+    It is an energy, so it also grows with local velocity magnitude; use
+    `cyclic_fraction_per_cell` to compare regions with different velocity scales.
+    """
+    n = len(pts)
+    pairs, f, cyclic = _cyclic_edge_flow(pts, vels, graph)
+    if f is None:
+        return np.zeros(n)
+    per = _incident(pairs, cyclic * cyclic, n)
     total = per.sum()
     return per / total if total > 0 else per
+
+
+def cyclic_fraction_per_cell(pts, vels, graph):
+    """Per-cell cyclic fraction in [0, 1]: on the edges incident to each cell, the
+    cyclic flow energy over cyclic plus gradient energy. The local analogue of
+    `cyclic_irreversibility`; unlike `cyclic_flow_per_cell` it does not grow with
+    velocity magnitude, so regions with different sequencing depth or speed
+    compare on one scale. (Gradient and cyclic parts are orthogonal only over the
+    whole graph, so the local denominator is their energy sum, not the raw flow.)
+    """
+    n = len(pts)
+    pairs, f, cyclic = _cyclic_edge_flow(pts, vels, graph)
+    if f is None:
+        return np.zeros(n)
+    gradient = f - cyclic
+    cyc = _incident(pairs, cyclic * cyclic, n)
+    total = cyc + _incident(pairs, gradient * gradient, n)
+    return np.divide(cyc, total, out=np.zeros(n), where=total > 0)
 
 
 def _spanning_tree_potential(pairs, f, n):

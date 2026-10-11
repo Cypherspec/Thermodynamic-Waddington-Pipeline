@@ -8,6 +8,7 @@ from thermodynamic_waddington.graph import build_knn
 from thermodynamic_waddington.irreversibility import (
     cycle_affinities,
     cyclic_flow_per_cell,
+    cyclic_fraction_per_cell,
     cyclic_irreversibility,
 )
 
@@ -130,6 +131,43 @@ class TestPerCellMap(unittest.TestCase):
         per = cyclic_flow_per_cell(np.zeros((2, 2)), np.zeros((2, 2)), g)
         self.assertEqual(per.shape, (2,))
         self.assertEqual(float(per.sum()), 0.0)
+
+
+class TestPerCellFraction(unittest.TestCase):
+    def test_bounded_and_ordered(self):
+        g_pts, g_vel = _sample(0.0, 1)
+        r_pts, r_vel = _sample(2.0, 1)
+        grad = cyclic_fraction_per_cell(g_pts, g_vel, build_knn(g_pts.tolist(), 20))
+        rot = cyclic_fraction_per_cell(r_pts, r_vel, build_knn(r_pts.tolist(), 20))
+        for x in (grad, rot):
+            self.assertTrue(((x >= 0) & (x <= 1 + 1e-9)).all())
+        self.assertGreater(float(np.median(rot)), 2 * float(np.median(grad)))
+
+    def test_invariant_to_global_velocity_scale(self):
+        pts, vel = _sample(1.0, 2)
+        g = build_knn(pts.tolist(), 20)
+        np.testing.assert_allclose(cyclic_fraction_per_cell(pts, vel, g),
+                                   cyclic_fraction_per_cell(pts, 1000.0 * vel, g), atol=1e-6)
+
+    def test_removes_velocity_magnitude_confound(self):
+        # same circulation everywhere, but one half of the cells moves 5x faster:
+        # the energy map piles onto the fast half, the per-cell fraction does not
+        pts, vel = _sample(2.0, 3)
+        fast = pts[:, 0] > 0
+        vel = vel * np.where(fast, 5.0, 1.0)[:, None]
+        g = build_knn(pts.tolist(), 20)
+        energy = cyclic_flow_per_cell(pts, vel, g)
+        frac = cyclic_fraction_per_cell(pts, vel, g)
+        energy_ratio = energy[fast].mean() / energy[~fast].mean()
+        frac_ratio = frac[fast].mean() / frac[~fast].mean()
+        self.assertGreater(energy_ratio, 2.0)
+        self.assertLess(abs(np.log(frac_ratio)), 0.25 * abs(np.log(energy_ratio)))
+
+    def test_degenerate_returns_zeros(self):
+        g = build_knn([[0.0, 0.0], [1.0, 0.0]], 1)
+        out = cyclic_fraction_per_cell(np.zeros((2, 2)), np.zeros((2, 2)), g)
+        self.assertEqual(out.shape, (2,))
+        self.assertEqual(float(out.sum()), 0.0)
 
 
 if __name__ == "__main__":

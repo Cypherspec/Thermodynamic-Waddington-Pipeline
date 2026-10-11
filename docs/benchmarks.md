@@ -43,6 +43,46 @@ The directional progression is captured by the committor. The strong "irreversib
 across three tissues" reading of the old permutation test does not survive
 calibration, and is corrected here. `benchmarks/generalization.py`.
 
+## Drosophila spermatogenesis (a second phylum)
+
+`benchmarks/fly_testis.py` runs the same calibrated readouts on the male germline
+of the Fly Cell Atlas testis (Li et al., *Science* 2022): spermatogonia, the
+spermatocyte program (stages 0-7a), and elongating spermatids, 7,335 cells with
+the atlas's own annotation as stage labels. The atlas ships no spliced/unspliced
+layers, so `benchmarks/fly_testis_prepare.py` builds them from the raw reads: it
+streams an evenly spaced sample (61.8M reads, about 10% of library FCA59) out of
+the unaligned 10x BAMs at ArrayExpress E-MTAB-10519 over HTTP range requests,
+and quantifies nascent and mature RNA with kallisto | bustools against Ensembl
+BDGP6.46 (88.6% pseudoaligned). All 15,292 atlas cells in the library match by
+barcode. Genes carry FlyBase IDs.
+
+| readout | result |
+|---|---|
+| velocity sanity check | unspliced fraction **0.19 in spermatocytes -> 0.04 in spermatids** (5x drop): the known post-meiotic transcription shutdown, recovered from reads quantified here |
+| calibrated irreversibility | cyclic fraction **0.097** vs reversible floor 0.086 (excess **+0.011**), shuffled ceiling 0.52 -- near-reversible, like the three vertebrate tissues |
+| committor ordering vs stage | Spearman **0.78 +/- 0.05 vs PC1 0.47**, committor wins **8/8** subsamples |
+| where commitment happens | inside the spermatocyte program in 7/8 subsamples (spermatocyte 4 to 7a) |
+| commitment barrier | 2.1 kT [1.6, 2.6], 8 subsamples |
+| commitment-driver genes | top-50 list overlap between independent fits **0.36 vs 0.011 by chance**; a regulator list fixed in advance (tMAC, tTAF, bam/bgcn, spermatid genes) is **not** enriched (0/14 in the top 5%) |
+
+The committor result is the clearest gain: on this long, staged lineage it beats
+PC1 decisively, unlike gastrulation where PC1 wins. The driver genes (FlyBase
+links in `experiments/fly_testis.json`) are a reproducible ranking for follow-up,
+not causal evidence; the canonical regulators switch on when the spermatocyte
+program begins, not at its end where commitment sits.
+
+**A second artifact, caught.** The per-cell cyclic-energy map first showed a
+7x peak of circulation in late spermatocytes. That map is an energy, so it grows
+with velocity magnitude, and spermatocytes are the deepest-sequenced cells: across
+stages it tracks sequencing depth (Spearman +0.84). The new magnitude-invariant
+`cyclic_fraction_per_cell`, read against a per-stage reversible floor on the same
+cells, removes it: the pre-meiotic germline sits within +0.014 of reversible. The
+residual post-meiotic excess (+0.12) runs opposite to depth (-0.77) and to the
+unspliced fraction (-0.75): it appears exactly where the velocity signal vanishes,
+so it is read as noise, not circulation.
+
+![fly testis](https://raw.githubusercontent.com/Cypherspec/Thermodynamic-Waddington-Pipeline/master/figures/fly_testis.png)
+
 ## Commitment barrier
 
 The potential of mean force along the committor gives a commitment barrier of

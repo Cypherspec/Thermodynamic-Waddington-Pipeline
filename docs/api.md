@@ -17,7 +17,8 @@ The same, directly on an AnnData. Reads the velocity layer (or derives an
 unspliced-minus-spliced proxy), uses the top-`n_top_genes` by variance, and writes
 the per-cell committor, energy, and irreversibility map to
 `adata.obs['{key_added}_committor']`, `adata.obs['{key_added}_energy']`, and
-`adata.obs['{key_added}_irreversibility']`, with the report in
+`adata.obs['{key_added}_irreversibility']`, plus the magnitude-invariant
+`adata.obs['{key_added}_cyclic_fraction']`, with the report in
 `adata.uns['{key_added}']`.
 
 ### `AnalysisReport`
@@ -86,9 +87,18 @@ velocity flow from a discrete Hodge decomposition (`cyclic_fraction`,
 Schnakenberg cycle affinities in kT (`n_cycles`, `rms_affinity_kt`,
 `max_affinity_kt`, `mean_abs_affinity_kt`).
 
+### `irreversibility.cyclic_fraction_per_cell(pts, vels, graph)`
+
+Per-cell cyclic fraction in [0, 1]: on each cell's edges, cyclic energy over
+cyclic plus gradient energy. Invariant to velocity magnitude, so regions with
+different sequencing depth compare on one scale. Read it against the same
+function applied to a gradient field on the same cells (the local floor).
+
 ### `irreversibility.cyclic_flow_per_cell(pts, vels, graph)`
 
-Per-cell share of the cyclic flow energy: *where* circulation lives.
+Per-cell share of the cyclic flow energy. It also grows with velocity
+magnitude, so it can track sequencing depth; prefer `cyclic_fraction_per_cell`
+to compare regions.
 
 ### `estimate_entropy_production(points, velocity, densities, diffusions, graph, config) -> EntropyProductionReport`
 

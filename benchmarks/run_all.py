@@ -14,6 +14,7 @@ import time
 from pathlib import Path
 
 DATA = Path("data/real/endocrinogenesis_day15.h5ad")
+FLY_DATA = Path("data/fly/testis_velocity.h5ad")
 
 SYNTHETIC = [
     ["benchmarks/runtime_scaling.py"],
@@ -49,6 +50,10 @@ def main() -> None:
             ok = run(cmd) and ok
     else:
         print(f"skip real-data benchmarks: {DATA} not found (see README Data section)")
+    if FLY_DATA.exists():
+        ok = run(["benchmarks/fly_testis.py"]) and ok
+    else:
+        print(f"skip Drosophila benchmark: {FLY_DATA} not found (run benchmarks/fly_testis_prepare.py)")
     print("ALL OK" if ok else "SOME FAILED")
     sys.exit(0 if ok else 1)
 

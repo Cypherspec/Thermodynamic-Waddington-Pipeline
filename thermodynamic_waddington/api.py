@@ -68,12 +68,17 @@ def _cyclic_fraction(expression, velocity, dims):
     import numpy as np
 
     from .graph import build_knn
-    from .irreversibility import cycle_affinities, cyclic_flow_per_cell, cyclic_irreversibility
+    from .irreversibility import (
+        cycle_affinities,
+        cyclic_flow_per_cell,
+        cyclic_fraction_per_cell,
+        cyclic_irreversibility,
+    )
 
     X = np.asarray(expression, dtype=float)
     V = np.asarray(velocity, dtype=float)
     if len(X) < 4:
-        return None, None, None
+        return None, None, None, None
     Xc = X - X.mean(axis=0)
     _, _, vt = np.linalg.svd(Xc, full_matrices=False)
     comp = vt[: max(2, dims)].T
@@ -83,7 +88,8 @@ def _cyclic_fraction(expression, velocity, dims):
     frac = cyclic_irreversibility(pts, vpca, graph).cyclic_fraction
     aff = cycle_affinities(pts, vpca, graph).rms_affinity_kt
     per_cell = cyclic_flow_per_cell(pts, vpca, graph)
-    return frac, aff, per_cell
+    per_cell_fraction = cyclic_fraction_per_cell(pts, vpca, graph)
+    return frac, aff, per_cell, per_cell_fraction
 
 
 def _report_from_fit(fit, config, labels, source_labels, target_labels, significance):
@@ -145,7 +151,7 @@ def analyze(
     fit = fit_landscape(expression, velocity, config=config, labels=labels)
     report, _ = _report_from_fit(fit, config, labels, source_labels, target_labels, significance)
     try:
-        frac, aff, _ = _cyclic_fraction(expression, velocity, (config or FitConfig()).dimensions)
+        frac, aff, _, _ = _cyclic_fraction(expression, velocity, (config or FitConfig()).dimensions)
         report.irreversibility_cyclic_fraction = frac
         report.irreversibility_cycle_affinity_kt = aff
     except Exception as exc:
@@ -177,8 +183,11 @@ def analyze_adata(
     if a `velocity` layer is absent but `spliced`/`unspliced` are present. The
     top `n_top_genes` by variance are used. The per-cell committor and free
     energy are written to `adata.obs['{key_added}_committor']` and
-    `adata.obs['{key_added}_energy']`, and the report to
-    `adata.uns['{key_added}']`.
+    `adata.obs['{key_added}_energy']`; the per-cell irreversibility to
+    `adata.obs['{key_added}_cyclic_fraction']` (local cyclic fraction, 0..1,
+    comparable across regions) and `adata.obs['{key_added}_irreversibility']`
+    (share of cyclic flow energy, which also grows with velocity magnitude);
+    and the report to `adata.uns['{key_added}']`.
     """
     import numpy as np
 
@@ -211,9 +220,9 @@ def analyze_adata(
 
     fit = fit_landscape(expr.tolist(), vel.tolist(), config=config, labels=labels)
     report, committor = _report_from_fit(fit, config, labels, source, target, significance)
-    per_cell_irrev = None
+    per_cell_irrev = per_cell_frac = None
     try:
-        frac, aff, per_cell_irrev = _cyclic_fraction(expr, vel, (config or FitConfig()).dimensions)
+        frac, aff, per_cell_irrev, per_cell_frac = _cyclic_fraction(expr, vel, (config or FitConfig()).dimensions)
         report.irreversibility_cyclic_fraction = frac
         report.irreversibility_cycle_affinity_kt = aff
     except Exception as exc:
@@ -225,6 +234,8 @@ def analyze_adata(
             adata.obs[f"{key_added}_committor"] = np.asarray(committor, dtype=float)
         if per_cell_irrev is not None:
             adata.obs[f"{key_added}_irreversibility"] = np.asarray(per_cell_irrev, dtype=float)
+        if per_cell_frac is not None:
+            adata.obs[f"{key_added}_cyclic_fraction"] = np.asarray(per_cell_frac, dtype=float)
         adata.uns[key_added] = report.to_dict()
     except Exception as exc:  # writing back is best-effort
         report.warnings.append(f"could not write results into adata: {exc}")

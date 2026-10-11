@@ -1,0 +1,1396 @@
+{
+  "benchmark": "fly_testis_germline",
+  "dataset": "Fly Cell Atlas testis, library FCA59 (E-MTAB-10519), spliced/unspliced via kallisto|bustools nac",
+  "n_germline_cells": 7335,
+  "velocity": "unspliced-minus-spliced proxy, top 100 genes by spliced variance (as for the vertebrate tissues)",
+  "velocity_check": {
+    "by_phase": [
+      {
+        "phase": "spermatogonia",
+        "n_cells": 495,
+        "unspliced_fraction": 0.1733,
+        "median_umi": 917
+      },
+      {
+        "phase": "spermatocytes",
+        "n_cells": 1787,
+        "unspliced_fraction": 0.1923,
+        "median_umi": 1975
+      },
+      {
+        "phase": "spermatids",
+        "n_cells": 3529,
+        "unspliced_fraction": 0.0375,
+        "median_umi": 349
+      }
+    ],
+    "by_stage": [
+      {
+        "stage": 0,
+        "label": "spermatogonium",
+        "n_cells": 239,
+        "unspliced_fraction": 0.192
+      },
+      {
+        "stage": 1,
+        "label": "mid-late proliferating spermatogonia",
+        "n_cells": 140,
+        "unspliced_fraction": 0.1647
+      },
+      {
+        "stage": 2,
+        "label": "spermatogonium-spermatocyte transition",
+        "n_cells": 116,
+        "unspliced_fraction": 0.1428
+      },
+      {
+        "stage": 3,
+        "label": "spermatocyte 0",
+        "n_cells": 348,
+        "unspliced_fraction": 0.1667
+      },
+      {
+        "stage": 4,
+        "label": "spermatocyte 1",
+        "n_cells": 165,
+        "unspliced_fraction": 0.1954
+      },
+      {
+        "stage": 5,
+        "label": "spermatocyte 2",
+        "n_cells": 168,
+        "unspliced_fraction": 0.1938
+      },
+      {
+        "stage": 6,
+        "label": "spermatocyte 3",
+        "n_cells": 130,
+        "unspliced_fraction": 0.1944
+      },
+      {
+        "stage": 7,
+        "label": "spermatocyte 4",
+        "n_cells": 207,
+        "unspliced_fraction": 0.1951
+      },
+      {
+        "stage": 8,
+        "label": "spermatocyte 5",
+        "n_cells": 194,
+        "unspliced_fraction": 0.1924
+      },
+      {
+        "stage": 9,
+        "label": "spermatocyte 6",
+        "n_cells": 152,
+        "unspliced_fraction": 0.2306
+      },
+      {
+        "stage": 10,
+        "label": "spermatocyte 7a",
+        "n_cells": 253,
+        "unspliced_fraction": 0.1732
+      },
+      {
+        "stage": 11,
+        "label": "late primary spermatocyte",
+        "n_cells": 170,
+        "unspliced_fraction": 0.2724
+      },
+      {
+        "stage": 12,
+        "label": "spermatid",
+        "n_cells": 190,
+        "unspliced_fraction": 0.1534
+      },
+      {
+        "stage": 13,
+        "label": "early elongation stage spermatid",
+        "n_cells": 1812,
+        "unspliced_fraction": 0.0347
+      },
+      {
+        "stage": 14,
+        "label": "early-mid elongation-stage spermatid",
+        "n_cells": 849,
+        "unspliced_fraction": 0.0452
+      },
+      {
+        "stage": 15,
+        "label": "mid-late elongation-stage spermatid",
+        "n_cells": 678,
+        "unspliced_fraction": 0.0343
+      }
+    ],
+    "spermatid_over_spermatocyte": 0.195
+  },
+  "irreversibility": {
+    "n_cells": 1500,
+    "seeds": 5,
+    "cyclic_fraction_real": 0.097,
+    "cyclic_fraction_real_std": 0.004,
+    "gradient_floor": 0.0862,
+    "random_ceiling": 0.5177,
+    "excess_over_floor": 0.0108,
+    "per_stage": [
+      {
+        "label": "spermatogonium",
+        "stage": 0,
+        "cyclic_fraction": 0.155,
+        "cyclic_fraction_std": 0.018,
+        "gradient_floor": 0.125,
+        "excess_over_floor": 0.03,
+        "relative_cyclic_energy": 0.309,
+        "relative_cyclic_energy_std": 0.164,
+        "seeds_present": 5
+      },
+      {
+        "label": "mid-late proliferating spermatogonia",
+        "stage": 1,
+        "cyclic_fraction": 0.15,
+        "cyclic_fraction_std": 0.026,
+        "gradient_floor": 0.122,
+        "excess_over_floor": 0.028,
+        "relative_cyclic_energy": 0.223,
+        "relative_cyclic_energy_std": 0.067,
+        "seeds_present": 5
+      },
+      {
+        "label": "spermatogonium-spermatocyte transition",
+        "stage": 2,
+        "cyclic_fraction": 0.143,
+        "cyclic_fraction_std": 0.019,
+        "gradient_floor": 0.11,
+        "excess_over_floor": 0.033,
+        "relative_cyclic_energy": 0.136,
+        "relative_cyclic_energy_std": 0.031,
+        "seeds_present": 5
+      },
+      {
+        "label": "spermatocyte 0",
+        "stage": 3,
+        "cyclic_fraction": 0.186,
+        "cyclic_fraction_std": 0.035,
+        "gradient_floor": 0.152,
+        "excess_over_floor": 0.034,
+        "relative_cyclic_energy": 0.254,
+        "relative_cyclic_energy_std": 0.065,
+        "seeds_present": 5
+      },
+      {
+        "label": "spermatocyte 1",
+        "stage": 4,
+        "cyclic_fraction": 0.291,
+        "cyclic_fraction_std": 0.034,
+        "gradient_floor": 0.286,
+        "excess_over_floor": 0.005,
+        "relative_cyclic_energy": 0.99,
+        "relative_cyclic_energy_std": 0.146,
+        "seeds_present": 5
+      },
+      {
+        "label": "spermatocyte 2",
+        "stage": 5,
+        "cyclic_fraction": 0.247,
+        "cyclic_fraction_std": 0.006,
+        "gradient_floor": 0.243,
+        "excess_over_floor": 0.004,
+        "relative_cyclic_energy": 1.547,
+        "relative_cyclic_energy_std": 0.253,
+        "seeds_present": 5
+      },
+      {
+        "label": "spermatocyte 3",
+        "stage": 6,
+        "cyclic_fraction": 0.159,
+        "cyclic_fraction_std": 0.014,
+        "gradient_floor": 0.152,
+        "excess_over_floor": 0.006,
+        "relative_cyclic_energy": 2.258,
+        "relative_cyclic_energy_std": 0.303,
+        "seeds_present": 5
+      },
+      {
+        "label": "spermatocyte 4",
+        "stage": 7,
+        "cyclic_fraction": 0.095,
+        "cyclic_fraction_std": 0.005,
+        "gradient_floor": 0.086,
+        "excess_over_floor": 0.008,
+        "relative_cyclic_energy": 3.054,
+        "relative_cyclic_energy_std": 0.412,
+        "seeds_present": 5
+      },
+      {
+        "label": "spermatocyte 5",
+        "stage": 8,
+        "cyclic_fraction": 0.075,
+        "cyclic_fraction_std": 0.005,
+        "gradient_floor": 0.068,
+        "excess_over_floor": 0.007,
+        "relative_cyclic_energy": 4.433,
+        "relative_cyclic_energy_std": 0.578,
+        "seeds_present": 5
+      },
+      {
+        "label": "spermatocyte 6",
+        "stage": 9,
+        "cyclic_fraction": 0.069,
+        "cyclic_fraction_std": 0.005,
+        "gradient_floor": 0.063,
+        "excess_over_floor": 0.006,
+        "relative_cyclic_energy": 6.975,
+        "relative_cyclic_energy_std": 0.807,
+        "seeds_present": 5
+      },
+      {
+        "label": "spermatocyte 7a",
+        "stage": 10,
+        "cyclic_fraction": 0.099,
+        "cyclic_fraction_std": 0.01,
+        "gradient_floor": 0.116,
+        "excess_over_floor": -0.017,
+        "relative_cyclic_energy": 0.288,
+        "relative_cyclic_energy_std": 0.075,
+        "seeds_present": 5
+      },
+      {
+        "label": "late primary spermatocyte",
+        "stage": 11,
+        "cyclic_fraction": 0.101,
+        "cyclic_fraction_std": 0.011,
+        "gradient_floor": 0.08,
+        "excess_over_floor": 0.021,
+        "relative_cyclic_energy": 2.037,
+        "relative_cyclic_energy_std": 0.47,
+        "seeds_present": 5
+      },
+      {
+        "label": "spermatid",
+        "stage": 12,
+        "cyclic_fraction": 0.185,
+        "cyclic_fraction_std": 0.012,
+        "gradient_floor": 0.109,
+        "excess_over_floor": 0.076,
+        "relative_cyclic_energy": 0.186,
+        "relative_cyclic_energy_std": 0.032,
+        "seeds_present": 5
+      },
+      {
+        "label": "early elongation stage spermatid",
+        "stage": 13,
+        "cyclic_fraction": 0.279,
+        "cyclic_fraction_std": 0.023,
+        "gradient_floor": 0.126,
+        "excess_over_floor": 0.153,
+        "relative_cyclic_energy": 0.137,
+        "relative_cyclic_energy_std": 0.037,
+        "seeds_present": 5
+      },
+      {
+        "label": "early-mid elongation-stage spermatid",
+        "stage": 14,
+        "cyclic_fraction": 0.246,
+        "cyclic_fraction_std": 0.021,
+        "gradient_floor": 0.129,
+        "excess_over_floor": 0.117,
+        "relative_cyclic_energy": 0.457,
+        "relative_cyclic_energy_std": 0.064,
+        "seeds_present": 5
+      },
+      {
+        "label": "mid-late elongation-stage spermatid",
+        "stage": 15,
+        "cyclic_fraction": 0.25,
+        "cyclic_fraction_std": 0.02,
+        "gradient_floor": 0.116,
+        "excess_over_floor": 0.133,
+        "relative_cyclic_energy": 1.135,
+        "relative_cyclic_energy_std": 0.553,
+        "seeds_present": 5
+      }
+    ],
+    "excess_vs_depth_spearman": -0.768,
+    "excess_vs_unspliced_spearman": -0.753,
+    "energy_vs_depth_spearman": 0.838,
+    "excess_pre_meiotic_mean": 0.014,
+    "excess_post_meiotic_mean": 0.12
+  },
+  "commitment": {
+    "n_cells": 600,
+    "seeds": 8,
+    "source": [
+      "spermatogonium",
+      "mid-late proliferating spermatogonia"
+    ],
+    "target": [
+      "mid-late elongation-stage spermatid"
+    ],
+    "barrier_kt_mean": 2.101,
+    "barrier_kt_ci95": [
+      1.556,
+      2.645
+    ],
+    "barrier_q_mean": 0.292,
+    "commitment_label_counts": {
+      "early-mid elongation-stage spermatid": 1,
+      "late primary spermatocyte": 1,
+      "spermatocyte": 1,
+      "spermatocyte 4": 1,
+      "spermatocyte 5": 3,
+      "spermatocyte 7a": 1
+    },
+    "spearman_committor_mean": 0.775,
+    "spearman_committor_std": 0.046,
+    "spearman_pc1_mean": 0.466,
+    "committor_wins": 8,
+    "grid": [
+      0.0,
+      0.01694915254237288,
+      0.03389830508474576,
+      0.05084745762711865,
+      0.06779661016949153,
+      0.0847457627118644,
+      0.1016949152542373,
+      0.11864406779661017,
+      0.13559322033898305,
+      0.15254237288135594,
+      0.1694915254237288,
+      0.1864406779661017,
+      0.2033898305084746,
+      0.22033898305084745,
+      0.23728813559322035,
+      0.2542372881355932,
+      0.2711864406779661,
+      0.288135593220339,
+      0.3050847457627119,
+      0.3220338983050847,
+      0.3389830508474576,
+      0.3559322033898305,
+      0.3728813559322034,
+      0.3898305084745763,
+      0.4067796610169492,
+      0.423728813559322,
+      0.4406779661016949,
+      0.4576271186440678,
+      0.4745762711864407,
+      0.4915254237288136,
+      0.5084745762711864,
+      0.5254237288135594,
+      0.5423728813559322,
+      0.559322033898305,
+      0.576271186440678,
+      0.5932203389830508,
+      0.6101694915254238,
+      0.6271186440677966,
+      0.6440677966101694,
+      0.6610169491525424,
+      0.6779661016949152,
+      0.6949152542372882,
+      0.711864406779661,
+      0.7288135593220338,
+      0.7457627118644068,
+      0.7627118644067796,
+      0.7796610169491526,
+      0.7966101694915254,
+      0.8135593220338984,
+      0.8305084745762712,
+      0.847457627118644,
+      0.864406779661017,
+      0.8813559322033898,
+      0.8983050847457628,
+      0.9152542372881356,
+      0.9322033898305084,
+      0.9491525423728814,
+      0.9661016949152542,
+      0.9830508474576272,
+      1.0
+    ],
+    "curves": [
+      [
+        0.6822804646796858,
+        0.6686833459390378,
+        0.6754838063730786,
+        0.6998532376489768,
+        0.738001872112666,
+        0.7850678584434349,
+        0.8352036876751007,
+        0.8820095218943564,
+        0.9193940277743363,
+        0.9427226525076365,
+        0.9498227258474776,
+        0.9413188370949829,
+        0.9200693566138998,
+        0.8899739573709899,
+        0.8546962234197241,
+        0.8167375972045162,
+        0.7770257441959043,
+        0.7349876857384672,
+        0.6890128517027625,
+        0.637188457506276,
+        0.5781368607206844,
+        0.5117179797035858,
+        0.4393655996360148,
+        0.3639601602784544,
+        0.28933908420891485,
+        0.21967275251651514,
+        0.15891975343359926,
+        0.11046834501434805,
+        0.07696410074053778,
+        0.06026653047880601,
+        0.06146742512589587,
+        0.08091733512995689,
+        0.11822519286271174,
+        0.17221209893802086,
+        0.24081461807230004,
+        0.32095114295378097,
+        0.4083942066246228,
+        0.49773572452146486,
+        0.58257936570669,
+        0.6561013245893539,
+        0.7120168612920039,
+        0.7457465064478224,
+        0.7553230375823301,
+        0.741584552253097,
+        0.7075655082752944,
+        0.6574462549996508,
+        0.5955721206436798,
+        0.5258601999633787,
+        0.45162520307355425,
+        0.37568278079894046,
+        0.30055775010551766,
+        0.22867179567479404,
+        0.16245073440340793,
+        0.10434478465156655,
+        0.05678640076179381,
+        0.022119902046388334,
+        0.002531920652595193,
+        0.0,
+        0.016265217544156968,
+        0.05282688667651192
+      ],
+      [
+        1.0824782550233212,
+        1.0672619467205338,
+        1.0732371872955904,
+        1.0992620936465756,
+        1.143992535951207,
+        1.2058615212370087,
+        1.2830589864084434,
+        1.373506647247288,
+        1.4748143021016697,
+        1.5841914407525493,
+        1.6982740657976099,
+        1.812822228132683,
+        1.9222750879494213,
+        2.0192633246304297,
+        2.0944157218207113,
+        2.1370859809698217,
+        2.137587395804905,
+        2.0905898403185543,
+        1.9978070079700168,
+        1.8678786813299277,
+        1.7134599646169122,
+        1.5476341863157153,
+        1.381539094426023,
+        1.2235657107132445,
+        1.0795485001763065,
+        0.9533144090959897,
+        0.8472342361887779,
+        0.7626486222792941,
+        0.7001534428219082,
+        0.6597663008397037,
+        0.6409994514618207,
+        0.642857851056485,
+        0.6637740757856588,
+        0.7014892156435579,
+        0.7528943509419811,
+        0.8138656234477498,
+        0.87916112394713,
+        0.9424947761842497,
+        0.9969317159068543,
+        1.0356987998031826,
+        1.0533150857355738,
+        1.0466745128337769,
+        1.0155836923780106,
+        0.9624819649528334,
+        0.8915267050708116,
+        0.8075242856618217,
+        0.7151208763729984,
+        0.618398305223559,
+        0.5208003054903396,
+        0.42523782766992946,
+        0.3342451926111526,
+        0.25011337857689936,
+        0.17497384062478166,
+        0.11083499974264321,
+        0.05958600468954467,
+        0.02298417114600282,
+        0.0026389322922590885,
+        0.0,
+        0.016352911122517688,
+        0.052822064431525706
+      ],
+      [
+        1.5597762377927107,
+        1.5512112539140555,
+        1.5849230535992063,
+        1.6600859069367404,
+        1.7755117097193924,
+        1.9294146833219177,
+        2.1190254455220847,
+        2.339985097896437,
+        2.5854664966839724,
+        2.8450811882408145,
+        3.1039313791894374,
+        3.3426336509981907,
+        3.5392525309203764,
+        3.6728682470594474,
+        3.7265572935381654,
+        3.6884788890011406,
+        3.553781385559649,
+        3.3291608033595863,
+        3.034786049446737,
+        2.698661195528644,
+        2.3478358971559588,
+        2.0031802207535767,
+        1.6787342668981489,
+        1.3832210062451926,
+        1.1217958458011092,
+        0.8973442495953439,
+        0.7112833135998538,
+        0.563995491203106,
+        0.4550149789852314,
+        0.38304271502308596,
+        0.3458291987578177,
+        0.33994615246117116,
+        0.36047518857486205,
+        0.40068684828353596,
+        0.45187977331090795,
+        0.5036780449738085,
+        0.5451285457408471,
+        0.5666741858213876,
+        0.5624155164788506,
+        0.531495827799286,
+        0.47776691846638614,
+        0.40804593171960246,
+        0.3300774376275326,
+        0.25108424934501705,
+        0.17708960503067545,
+        0.11275458732152349,
+        0.061422219437037295,
+        0.025177817908836886,
+        0.004855522809832924,
+        0.0,
+        0.008846239207773166,
+        0.02842704894009518,
+        0.054947234022927005,
+        0.08452754902152504,
+        0.11426405011708485,
+        0.14329704674894506,
+        0.17342492903212364,
+        0.20894746757803206,
+        0.25583218644670275,
+        0.32062786563366125
+      ],
+      [
+        1.3848556644257184,
+        1.3792102923511718,
+        1.4037376791141458,
+        1.4523073331912062,
+        1.5163982596873957,
+        1.5851692742725927,
+        1.6466449584716396,
+        1.6903501760673199,
+        1.7106063904987,
+        1.7084872182289357,
+        1.6909034871015378,
+        1.6674875760755965,
+        1.6473334313506576,
+        1.6369394504237658,
+        1.639346774971723,
+        1.653852347846776,
+        1.6758108412152,
+        1.6965028580239379,
+        1.703635642823384,
+        1.683485832028813,
+        1.6251729541602207,
+        1.5254403111422175,
+        1.3905095591148986,
+        1.2333890006609833,
+        1.0689600292469776,
+        0.910166489505074,
+        0.7664624327368544,
+        0.6438155517603036,
+        0.5452741675320548,
+        0.4715227672739739,
+        0.4212356320465882,
+        0.3912424758259771,
+        0.37662331532643956,
+        0.37092435753913255,
+        0.36673244071355815,
+        0.3567799882032082,
+        0.3354743707024701,
+        0.30032549389913415,
+        0.25255303927818934,
+        0.19652821567435907,
+        0.1383988415942291,
+        0.08461580818663106,
+        0.04088555045608744,
+        0.011659005881708207,
+        0.0,
+        0.007622556389494384,
+        0.03494365998409177,
+        0.08107422075603893,
+        0.14373745159992096,
+        0.2191702283242083,
+        0.3021443906143019,
+        0.38632736826278935,
+        0.4652042403672636,
+        0.533571913759346,
+        0.5891685753188024,
+        0.6336403383418274,
+        0.6722616731896633,
+        0.7125833276659382,
+        0.7627737371656318,
+        0.8303545757310191
+      ],
+      [
+        2.3625453015820073,
+        2.390814289529068,
+        2.4758875504941362,
+        2.616532192916051,
+        2.809612123908331,
+        3.047239332649947,
+        3.3103279305113786,
+        3.5572530777378595,
+        3.717139281647159,
+        3.7210167451145546,
+        3.568051456034288,
+        3.3261094371127284,
+        3.0656179021967955,
+        2.8277214358852216,
+        2.6305016571335313,
+        2.4797455994006423,
+        2.374284208985694,
+        2.30680605863119,
+        2.2618623351779865,
+        2.213228261182824,
+        2.1258561165048784,
+        1.9694366172884,
+        1.738432140695534,
+        1.4561990336208042,
+        1.157600478299663,
+        0.8717160511626884,
+        0.6167966716531368,
+        0.4024798247842232,
+        0.2331053753793415,
+        0.11002431948512725,
+        0.032848335754771196,
+        0.0,
+        0.008845405647025184,
+        0.055572540720020935,
+        0.13492051795460402,
+        0.23988222496187994,
+        0.361597083531764,
+        0.48977920397215013,
+        0.6140286000371487,
+        0.7259882417507663,
+        0.8215302235939019,
+        0.9016710699525846,
+        0.9715548740518059,
+        1.0381636545699147,
+        1.108015776533148,
+        1.1855884131622616,
+        1.2723894090992798,
+        1.366211839925178,
+        1.4602192592231487,
+        1.5421167803025397,
+        1.5948278643478817,
+        1.6010070879983203,
+        1.5515757516248025,
+        1.4525631698657238,
+        1.3233140173942939,
+        1.1878761823763715,
+        1.0674146110713867,
+        0.9773635708613971,
+        0.9278731904133508,
+        0.9252824229117839
+      ],
+      [
+        1.3673600222963995,
+        1.3576651076654627,
+        1.367371827389408,
+        1.3933912502862866,
+        1.4316053309155237,
+        1.4767613883414081,
+        1.5225842913989243,
+        1.562261098647845,
+        1.5893685828723767,
+        1.5990712021411022,
+        1.5891217596975502,
+        1.5601368694785256,
+        1.5149707082361623,
+        1.4575241710882771,
+        1.3915602581114208,
+        1.319936004982138,
+        1.2443575545279177,
+        1.1655587851896496,
+        1.0837344950742336,
+        0.9990589622346607,
+        0.912140223128325,
+        0.8242967132165754,
+        0.7376055942861298,
+        0.6547488956685398,
+        0.578741458159902,
+        0.5126387034984072,
+        0.45929628895960123,
+        0.42121204707420157,
+        0.400446166609417,
+        0.39859754368947226,
+        0.4168101506944521,
+        0.45578644621184256,
+        0.5157895444072546,
+        0.5966187181800557,
+        0.6975422424539328,
+        0.817166889636509,
+        0.9532146624637744,
+        1.1021673964541807,
+        1.2587405284893831,
+        1.4151935177071717,
+        1.5606509578170782,
+        1.6809809959730153,
+        1.7602391900630345,
+        1.7845028337902489,
+        1.7470772424052101,
+        1.6516136397912764,
+        1.5104249302529689,
+        1.3395006949579606,
+        1.1539610531362237,
+        0.9658735279018493,
+        0.784008918592932,
+        0.6144528315684643,
+        0.4613580914882426,
+        0.3275628308223163,
+        0.215029866192811,
+        0.12514034457930473,
+        0.05888545836832215,
+        0.016991180471060408,
+        0.0,
+        0.008325155092539727
+      ],
+      [
+        0.8246787664020294,
+        0.8201257571134207,
+        0.8344628958028635,
+        0.8671307307743357,
+        0.9174054467802739,
+        0.9843407030344226,
+        1.0666850593907586,
+        1.1627643844077689,
+        1.2703162098228538,
+        1.3862643620893598,
+        1.5064352090150237,
+        1.6252562546799607,
+        1.7355618771710755,
+        1.8287574082696412,
+        1.8956792033581593,
+        1.928327828931904,
+        1.9220739272695515,
+        1.8772534667159249,
+        1.799117298971512,
+        1.696154851820119,
+        1.577849598886462,
+        1.4529434292797685,
+        1.3285932206238882,
+        1.2102302723337495,
+        1.1017791881210026,
+        1.0059819614104717,
+        0.9247000682369981,
+        0.8591518327805818,
+        0.8100822376228043,
+        0.7778756951674524,
+        0.7626235386090472,
+        0.7641548329455595,
+        0.7820347698890038,
+        0.8155304318113473,
+        0.8635393723571951,
+        0.9244727423649637,
+        0.9960832740836763,
+        1.0752337486245422,
+        1.1576227395779568,
+        1.237535470851265,
+        1.3077782571270444,
+        1.3600586447468686,
+        1.3860765187043778,
+        1.3793102304992404,
+        1.3369006754183494,
+        1.2606221511114888,
+        1.1563121371516654,
+        1.032133756078379,
+        0.8966705688292098,
+        0.7576160926463735,
+        0.6212167949379827,
+        0.49224625168585423,
+        0.3742294869423898,
+        0.2697281674978583,
+        0.18059736374025198,
+        0.10818686242752068,
+        0.053488541291253466,
+        0.01724057550061886,
+        0.0,
+        0.002193071155717541
+      ],
+      [
+        1.178883696008966,
+        1.1398925282713264,
+        1.1330873535337875,
+        1.1572220278317187,
+        1.2106605101349088,
+        1.2912308153391936,
+        1.3960256988891264,
+        1.521139648990264,
+        1.6613429669128426,
+        1.8097236084312902,
+        1.9573873725717612,
+        2.0933984891986945,
+        2.2052306714839367,
+        2.2799853473203973,
+        2.306394297102559,
+        2.2771606391528763,
+        2.190778673754213,
+        2.052003330755745,
+        1.8707213818321273,
+        1.6597459543968123,
+        1.4324666875693595,
+        1.2011074787469573,
+        0.9758398905831535,
+        0.764592491022127,
+        0.5732574042903753,
+        0.4060441522640733,
+        0.26583337316372907,
+        0.15446555561248343,
+        0.07294706264525541,
+        0.021576392556415858,
+        0.0,
+        0.0072079439166271575,
+        0.04148082851082857,
+        0.10030505272595636,
+        0.18028657672459025,
+        0.2771154453494832,
+        0.385658646364227,
+        0.5002681930978606,
+        0.6153504231936979,
+        0.7261251838472043,
+        0.8293427670812896,
+        0.923639662388365,
+        1.0093174013768662,
+        1.087586361373258,
+        1.1595412800947076,
+        1.2251901485698657,
+        1.2827922229519078,
+        1.3287086917655118,
+        1.3579654389193292,
+        1.3656317488320964,
+        1.3487476693062495,
+        1.307996161050898,
+        1.2481803763075283,
+        1.1772327648530072,
+        1.1044153460609945,
+        1.038667423777275,
+        0.9876319614048588,
+        0.9573517981120193,
+        0.952378575483501,
+        0.9760480966418238
+      ]
+    ]
+  },
+  "vertebrate_reference": [
+    {
+      "dataset": "pancreas endocrine",
+      "cyclic_fraction_real": 0.1507,
+      "gradient_floor": 0.0994,
+      "random_ceiling": 0.2898
+    },
+    {
+      "dataset": "gastrulation erythroid",
+      "cyclic_fraction_real": 0.0798,
+      "gradient_floor": 0.0851,
+      "random_ceiling": 0.353
+    },
+    {
+      "dataset": "bone marrow erythroid",
+      "cyclic_fraction_real": 0.1083,
+      "gradient_floor": 0.0965,
+      "random_ceiling": 0.304
+    }
+  ],
+  "drivers": {
+    "n_genes_tested": 4691,
+    "n_fits": 5,
+    "window": 0.2,
+    "cells_before_after_per_fit": [
+      [
+        91,
+        1657
+      ],
+      [
+        450,
+        902
+      ],
+      [
+        659,
+        597
+      ],
+      [
+        228,
+        1448
+      ],
+      [
+        436,
+        593
+      ]
+    ],
+    "top_k_overlap_between_fits_mean": 0.358,
+    "top_k_overlap_chance": 0.0107,
+    "top_k": 50,
+    "n_sign_consistent_genes": 1418,
+    "top_up": [
+      {
+        "fbgn": "FBgn0053340",
+        "symbol": "CG33340",
+        "switch_score": 0.284,
+        "score_range": [
+          0.164,
+          0.524
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0053340"
+      },
+      {
+        "fbgn": "FBgn0035915",
+        "symbol": "S-Lap1",
+        "switch_score": 0.266,
+        "score_range": [
+          0.03,
+          0.491
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0035915"
+      },
+      {
+        "fbgn": "FBgn0046297",
+        "symbol": "lncRNA:CR9284",
+        "switch_score": 0.256,
+        "score_range": [
+          0.055,
+          0.333
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0046297"
+      },
+      {
+        "fbgn": "FBti0020190",
+        "symbol": "McClintock{}1079",
+        "switch_score": 0.254,
+        "score_range": [
+          0.14,
+          0.423
+        ],
+        "flybase": "https://flybase.org/reports/FBti0020190"
+      },
+      {
+        "fbgn": "FBgn0033953",
+        "symbol": "CG12861",
+        "switch_score": 0.23,
+        "score_range": [
+          0.13,
+          0.32
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0033953"
+      },
+      {
+        "fbgn": "FBgn0051740",
+        "symbol": "CG31740",
+        "switch_score": 0.228,
+        "score_range": [
+          0.108,
+          0.265
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0051740"
+      },
+      {
+        "fbgn": "FBgn0031751",
+        "symbol": "CG9016",
+        "switch_score": 0.223,
+        "score_range": [
+          0.078,
+          0.37
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0031751"
+      },
+      {
+        "fbgn": "FBgn0031728",
+        "symbol": "Hsp60C",
+        "switch_score": 0.211,
+        "score_range": [
+          0.073,
+          0.289
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0031728"
+      },
+      {
+        "fbgn": "FBgn0046294",
+        "symbol": "CG12699",
+        "switch_score": 0.208,
+        "score_range": [
+          0.014,
+          0.307
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0046294"
+      },
+      {
+        "fbgn": "FBgn0040519",
+        "symbol": "CG15219",
+        "switch_score": 0.204,
+        "score_range": [
+          0.088,
+          0.27
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0040519"
+      },
+      {
+        "fbgn": "FBgn0039694",
+        "symbol": "fig",
+        "switch_score": 0.202,
+        "score_range": [
+          0.04,
+          0.214
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0039694"
+      },
+      {
+        "fbgn": "FBgn0036091",
+        "symbol": "CG18628",
+        "switch_score": 0.196,
+        "score_range": [
+          0.041,
+          0.313
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0036091"
+      },
+      {
+        "fbgn": "FBgn0019828",
+        "symbol": "dj",
+        "switch_score": 0.195,
+        "score_range": [
+          0.019,
+          0.205
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0019828"
+      },
+      {
+        "fbgn": "FBgn0038200",
+        "symbol": "CG9920",
+        "switch_score": 0.195,
+        "score_range": [
+          0.038,
+          0.367
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0038200"
+      },
+      {
+        "fbgn": "FBgn0033287",
+        "symbol": "CG8701",
+        "switch_score": 0.193,
+        "score_range": [
+          0.018,
+          0.343
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0033287"
+      }
+    ],
+    "top_down": [
+      {
+        "fbgn": "FBgn0036714",
+        "symbol": "CG7692",
+        "switch_score": -0.599,
+        "score_range": [
+          -0.837,
+          -0.203
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0036714"
+      },
+      {
+        "fbgn": "FBgn0003165",
+        "symbol": "pum",
+        "switch_score": -0.59,
+        "score_range": [
+          -0.782,
+          -0.213
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0003165"
+      },
+      {
+        "fbgn": "FBgn0267827",
+        "symbol": "lncRNA:CR46148",
+        "switch_score": -0.571,
+        "score_range": [
+          -0.855,
+          -0.113
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0267827"
+      },
+      {
+        "fbgn": "FBgn0016977",
+        "symbol": "spen",
+        "switch_score": -0.547,
+        "score_range": [
+          -0.847,
+          -0.114
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0016977"
+      },
+      {
+        "fbgn": "FBgn0011481",
+        "symbol": "Ssdp",
+        "switch_score": -0.543,
+        "score_range": [
+          -0.85,
+          -0.157
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0011481"
+      },
+      {
+        "fbgn": "FBgn0287182",
+        "symbol": "l(3)80Fj",
+        "switch_score": -0.53,
+        "score_range": [
+          -0.737,
+          -0.153
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0287182"
+      },
+      {
+        "fbgn": "FBgn0263352",
+        "symbol": "Unr",
+        "switch_score": -0.515,
+        "score_range": [
+          -0.734,
+          -0.091
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0263352"
+      },
+      {
+        "fbgn": "FBgn0010113",
+        "symbol": "hdc",
+        "switch_score": -0.504,
+        "score_range": [
+          -0.782,
+          -0.194
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0010113"
+      },
+      {
+        "fbgn": "FBgn0262124",
+        "symbol": "uex",
+        "switch_score": -0.493,
+        "score_range": [
+          -0.78,
+          -0.12
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0262124"
+      },
+      {
+        "fbgn": "FBgn0260798",
+        "symbol": "Gprk1",
+        "switch_score": -0.491,
+        "score_range": [
+          -0.938,
+          -0.149
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0260798"
+      },
+      {
+        "fbgn": "FBgn0010825",
+        "symbol": "Gug",
+        "switch_score": -0.489,
+        "score_range": [
+          -0.562,
+          -0.077
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0010825"
+      },
+      {
+        "fbgn": "FBgn0005640",
+        "symbol": "Eip63E",
+        "switch_score": -0.482,
+        "score_range": [
+          -0.697,
+          -0.124
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0005640"
+      },
+      {
+        "fbgn": "FBgn0250816",
+        "symbol": "AGO3",
+        "switch_score": -0.478,
+        "score_range": [
+          -0.778,
+          -0.221
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0250816"
+      },
+      {
+        "fbgn": "FBgn0031885",
+        "symbol": "Mnn1",
+        "switch_score": -0.475,
+        "score_range": [
+          -0.664,
+          -0.144
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0031885"
+      },
+      {
+        "fbgn": "FBgn0265753",
+        "symbol": "lncRNA:CR44560",
+        "switch_score": -0.46,
+        "score_range": [
+          -0.56,
+          -0.078
+        ],
+        "flybase": "https://flybase.org/reports/FBgn0265753"
+      }
+    ],
+    "known_regulators": [
+      {
+        "symbol": "bam",
+        "role": "spermatogonia -> spermatocyte switch",
+        "fbgn": null,
+        "rank": null,
+        "switch_score": null
+      },
+      {
+        "symbol": "bgcn",
+        "role": "spermatogonia -> spermatocyte switch",
+        "fbgn": null,
+        "rank": null,
+        "switch_score": null
+      },
+      {
+        "symbol": "aly",
+        "role": "meiotic arrest (tMAC)",
+        "fbgn": "FBgn0004372",
+        "rank": 4562,
+        "switch_score": -0.004
+      },
+      {
+        "symbol": "comr",
+        "role": "meiotic arrest (tMAC)",
+        "fbgn": null,
+        "rank": null,
+        "switch_score": null
+      },
+      {
+        "symbol": "tomb",
+        "role": "meiotic arrest (tMAC)",
+        "fbgn": "FBgn0031715",
+        "rank": 2308,
+        "switch_score": -0.077
+      },
+      {
+        "symbol": "topi",
+        "role": "meiotic arrest (tMAC)",
+        "fbgn": "FBgn0037751",
+        "rank": 4117,
+        "switch_score": -0.019
+      },
+      {
+        "symbol": "achi",
+        "role": "meiotic arrest (tMAC)",
+        "fbgn": "FBgn0033749",
+        "rank": 3191,
+        "switch_score": 0.048
+      },
+      {
+        "symbol": "vis",
+        "role": "meiotic arrest (tMAC)",
+        "fbgn": "FBgn0033748",
+        "rank": 1395,
+        "switch_score": 0.121
+      },
+      {
+        "symbol": "can",
+        "role": "meiotic arrest (tTAF)",
+        "fbgn": "FBgn0011569",
+        "rank": 4648,
+        "switch_score": -0.001
+      },
+      {
+        "symbol": "mia",
+        "role": "meiotic arrest (tTAF)",
+        "fbgn": "FBgn0014342",
+        "rank": 2061,
+        "switch_score": -0.087
+      },
+      {
+        "symbol": "sa",
+        "role": "meiotic arrest (tTAF)",
+        "fbgn": "FBgn0002842",
+        "rank": 4666,
+        "switch_score": 0.001
+      },
+      {
+        "symbol": "nht",
+        "role": "meiotic arrest (tTAF)",
+        "fbgn": "FBgn0041103",
+        "rank": 2734,
+        "switch_score": -0.063
+      },
+      {
+        "symbol": "rye",
+        "role": "meiotic arrest (tTAF)",
+        "fbgn": null,
+        "rank": null,
+        "switch_score": null
+      },
+      {
+        "symbol": "fzo",
+        "role": "spermatid mitochondria",
+        "fbgn": "FBgn0011596",
+        "rank": 1775,
+        "switch_score": 0.1
+      },
+      {
+        "symbol": "Mst87F",
+        "role": "spermatid tail",
+        "fbgn": "FBgn0002862",
+        "rank": 2143,
+        "switch_score": 0.085
+      },
+      {
+        "symbol": "ProtA",
+        "role": "protamine",
+        "fbgn": "FBgn0013300",
+        "rank": 3151,
+        "switch_score": 0.049
+      },
+      {
+        "symbol": "ProtB",
+        "role": "protamine",
+        "fbgn": "FBgn0013301",
+        "rank": 1652,
+        "switch_score": 0.107
+      },
+      {
+        "symbol": "dj",
+        "role": "spermatid tail",
+        "fbgn": "FBgn0019828",
+        "rank": 552,
+        "switch_score": 0.195
+      }
+    ],
+    "known_in_top_5pct": 0,
+    "known_detected": 14,
+    "known_expected_by_chance": 0.7,
+    "known_enrichment_binomial_p": 1.0,
+    "note": "switch score = median over independent committor fits of the change in mean log expression across q = 0.5 (SD units); reported genes switch the same way in every fit. A ranking for follow-up, not a causal test."
+  }
+}
