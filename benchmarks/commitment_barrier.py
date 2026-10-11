@@ -14,6 +14,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+from pancreas_entropy_validation import BRANCH, load_branch
 
 from thermodynamic_waddington import (
     FitConfig,
@@ -21,8 +22,6 @@ from thermodynamic_waddington import (
     developmental_coordinate,
     fit_landscape,
 )
-
-from pancreas_entropy_validation import BRANCH, load_branch
 
 
 def run(seeds, cells, genes, grid):

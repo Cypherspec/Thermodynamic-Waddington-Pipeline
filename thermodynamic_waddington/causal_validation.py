@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Locked analysis of matched perturbation, lineage, and fate experiments.
 
 The module is intentionally strict: computational predictions cannot be entered as
@@ -7,13 +5,14 @@ measured outcomes, and a positive result requires donor-level replication,
 pre-registered thresholds, viability checks, and a matched control.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
-import math
 import random
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 
 @dataclass(frozen=True)

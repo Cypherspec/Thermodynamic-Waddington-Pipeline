@@ -5,7 +5,7 @@ import random
 from dataclasses import dataclass
 from typing import Sequence
 
-from .arrays import mean, norm
+from .arrays import mean
 from .graph import Edge
 
 

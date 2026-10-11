@@ -16,7 +16,8 @@ pip install -e ".[all]"
 ## Tests
 
 ```bash
-pytest        # 193 unit tests
+pytest        # 218 unit tests
+ruff check .  # lint, also enforced in CI
 ```
 
 The vectorized numeric core is pinned to bit-identical outputs against a
@@ -42,6 +43,8 @@ All datasets are public and obtained through scVelo; none are redistributed here
 - Mouse gastrulation erythroid: Pijuan-Sala et al., *Nature* 2019, via
   `scvelo.datasets.gastrulation_erythroid()`. Place at
   `data/real/gastrulation_erythroid.h5ad`.
+- Human bone marrow erythroid: Setty et al., *Nat. Biotechnol.* 2019, via
+  `scvelo.datasets.bonemarrow()`. Place at `data/real/bonemarrow.h5ad`.
 - Dentate gyrus (documented negative control): Hochgerner et al., 2018, via
   `scvelo.datasets.dentategyrus()`.
 

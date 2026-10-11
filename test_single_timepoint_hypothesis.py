@@ -1,6 +1,19 @@
-import sys, json, numpy as np
+import json
+import sys
+
+import numpy as np
+
 sys.path.insert(0, '.')
-from run_independent_dataset_check import *
+from run_independent_dataset_check import (
+    EP_NEIGHBORS,
+    EntropyProductionConfig,
+    ad,
+    build_knn,
+    estimate_entropy_production,
+    estimate_local_diffusion,
+    local_density,
+    velocity_in_transformed_space,
+)
 
 adata_fit = ad.read_h5ad("data/DentateGyrus/dentategyrus_dynamical.h5ad")
 converged_genes = adata_fit.var_names[~adata_fit.var["fit_alpha"].isna()]

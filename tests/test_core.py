@@ -2,24 +2,19 @@ from __future__ import annotations
 
 import math
 import tempfile
+import unittest
 from pathlib import Path
 
-import unittest
-
-from thermodynamic_waddington.config import FitConfig
 from thermodynamic_waddington.benchmarking import rank_correlation
 from thermodynamic_waddington.causal import intervention_scan, rank_targets
+from thermodynamic_waddington.config import FitConfig
 from thermodynamic_waddington.geometry import summarize
-from thermodynamic_waddington.observability import fingerprint
-from thermodynamic_waddington.topology.persistence import lower_star_pairs
 from thermodynamic_waddington.graph import build_knn
 from thermodynamic_waddington.model import fit_landscape
+from thermodynamic_waddington.observability import fingerprint
+from thermodynamic_waddington.protocols.jarzynski_protocol import WorkSample, estimate_work, protocol_diagnostic
 from thermodynamic_waddington.synthetic import make_synthetic_dataset
-from thermodynamic_waddington.protocols.jarzynski_protocol import WorkSample, estimate_work, protocol_diagnostic
-from thermodynamic_waddington.protocols.jarzynski_protocol import WorkSample, estimate_work
-from thermodynamic_waddington.protocols.jarzynski_protocol import WorkSample, estimate_work
-from thermodynamic_waddington.protocols.jarzynski_protocol import WorkSample, estimate_work, protocol_diagnostic
-from thermodynamic_waddington.protocols.jarzynski_protocol import WorkSample, estimate_work, protocol_diagnostic
+from thermodynamic_waddington.topology.persistence import lower_star_pairs
 
 
 class CoreTests(unittest.TestCase):

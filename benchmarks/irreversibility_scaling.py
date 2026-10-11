@@ -20,8 +20,6 @@ from thermodynamic_waddington.graph import build_knn
 from thermodynamic_waddington.irreversibility import (
     _edge_flow,
     _frac_dense,
-    _frac_sparse,
-    _incidence,
     _laplacian_pinv,
     _pairs,
     cycle_affinities,

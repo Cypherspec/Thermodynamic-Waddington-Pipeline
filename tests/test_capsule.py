@@ -1,6 +1,9 @@
 from __future__ import annotations
+
 import unittest
+
 from thermodynamic_waddington.award_capsule import build_capsule
+
 
 class CapsuleTests(unittest.TestCase):
     def test_capsule_retains_negative_result_and_boundary(self):

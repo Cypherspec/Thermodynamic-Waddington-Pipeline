@@ -6,7 +6,6 @@ from typing import Sequence
 
 from .arrays import dot, mean, norm, solve_linear_system
 
-
 Matrix = list[list[float]]
 
 

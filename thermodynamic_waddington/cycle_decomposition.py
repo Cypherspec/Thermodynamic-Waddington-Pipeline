@@ -26,8 +26,8 @@ import math
 from dataclasses import dataclass, field
 from typing import Sequence
 
+from .entropy_production import EntropyProductionConfig, PairFlux, compute_pair_fluxes
 from .graph import Edge, NeighborGraph, adjacency
-from .entropy_production import PairFlux, EntropyProductionConfig, compute_pair_fluxes
 
 
 @dataclass(frozen=True)

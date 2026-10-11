@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-import json
-import tempfile
 import unittest
-from pathlib import Path
 
 from thermodynamic_waddington.causal_validation import StudyCell, StudyConfig, analyze_study, create_preregistration
 

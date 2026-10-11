@@ -157,7 +157,6 @@ def propagate_multi_source(
     # align components: find cross-component edges, use minimum-work
     # path to set relative offsets between components
     if align_components and n_comps > 1:
-        comp_offset: dict[int, float] = {c: 0.0 for c in set(comp_ids)}
         for e in edges:
             cs = comp_ids[e.source]
             ct = comp_ids[e.target]

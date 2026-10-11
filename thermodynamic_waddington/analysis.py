@@ -4,9 +4,9 @@ import math
 from dataclasses import dataclass
 from typing import Sequence
 
-from .arrays import mean, quantile, variance
-from .graph import Edge, adjacency
-from .trajectory import basin_membership, trajectory_summary, stochastic_paths
+from .arrays import mean, variance
+from .graph import Edge
+from .trajectory import basin_membership, stochastic_paths, trajectory_summary
 from .uncertainty import bootstrap
 
 
@@ -60,9 +60,9 @@ def score_landscape(edges: Sequence[Edge], energies: Sequence[float], labels: Se
 
 
 def report(edges: Sequence[Edge], energies: Sequence[float], velocities: Sequence[Sequence[float]], attractors: Sequence[int], temperature: float = 1.0, draws: int = 128) -> LandscapeReport:
-    labels = basin_membership(edges, energies, attractors)
+    labels = basin_membership(energies, attractors)
     groups = {label: labels.count(label) for label in sorted(set(labels)) if label >= 0}
-    paths = [stochastic_paths(edges, energies, attractor, draws=draws, temperature=temperature, seed=101 + attractor) for attractor in attractors]
+    paths = [stochastic_paths(edges, energies, [attractor], attractors, temperature=temperature) for attractor in attractors]
     flux = [{"source": attractor, "summary": trajectory_summary(samples)} for attractor, samples in zip(attractors, paths)]
     work = [edge.work for edge in edges]
     return LandscapeReport(score_landscape(edges, energies, labels), groups, flux, critical_edges(edges, energies), {"edge_work": bootstrap(work, draws=min(256, max(32, draws)), seed=79).as_dict()})

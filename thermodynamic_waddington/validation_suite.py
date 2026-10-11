@@ -3,10 +3,9 @@ from __future__ import annotations
 import math
 import random
 from dataclasses import dataclass
-from typing import Callable, Sequence
+from typing import Sequence
 
-from .arrays import mean, variance
-from .dynamics import simulate_trajectories
+from .arrays import mean
 from .protocols.nonequilibrium import jarzynski_cumulants
 
 

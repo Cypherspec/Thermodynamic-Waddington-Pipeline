@@ -1,6 +1,10 @@
 from __future__ import annotations
-import argparse, json
+
+import argparse
+import json
+
 from .review_packet import write_review_packet
+
 
 def main() -> int:
     p = argparse.ArgumentParser(description="Generate an evidence-bounded reviewer packet")

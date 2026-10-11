@@ -4,7 +4,7 @@ import math
 from dataclasses import asdict, dataclass
 from typing import Any, Sequence
 
-from .arrays import mean, variance
+from .arrays import mean
 from .cell_atlas import CellInterpretation, ProgramScore, interpret_cell
 
 

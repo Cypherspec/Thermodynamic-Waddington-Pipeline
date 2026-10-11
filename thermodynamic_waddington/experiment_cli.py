@@ -4,10 +4,10 @@ import argparse
 import json
 from pathlib import Path
 
-from .validation_suite import run_recovery_suite
-from .protocols.nonequilibrium import jarzynski_cumulants
-from .benchmarks import benchmark, random_matrix, scaling_summary
+from .benchmarks import benchmark, scaling_summary
 from .linalg import pca
+from .protocols.nonequilibrium import jarzynski_cumulants
+from .validation_suite import run_recovery_suite
 
 
 def main(argv: list[str] | None = None) -> int:

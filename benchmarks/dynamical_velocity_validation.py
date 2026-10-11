@@ -12,7 +12,6 @@ Bounded on purpose (1000 genes) so the EM fit stays to a few minutes.
 from __future__ import annotations
 
 import json
-import math
 from pathlib import Path
 
 import numpy as np

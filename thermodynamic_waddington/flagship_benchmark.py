@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Locked donor/clone-aware benchmark orchestration.
 
 The benchmark is designed to prevent the common failure mode of reporting a
@@ -7,13 +5,15 @@ cell-randomized score that leaks clone or donor information. It computes cell,
 clone, donor, and intervention-stratified metrics and records all exclusions.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
 import math
 import random
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Sequence
 
 
 @dataclass(frozen=True)

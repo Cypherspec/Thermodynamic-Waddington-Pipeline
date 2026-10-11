@@ -1,11 +1,11 @@
-from __future__ import annotations
-
 """Multiverse robustness analysis for the effective landscape estimator.
 
 This module does not turn specification sensitivity into biological validation.
 It quantifies how much basin ordering, energy ordering, and velocity alignment
 change across predeclared analyst choices, then exposes instability as a blocker.
 """
+
+from __future__ import annotations
 
 import hashlib
 import json
@@ -110,7 +110,7 @@ def evaluate_robustness(
             finite = all(math.isfinite(value) for value in energies)
             alignment = _alignment(fit)
             results.append(RobustnessScenario(name, config.neighbors, config.dimensions, config.density_bandwidth, config.diffusion_floor, config.velocity_scale, config.edge_alignment_threshold, config.estimator, energies, tuple(_rank(energies)), alignment, finite))
-        except Exception as error:
+        except Exception:
             results.append(RobustnessScenario(name, config.neighbors, config.dimensions, config.density_bandwidth, config.diffusion_floor, config.velocity_scale, config.edge_alignment_threshold, config.estimator, tuple(), tuple(), None, False))
     baseline = next((item for item in results if item.name == "baseline"), results[0] if results else None)
     correlations = [_spearman(baseline.energies, item.energies) for item in results if baseline and item is not baseline and item.energies]

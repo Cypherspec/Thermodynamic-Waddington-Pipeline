@@ -1,4 +1,4 @@
-# Non-equilibrium thermodynamics of single-cell fate: detecting irreversibility and locating commitment from RNA velocity
+# Non-equilibrium thermodynamics of single-cell fate: calibrated irreversibility and commitment from RNA velocity
 
 **Nischay Kommisetty**
 
@@ -12,28 +12,32 @@ Code: https://github.com/Cypherspec/Thermodynamic-Waddington-Pipeline
 ## Abstract
 
 Trajectory-inference tools reconstruct the order and branching of single-cell
-differentiation, but they do not quantify whether the process is
-thermodynamically irreversible. We present a pipeline that treats differentiation
-as a non-equilibrium stochastic process on a kNN graph annotated with a
-Jarzynski path-work functional derived from RNA velocity, and that computes
-stochastic-thermodynamic observables directly: a Seifert entropy-production rate
-with a label-permutation null, a Schnakenberg cycle decomposition, an effective
-free-energy landscape, a transition-path-theory committor as a commitment
-coordinate, and the potential of mean force along it. Across two independent
-datasets (pancreatic endocrinogenesis and mouse gastrulation erythropoiesis),
-entropy production reliably distinguishes directed differentiation from a
-velocity-shuffled equilibrium control (directed p ~ 0.01; shuffled not
-significant), and does so where expression-based baselines are at chance
-(AUROC 1.00 vs 0.50). This irreversibility signal is robust to gene count and
-normalization. On pancreas, the committor recovers the lineage order, locates
-commitment at the Pre-endocrine stage, and yields a commitment free-energy
-barrier of 1.6 kT [1.4, 1.9]; we report honestly that the committor's ordering
-advantage over principal-component pseudotime does not generalize to the
-gastrulation lineage. We document a prior negative result on dentate gyrus
-neurogenesis, provide a falsifiable preregistration of the commitment
-prediction, and release a tested, one-command-reproducible package. The
-contribution is a validated way to ask a question existing tools do not: is a
-differentiation process out of equilibrium, and by how much?
+differentiation, but they do not quantify how far the process is from
+thermodynamic equilibrium. We present a pipeline that treats differentiation as a
+stochastic process on a kNN graph annotated with a Jarzynski path-work functional
+derived from RNA velocity, and that computes stochastic-thermodynamic observables
+directly: a calibrated irreversibility measure, Schnakenberg cycle affinities in
+kT, an effective free-energy landscape, a transition-path-theory committor as a
+commitment coordinate, and the potential of mean force along it. We first show
+that a natural irreversibility test - a Seifert entropy-production rate with a
+velocity-shuffle permutation null - is miscalibrated: on synthetic equilibrium
+ground truth it is significant in every run (false-positive rate 1.0; AUROC 0.44
+for equilibrium versus driven), because the shuffle destroys velocity-position
+coupling rather than detailed balance. We replace it with a discrete Hodge
+decomposition of the velocity flow into gradient (reversible) and cyclic
+(irreversible) parts. The cyclic fraction is calibrated on the same ground truth
+(AUROC 1.00, monotonic in a known drive, equilibrium floor 0.12). Applied to three
+developmental lineages (pancreatic endocrinogenesis, gastrulation erythropoiesis,
+bone marrow erythropoiesis), it shows they are close to reversible: pancreas
+carries a modest excess of 0.05 over a matched gradient floor, the other two
+essentially none, under both a velocity proxy and scVelo dynamical velocity. On
+pancreas the committor locates commitment at the Pre-endocrine stage with a
+commitment barrier of 1.6 kT [1.4, 1.9]; we report that its ordering advantage
+over principal-component pseudotime does not generalize to gastrulation, and that
+CellRank orders the pancreas lineage better. We release a tested,
+one-command-reproducible package and a preregistered falsifiable test. The
+contribution is a correct thermodynamic readout of differentiation, including the
+correction of an artifact that a naive analysis would report as a discovery.
 
 ## 1. Introduction
 
@@ -43,22 +47,22 @@ through pseudotime and RNA velocity: scVelo (Bergen et al., 2020), CellRank
 (Lange et al., 2022), Palantir (Setty et al., 2019), and Waddington-OT
 (Schiebinger et al., 2019) estimate ordering, fate probabilities, and transport
 between stages. These tools answer *where* a cell is going. They do not answer a
-distinct, physically meaningful question: *is the journey irreversible?* A
-process can be ordered yet close to equilibrium, or strongly driven and
-dissipative; the difference is the entropy production, a central quantity of
+distinct, physically meaningful question: *how far from equilibrium is the
+journey?* A process can be ordered yet close to equilibrium, or strongly driven
+and dissipative; the difference is the entropy production, a central quantity of
 stochastic thermodynamics (Seifert, 2012).
 
-We bring the non-equilibrium toolkit to single-cell data. Building on the
-observation that RNA velocity supplies a per-cell drift, we annotate a cell-state
-graph with a path-work functional in the spirit of the Jarzynski relation
-(Jarzynski, 1997), and compute stochastic-thermodynamic observables on it. Our
-central, validated claim is narrow and testable: the entropy production of a
-differentiating population is measurable and statistically distinguishable from
-an equilibrium null. We add a transition-path-theory committor (E and
-Vanden-Eijnden, 2006) as a principled commitment coordinate, connecting to a
-line of work that has recently reached top venues for molecular systems (Nat.
-Comput. Sci., 2025), and a potential of mean force that turns the landscape into
-a commitment barrier in units of kT.
+We bring the non-equilibrium toolkit to single-cell data, and find that the
+measurement itself is the hard part. Because RNA velocity supplies a per-cell
+drift, it is tempting to estimate entropy production from it and test against a
+null that shuffles velocity across cells. We show that this test fires on
+reversible flow, so a "significant" result is not evidence of irreversibility.
+Our central claim is methodological and testable: the cyclic (non-gradient)
+fraction of the velocity flow from a discrete Hodge decomposition is a
+calibrated irreversibility measure, and under it real developmental lineages are
+close to gradient-like. We add a transition-path-theory committor (E and
+Vanden-Eijnden, 2006) as a principled commitment coordinate, and a potential of
+mean force that turns the landscape into a commitment barrier in units of kT.
 
 ## 2. Methods
 
@@ -69,16 +73,35 @@ the edge, and a diffusion noise term, scaled by an effective temperature.
 
 **Free-energy landscape.** Effective free energies are propagated by multi-source
 Jarzynski exponential averaging, assigning every cell a value from the
-minimum-work path in its weakly connected component (removing a single-reference
-coverage artifact). Attractor basins and barrier heights follow.
+minimum-work path in its weakly connected component. Attractor basins and barrier
+heights follow.
 
-**Entropy production.** We estimate the entropy-production rate with Seifert's
-discrete-state pair-flux formula, with bootstrap confidence intervals and a
-label-permutation null that shuffles the velocity assignment across cells. The
-resulting permutation p-value is the test for departure from equilibrium. A
-Schnakenberg cycle decomposition attributes the global rate to fundamental
-graph cycles; velocity-divergence and gradient-alignment estimators provide
-independent proxies.
+**Calibrated irreversibility.** The velocity field induces an edge flow
+f_ij = (v_i + v_j)/2 . (x_j - x_i) on the undirected kNN graph. Any edge flow
+splits uniquely into a gradient component B psi, the flow of a node potential,
+which is reversible, and an orthogonal cyclic remainder, which circulates and
+breaks detailed balance (discrete Hodge decomposition). The potential is the
+least-squares solution of B psi = f, solved sparsely in O(edges). The
+irreversibility is the cyclic energy fraction ||f - B psi||^2 / ||f||^2, with an
+edge-bootstrap confidence interval. Because a finite graph gives a small non-zero
+fraction even for a pure gradient field, real data are compared with a matched
+gradient floor on the same cells. A per-cell map assigns each cell the cyclic
+flow energy on its incident edges.
+
+**Cycle affinities.** Following Schnakenberg (1976), the thermodynamic affinity of
+each fundamental cycle is computed in kT from a spanning-tree potential; it is
+zero for a conservative field (Kolmogorov's criterion) and grows with
+circulation.
+
+**Legacy entropy production.** For comparison we retain Seifert's discrete-state
+pair-flux entropy-production rate with a label-permutation null that shuffles
+velocity across cells.
+
+**Ground-truth validation.** A linear diffusion dx = -Bx dt + sqrt(2D) dW with
+B = aI + wJ has zero entropy production at w = 0 (equilibrium) and entropy
+production growing as w^2 otherwise. We sample 400 cells per field over 15 seeds
+and drives w in {0, 0.25, 0.5, 1, 2, 4}, and score each method on separating
+equilibrium from driven fields.
 
 **Commitment coordinate.** Given progenitor (source) and terminal (target) cell
 sets, the forward committor q(x) - the probability of reaching the terminal fate
@@ -96,63 +119,88 @@ diagnostic of non-equilibrium departure.
 
 **Implementation.** The numeric core is vectorized (numpy) with an exact KD-tree
 graph; results are bit-identical to a pure-Python reference. Graph construction
-scales to 50,000 cells in seconds. The package is typed, tested (193 unit
-tests), and reproducible in one command.
+and both irreversibility measures run on 50,000 cells in seconds. The package is
+typed, lint-clean, tested (218 unit tests), and reproducible in one command.
 
 ## 3. Results
 
-**Entropy production detects irreversibility, and generalizes.** On the
-pancreatic endocrine branch (Bastidas-Ponce et al., 2019), observed entropy
-production is significant against the shuffled-velocity null (p ~ 0.005-0.01)
-while the control is not (p ~ 0.3-0.75). The same holds on an independent mouse
-gastrulation erythroid lineage (Pijuan-Sala et al., 2019): directed p ~ 0.01,
-shuffled ~ 0.35, across five subsamples. In a paired directed-vs-control
-discrimination task, entropy production reaches AUROC 1.00 while
-expression-based baselines (first principal component, distance from progenitor)
-sit at chance (0.50), because they do not use velocity direction. The signal is
-robust to gene count (20-400) and to log normalization; a single non-significant
-run traced to scVelo's Ms-smoothed representation specifically.
+**The naive entropy-production test is miscalibrated.** On the synthetic ground
+truth, the Seifert permutation test is significant at alpha = 0.05 in every
+equilibrium run (false-positive rate 1.0) and separates equilibrium from driven
+fields no better than chance (AUROC 0.44). A direction-only velocity-coherence
+score also fails (AUROC 0.53), since both kinds of field are coherent. On real
+pancreas data the same test separates true velocity from shuffled velocity with
+AUROC 1.00 - but so would any statistic sensitive to velocity-position coupling,
+which the shuffle destroys whether or not detailed balance is broken.
+
+**The cyclic fraction is calibrated.** On the same ground truth the cyclic
+fraction is low and flat at equilibrium (0.12) and rises monotonically with the
+drive (0.15, 0.25, 0.47, 0.72, 0.85 for w = 0.25 to 4), separating equilibrium
+from driven fields with AUROC 1.00. Cycle affinities in kT are likewise monotonic
+in the drive.
+
+**Real lineages are close to reversible.** At 1,500 cells over five subsamples,
+the cyclic fraction of real proxy velocity against a matched gradient floor is
+0.151 vs 0.099 on pancreatic endocrinogenesis (Bastidas-Ponce et al., 2019;
+excess +0.051), 0.080 vs 0.085 on gastrulation erythropoiesis (Pijuan-Sala et
+al., 2019; -0.005), and 0.108 vs 0.097 on bone marrow erythropoiesis (Setty et al., 2019; +0.012),
+all far below a shuffled ceiling of 0.29-0.35. On 800 pancreas cells, scVelo
+dynamical velocity gives the same reading as the proxy (excess -0.001 vs -0.003).
+A linear lineage has an arrow of time, carried by the committor, but little
+circulation. We note a limit on this null: injecting a rotation into the real
+near-1D pancreas geometry barely moves the fraction, because a 1D structure has
+few cycles to carry circulation, so detection power rests on the synthetic
+benchmark rather than on these geometries.
 
 **A commitment coordinate and barrier.** On pancreas, the committor recovers the
 lineage order unsupervised (Ductal to Ngn3 to Pre-endocrine to Beta), places the
 commitment transition (q crosses 0.5) at the Pre-endocrine stage, and yields a
-potential-of-mean-force barrier of 1.6 kT [1.4, 1.9] across eight subsamples.
+potential-of-mean-force barrier of 1.6 kT [1.4, 1.9] across eight subsamples, with
+the transition state at q ~ 0.43. The density-anchored landscape is about 5 kT
+deep, and its low agreement with the path-work landscape (R^2 ~ 0.14) quantifies
+the flow structure a density landscape cannot see.
 
 **An honest limit on ordering.** On pancreas the committor orders cells better
 than principal-component pseudotime (Spearman 0.94 +/- 0.02 vs 0.89, winning
 10/10 subsamples, paired p = 0.002). This advantage does not generalize: on the
 gastrulation erythroid lineage, principal-component pseudotime wins (0.94 vs
-0.81). We therefore do not claim the committor as a universally better ordering
-method; its value is as a commitment coordinate tied to the thermodynamics.
+0.81). In a like-for-like comparison at 2,000 pancreas cells, CellRank's
+two-boundary absorption probability orders best (0.99), ahead of the committor
+(0.95) and PC1 (0.94). We therefore do not claim the committor as a better
+ordering method; its value is as a commitment coordinate tied to the
+thermodynamics.
 
-**Prior negative result.** The entropy-production signal did not replicate on
-dentate gyrus neurogenesis across seven independent tests, including a
+**Prior negative result.** The legacy entropy-production signal did not replicate
+on dentate gyrus neurogenesis across seven independent tests, including a
 preregistered confirmatory test; this is retained in the research note.
 
 ## 4. Discussion
 
 The pipeline occupies a niche the trajectory tools leave open: it measures the
 non-equilibrium character of differentiation rather than its geometry. Its
-strongest, cross-dataset result is that differentiation is measurably
-irreversible and that this is not reproduced by direction-blind baselines. The
-committor connects our single-cell setting to transition-path theory, where
-learning committors is an active area for molecular systems (Nat. Comput. Sci.,
-2025); we use the exact discrete solve, which for a fixed cell graph outperforms
-a parametric approximation we tested.
+strongest result is a calibration result. A permutation test that shuffles
+velocity looks like a test of irreversibility and reports striking significance
+on real tissues, but it is equally significant on reversible ground truth. The
+Hodge cyclic fraction is calibrated, and it reads real developmental lineages as
+close to gradient-like. That reading is consistent with the picture of
+differentiation as descent on a landscape, and it is also the reading a
+miscalibrated test would have hidden.
 
 Limitations are explicit. The free-energy magnitude is a density-based
-pseudopotential, not a molecular free energy. Results here use an
-unspliced-minus-spliced velocity proxy and one dynamical-velocity check; broader
-velocity models remain to be tested. Validation spans two positive datasets and
-one documented negative; more are needed. The committor ordering advantage is
-dataset-dependent. These are stated because a method that reports where it fails
-is more useful than one that does not.
+pseudopotential, not a molecular free energy. The cyclic fraction is a property
+of the velocity field on a finite graph, so it must be read against a matched
+floor, and its power on near-1D real geometries is low. Most results use an
+unspliced-minus-spliced velocity proxy, with one dynamical-velocity check;
+broader velocity models remain to be tested. Validation spans three real
+lineages, synthetic ground truth, and one documented negative. The committor
+ordering advantage is dataset-dependent. These are stated because a method that
+reports where it fails is more useful than one that does not.
 
 ## 5. Reproducibility
 
 All results reproduce from the released code with `python benchmarks/run_all.py`;
 individual benchmarks and figures are listed in the README. The package installs
-with `pip install -e .`, passes 193 unit tests, and pins its numerical core to
+with `pip install -e .`, passes 218 unit tests, and pins its numerical core to
 bit-identical outputs across versions. Public datasets are obtained through
 scVelo. An end-to-end tutorial runs on synthetic data with no download.
 
@@ -179,4 +227,3 @@ paired test, and stated falsification criterion.
 - Schiebinger, G. et al. (2019). Optimal-transport analysis of developmental trajectories (Waddington-OT). *Cell.*
 - Bastidas-Ponce, A. et al. (2019). Comprehensive single-cell mRNA profiling of pancreatic endocrinogenesis. *Development.*
 - Pijuan-Sala, B. et al. (2019). A single-cell molecular map of mouse gastrulation. *Nature.*
-- (2025). Iterative variational learning of committor-consistent transition pathways. *Nat. Comput. Sci.*

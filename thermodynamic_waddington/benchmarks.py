@@ -6,7 +6,7 @@ import time
 from dataclasses import dataclass
 from typing import Callable, Sequence
 
-from .arrays import mean, norm
+from .arrays import mean
 
 
 @dataclass(frozen=True)

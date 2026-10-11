@@ -5,40 +5,65 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Sequence
 
+from .analysis import basin_statistics, flux_matrix
 from .arrays import percentile, shape
+from .causal import counterfactual_ranking
+from .cell_atlas import interpret_population
+from .cell_prediction import predict_population, prediction_summary
 from .config import FitConfig
-from .graph import Edge, annotate_edges, build_knn, estimate_local_diffusion, local_density
-from .jarzynski import barrier_heights, bootstrap_uncertainty, propagate_free_energy, attractor_candidates, jarzynski_diagnostics
-from .multi_source_propagation import propagate_multi_source
 from .cycle_decomposition import schnakenberg_decomposition
 from .divergence import estimate_divergence
-from .linalg import pca, two_dimensional_projection
-from .validation import fate_calibration, reversibility_gap, velocity_alignment_score
-from .observability import fingerprint, make_provenance
-from .geometry import summarize
-from .topology.persistence import lower_star_pairs
-from .topology.landscape import watershed_basins
-from .analysis import basin_statistics, flux_matrix, report as analyze_report
 from .dynamics import summarize_risk, transition_risk
-from .metrics import basin_contrast, irreversibility_index, landscape_roughness, mean_alignment
-from .causal import counterfactual_ranking, intervention_scan, rank_targets
-from .spectral import spectral_summary
-from .trajectory import simulate_trajectories, trajectory_summary
+from .entropy_production import EntropyProductionConfig, cross_validate_with_jarzynski, estimate_entropy_production
+from .expansion import (
+    adaptive_temperature,
+    attractor_transition_matrix,
+    current_balance,
+    edge_work_distribution,
+    graph_signature,
+    local_curvature,
+    sensitivity_scan,
+    summarize_frontier,
+)
 from .experiment import analyze_experiment
+from .exploration import cell_measurement_ledger, population_context, tour_scenes
 from .forecast import forecast
+from .geometry import summarize
+from .graph import Edge, annotate_edges, build_knn, estimate_local_diffusion, local_density
 from .information import information_summary
+from .jarzynski import (
+    attractor_candidates,
+    barrier_heights,
+    bootstrap_uncertainty,
+    jarzynski_diagnostics,
+    propagate_free_energy,
+)
+from .linalg import pca, two_dimensional_projection
 from .lineage import lineage_summary
+from .metrics import basin_contrast, irreversibility_index, landscape_roughness, mean_alignment
+from .multi_source_propagation import propagate_multi_source
+from .multimodal import modality_summary, normalize_modalities
+from .observability import fingerprint, make_provenance
+from .phenotype import phenotype_population, phenotype_summary
+from .scientific import (
+    bootstrap_path_work,
+    current_summary,
+    edge_path_samples,
+    estimate_diffusion_tensor,
+    local_current,
+    path_sample_summary,
+    protocol_sanity_checks,
+    tensor_summary,
+    velocity_residuals,
+)
+from .scientific_audit import scientific_audit
+from .spectral import spectral_summary
 from .thermodynamics import effective_thermodynamic_summary
 from .topology.cycles import cycle_summary
-from .expansion import edge_work_distribution, current_balance, committor_iteration, reactive_flux, minimum_action_path, attractor_transition_matrix, graph_signature, summarize_frontier, adaptive_temperature, local_curvature, sensitivity_scan
-from .cell_prediction import predict_population, prediction_summary
-from .phenotype import phenotype_population, phenotype_summary
-from .cell_atlas import interpret_population
-from .multimodal import normalize_modalities, modality_summary
-from .exploration import cell_measurement_ledger, population_context, tour_scenes
-from .scientific_audit import scientific_audit
-from .scientific import edge_path_samples, path_sample_summary, estimate_diffusion_tensor, tensor_summary, velocity_residuals, local_current, current_summary, bootstrap_path_work, protocol_sanity_checks
-from .entropy_production import EntropyProductionConfig, estimate_entropy_production, cross_validate_with_jarzynski
+from .topology.landscape import watershed_basins
+from .topology.persistence import lower_star_pairs
+from .trajectory import simulate_trajectories, trajectory_summary
+from .validation import fate_calibration, reversibility_gap, velocity_alignment_score
 
 
 def _to_2d_vectors(vectors: Sequence[Sequence[float]], n: int) -> list[list[float]]:

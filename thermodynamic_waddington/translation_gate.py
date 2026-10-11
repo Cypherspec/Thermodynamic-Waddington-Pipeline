@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Evidence gate for translating a computational result into a biological claim.
 
 This module deliberately separates four levels of evidence: computation, public
@@ -7,12 +5,13 @@ observations, measured interventions, and independent replication. A stronger
 claim can never be inferred from a weaker level merely because a score is high.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Iterable, Mapping
-
+from typing import Any, Iterable
 
 _LEVELS = {
     "computational": 1,

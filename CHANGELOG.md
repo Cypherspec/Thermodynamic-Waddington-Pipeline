@@ -3,6 +3,32 @@
 All notable changes to this project are documented here. Format loosely follows
 Keep a Changelog. Versioning is semantic.
 
+## [1.0.0] - 2026-10-11
+
+First stable release.
+
+### Fixed
+- `analysis.report` called `basin_membership` and `stochastic_paths` with the wrong
+  signatures and raised on any call; it now runs (regression test added).
+- Removed shadowed duplicate definitions of `trajectory.stochastic_paths` and
+  `uncertainty.bootstrap` (the effective, later definitions are kept).
+- `thermodynamic_waddington.EvidenceRecord` was silently exported from two modules;
+  it stays the translation-gate record, and the decision-engine record is now
+  exported as `DecisionEvidenceRecord`.
+- 29 modules had their docstring after `from __future__ import annotations`, so
+  `__doc__` was `None`; docstrings now come first.
+- The recorded note in `experiments/irreversibility_real.json` claimed injected
+  rotation raises the cyclic fraction on the real pancreas geometry; its own
+  numbers show it barely moves. The note now matches the benchmark script.
+
+### Changed
+- Documentation site and manuscript draft rewritten around the calibrated
+  irreversibility result (Hodge cyclic fraction), matching the README; the legacy
+  Seifert permutation test is documented as over-detecting and kept for comparison.
+- Codebase is ruff-clean (unused imports and variables removed, imports sorted);
+  CI now runs lint and a wheel/sdist build check alongside the tests.
+- CITATION and REPRODUCIBILITY brought up to date (version, bone marrow dataset).
+
 ## [0.3.0] - 2026-09-14
 
 ### Added

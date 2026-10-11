@@ -20,12 +20,12 @@ import json
 from pathlib import Path
 
 import numpy as np
-from scipy.stats import spearmanr
 
 # numpy 2.x compatibility shim for pygpcca (CellRank's GPCCA backend), which calls
 # numpy.testing.assert_array_equal with the x=/y= keyword names numpy 2.x removed.
 # Installed before cellrank is imported so the real CellRank code runs unchanged.
 import numpy.testing as _npt
+from scipy.stats import spearmanr
 
 _orig_aae = _npt.assert_array_equal
 

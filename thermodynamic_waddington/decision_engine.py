@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Evidence-gated decision support for cell-fate intervention programs.
 
 This module connects landscape predictions, protocol diagnostics, robustness,
@@ -9,12 +7,14 @@ replicate, intervene, or stop. The decision is deliberately conservative when
 required evidence is absent or contradictory.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
 import math
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping
 
 
 @dataclass(frozen=True)

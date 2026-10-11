@@ -5,20 +5,24 @@ for one fate vs the other? Cycles shared between branches reflect the
 common progenitor path; branch-specific cycles may reflect fate-determining
 dynamics.
 """
-import sys, json, time
-sys.path.insert(0, '.')
-import numpy as np
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import anndata as ad
+import json
+import sys
+import time
 
-from thermodynamic_waddington.preprocessing import velocity_in_transformed_space
-from thermodynamic_waddington.graph import build_knn, local_density, estimate_local_diffusion, annotate_edges
-from thermodynamic_waddington.entropy_production import EntropyProductionConfig
+sys.path.insert(0, '.')
+import matplotlib
+import numpy as np
+
+matplotlib.use("Agg")
+import anndata as ad
+import matplotlib.pyplot as plt
+
+from run_entropy_replication_v3_dynamical import DATA_PATH, load_branch_idx
 from thermodynamic_waddington.cycle_decomposition import schnakenberg_decomposition
 from thermodynamic_waddington.divergence import estimate_divergence
-from run_entropy_replication_v3_dynamical import load_branch_idx, DATA_PATH
+from thermodynamic_waddington.entropy_production import EntropyProductionConfig
+from thermodynamic_waddington.graph import build_knn, estimate_local_diffusion, local_density
+from thermodynamic_waddington.preprocessing import velocity_in_transformed_space
 
 adata = ad.read_h5ad(DATA_PATH)
 conv  = adata.var_names[~adata.var["fit_alpha"].isna()]

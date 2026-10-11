@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Leakage-resistant comparison of fate predictors on published held-out arrays.
 
 This module deliberately treats published arrays as outcomes, not as training data.
@@ -7,6 +5,8 @@ It provides paired metrics, bootstrap intervals, permutation tests, calibration
 summaries, and machine-readable claim boundaries. It does not make a predictor
 causal merely because it wins a benchmark.
 """
+
+from __future__ import annotations
 
 import hashlib
 import json

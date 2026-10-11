@@ -4,10 +4,10 @@ import hashlib
 import json
 import math
 import random
-from dataclasses import dataclass, asdict
-from typing import Callable, Iterable, Sequence
+from dataclasses import asdict, dataclass
+from typing import Callable, Sequence
 
-from .arrays import dot, mean, norm, percentile, variance
+from .arrays import mean, percentile, variance
 from .graph import Edge
 
 

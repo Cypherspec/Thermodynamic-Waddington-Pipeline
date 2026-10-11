@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Strict ingestion of measured perturbation studies.
 
 The loader accepts a cell-level JSONL/JSON table and refuses to call it real
@@ -7,12 +5,14 @@ measured evidence unless the study manifest, preregistration hash, required
 assays, and cell-level fields all agree.
 """
 
+from __future__ import annotations
+
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
-from .causal_validation import StudyCell, StudyConfig, StudyReport, analyze_study
+from .causal_validation import StudyCell, StudyConfig, analyze_study
 from .measured_study_manifest import validate_manifest
 
 

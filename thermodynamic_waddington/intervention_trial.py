@@ -1,11 +1,11 @@
-from __future__ import annotations
-
 """Pre-registered analysis of measured intervention studies.
 
 This module is deliberately conservative: it accepts measured outcomes but
 never turns observational or synthetic rows into causal evidence. Donor-level
 aggregation is the inferential unit; cells are nested observations.
 """
+
+from __future__ import annotations
 
 import hashlib
 import json

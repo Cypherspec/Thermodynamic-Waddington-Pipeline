@@ -2,8 +2,8 @@
 
 [![CI](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/tests-210%20passing-brightgreen.svg)](tests)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
+[![Tests](https://img.shields.io/badge/tests-218%20passing-brightgreen.svg)](tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-online-teal.svg)](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)
 
@@ -32,7 +32,7 @@ measure that is calibrated on ground truth.
 | **Commitment barrier** | **1.6 kT** [1.4, 1.9] | potential of mean force along the committor |
 | **Landscape on a physical scale** | **~5 kT** deep | density-anchored kT calibration |
 | **Fast, scalable core** | **2–6× faster**, 50k cells in seconds | vectorized, bit-identical outputs |
-| **Engineering** | **210 tests**, CI, typed, MIT | one-command reproducible |
+| **Engineering** | **218 tests**, lint-clean CI, typed, MIT | one-command reproducible |
 
 Two honest caveats kept front and center. The committor's *ordering* advantage
 over PCA pseudotime holds on pancreas (0.94 vs 0.89, 10/10 seeds) but **not** on
@@ -165,7 +165,7 @@ transparent spliced/unspliced proxy).
 
 ```bash
 python benchmarks/run_all.py     # regenerates every experiments/*.json and figures/*.png
-pytest                           # 210 unit tests
+pytest                           # 218 unit tests
 ```
 
 Individual benchmarks (irreversibility, commitment barrier, calibration,
@@ -176,7 +176,7 @@ availability are in [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
 ## Package
 
 - Installable, typed (`py.typed`), MIT, builds a clean wheel and sdist.
-- 210 unit tests, GitHub Actions CI on Python 3.10–3.12, ruff-configured.
+- 218 unit tests and ruff lint, both enforced by GitHub Actions CI on Python 3.10–3.12.
 - High-level `analyze()` plus the full module API; console entry points.
 - Contributions welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -213,7 +213,7 @@ falsifiable test of the commitment prediction is preregistered in
 @software{kommisetty_thermodynamic_waddington,
   author  = {Kommisetty, Nischay},
   title   = {Thermodynamic Waddington Pipeline},
-  version = {0.3.0},
+  version = {1.0.0},
   year    = {2026},
   url     = {https://github.com/Cypherspec/Thermodynamic-Waddington-Pipeline},
   license = {MIT}

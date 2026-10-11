@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Conservative discovery orchestration for externally validated fate hypotheses.
 
 This module never calls an effective-landscape pattern a biological discovery by
@@ -7,15 +5,15 @@ itself. It creates preregisterable hypotheses, blocks leakage, compares against
 published baselines, and returns an evidence ledger suitable for review.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
-import math
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Sequence
 
 from .advanced.fate_control import run_fate_control
-from .benchmarking import rank_correlation
 from .larry_validation import validate_larry_fate_ground_truth
 from .statistics.permutation import spearman
 

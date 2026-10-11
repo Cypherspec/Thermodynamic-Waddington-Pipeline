@@ -1,10 +1,10 @@
-from __future__ import annotations
-
 """Leakage-resistant LARRY day-2 fate prediction from aligned sparse expression.
 
 This baseline deliberately uses only day-2 expression and the published training
 portion of LARRY fate bias. It is an outcome predictor, not a thermodynamic proof.
 """
+
+from __future__ import annotations
 
 import json
 from pathlib import Path
@@ -12,8 +12,8 @@ from typing import Any
 
 import numpy as np
 
-from .larry_expression import _read_metadata, _read_gene_names, stream_larry_matrix
 from .benchmark_championship import evaluate_methods
+from .larry_expression import _read_gene_names, stream_larry_matrix
 
 
 def _load_masks(root: Path) -> dict[str, np.ndarray]:
@@ -31,10 +31,8 @@ def _selected_day2_indices(root: Path) -> tuple[np.ndarray, np.ndarray]:
     masks = _load_masks(root)
     day2 = masks["timepoints"] == 2.0
     nm = masks["trajectory"] & day2
-    early = masks["early"]
     heldout = masks["heldout"]
     outliers = masks["outliers"]
-    early_nm = early
     eligible = ~outliers
     return np.flatnonzero(nm)[eligible], heldout[eligible]
 
@@ -42,7 +40,6 @@ def _selected_day2_indices(root: Path) -> tuple[np.ndarray, np.ndarray]:
 def _ground_truth(root: Path) -> np.ndarray:
     masks = _load_masks(root)
     truth = np.load(root / "figure5" / "smoothed_groundtruth_from_heldout.npy").astype(float)
-    nm = masks["trajectory"] & (masks["timepoints"] == 2.0)
     eligible = ~masks["outliers"]
     return truth[eligible]
 

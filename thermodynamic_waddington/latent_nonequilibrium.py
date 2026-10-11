@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Auditable local nonequilibrium diagnostics for effective fate fields.
 
 The field is a coarse-grained diagnostic in the supplied coordinates. It is not
@@ -8,6 +6,8 @@ separates conservative-looking gradient structure from rotational probability
 current, estimates local entropy-production proxies, and exposes path action
 rather than silently calling it physical work.
 """
+
+from __future__ import annotations
 
 import math
 from dataclasses import asdict, dataclass
@@ -87,7 +87,6 @@ def estimate_field(points: Sequence[Sequence[float]], velocity: Sequence[Sequenc
         raise ValueError("points, velocity, and energies must be cell-aligned")
     if not points:
         return NonequilibriumField((), (), (), (), 0.0, 0.0, "empty", ("No cells supplied.",))
-    dimension = len(points[0])
     gradients: list[list[float]] = []
     divergences: list[float] = []
     for i in range(len(points)):

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Protocol-bound path-ensemble diagnostics for nonequilibrium cell-fate studies.
 
 The module accepts measured work samples or externally reconstructed path-work
@@ -10,6 +8,8 @@ bootstrap uncertainty. The output is evidence about a declared path ensemble,
 not a molecular free-energy claim.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
 import math
@@ -17,7 +17,6 @@ import random
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Sequence
-
 
 _VALID_DIRECTIONS = {"forward", "reverse"}
 

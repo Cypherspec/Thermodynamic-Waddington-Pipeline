@@ -1,20 +1,22 @@
-import sys, json, time
-sys.path.insert(0, '.')
-import numpy as np
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import anndata as ad
+import json
+import sys
+import time
 
-from thermodynamic_waddington.preprocessing import velocity_in_transformed_space
-from thermodynamic_waddington.graph import build_knn, local_density, estimate_local_diffusion, annotate_edges
-from thermodynamic_waddington.entropy_production import EntropyProductionConfig
-from thermodynamic_waddington.multi_source_propagation import propagate_multi_source
+sys.path.insert(0, '.')
+import matplotlib
+import numpy as np
+
+matplotlib.use("Agg")
+import anndata as ad
+import matplotlib.pyplot as plt
+
+from run_entropy_replication_v3_dynamical import DATA_PATH, load_branch_idx
+from thermodynamic_waddington.gradient_alignment import estimate_gradient_alignment, permutation_test_alignment
+from thermodynamic_waddington.graph import annotate_edges, build_knn, estimate_local_diffusion, local_density
 from thermodynamic_waddington.jarzynski import attractor_candidates
 from thermodynamic_waddington.mfpt import estimate_mfpt
-from thermodynamic_waddington.gradient_alignment import (
-    estimate_gradient_alignment, permutation_test_alignment)
-from run_entropy_replication_v3_dynamical import load_branch_idx, DATA_PATH
+from thermodynamic_waddington.multi_source_propagation import propagate_multi_source
+from thermodynamic_waddington.preprocessing import velocity_in_transformed_space
 
 adata = ad.read_h5ad(DATA_PATH)
 conv  = adata.var_names[~adata.var["fit_alpha"].isna()]
@@ -50,7 +52,7 @@ commit_times = sorted(t for t in mfpt_result.commitment_time if t < 1e8)
 print(f"  commitment time range: [{min(commit_times):.1f}, {max(commit_times):.1f}] steps")
 
 # ── GRADIENT ALIGNMENT ────────────────────────────────────────────────────
-print(f"\nrunning gradient alignment + permutation test...", flush=True)
+print("\nrunning gradient alignment + permutation test...", flush=True)
 t0 = time.time()
 ga = estimate_gradient_alignment(pts, v, energies, graph, bandwidth=0.65)
 perm = permutation_test_alignment(pts, v, energies, graph, bandwidth=0.65,

@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import json
-import tempfile
 import unittest
-from pathlib import Path
 
 from thermodynamic_waddington.config import FitConfig
 from thermodynamic_waddington.model import fit_landscape

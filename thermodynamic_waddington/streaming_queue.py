@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any, Iterable, Iterator, Sequence
 
 from .arrays import mean, percentile
-from .visual_queue import QueueEvent, VisualQueue, VisualJob
+from .visual_queue import VisualJob, VisualQueue
 
 
 @dataclass(frozen=True)

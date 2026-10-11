@@ -1,6 +1,10 @@
 from __future__ import annotations
-import argparse, json
+
+import argparse
+import json
+
 from .evidence_audit import write_evidence_audit
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Audit evidence and claim boundaries across a Thermodynamic Waddington release")

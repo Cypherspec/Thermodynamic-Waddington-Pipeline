@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 from pathlib import Path
 
-from .award_capsule import build_capsule, fingerprint
+from .award_capsule import fingerprint
 
 
 def verify(path: str | Path) -> dict[str, object]:

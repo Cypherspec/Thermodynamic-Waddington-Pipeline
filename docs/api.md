@@ -15,16 +15,20 @@ committor commitment coordinate and barrier.
 
 The same, directly on an AnnData. Reads the velocity layer (or derives an
 unspliced-minus-spliced proxy), uses the top-`n_top_genes` by variance, and writes
-the per-cell committor and energy to `adata.obs['{key_added}_committor']` and
-`adata.obs['{key_added}_energy']`, with the report in `adata.uns['{key_added}']`.
+the per-cell committor, energy, and irreversibility map to
+`adata.obs['{key_added}_committor']`, `adata.obs['{key_added}_energy']`, and
+`adata.obs['{key_added}_irreversibility']`, with the report in
+`adata.uns['{key_added}']`.
 
 ### `AnalysisReport`
 
-Dataclass with: `n_cells`, `n_edges`, `n_attractors`, `entropy_production_rate`,
-`entropy_production_pvalue`, `is_irreversible`, `landscape_range_kt`,
-`path_vs_density_r2`, `committor_order`, `commitment_label`,
-`commitment_barrier_kt`, `transition_state_q`, `warnings`. Methods: `to_dict()`,
-`save(path)`.
+Dataclass with: `n_cells`, `n_edges`, `n_attractors`,
+`irreversibility_cyclic_fraction`, `irreversibility_cycle_affinity_kt`,
+`landscape_range_kt`, `path_vs_density_r2`, `committor_order`,
+`commitment_label`, `commitment_barrier_kt`, `transition_state_q`, `warnings`,
+and the legacy `entropy_production_rate`, `entropy_production_pvalue`,
+`is_irreversible` (kept for comparison; that test over-detects). Methods:
+`to_dict()`, `save(path)`.
 
 ## Plotting
 
@@ -71,10 +75,27 @@ Potential of mean force along the committor. Returns `q_grid`, `free_energy_kt`,
 
 ## Thermodynamics
 
+### `irreversibility.cyclic_irreversibility(pts, vels, graph, bootstrap=0, seed=0) -> IrreversibilityReport`
+
+Calibrated irreversibility: the cyclic (non-gradient) energy fraction of the
+velocity flow from a discrete Hodge decomposition (`cyclic_fraction`,
+`bootstrap_ci`, `n_pairs`, `n_cells`). Sparse least-squares, O(edges).
+
+### `irreversibility.cycle_affinities(pts, vels, graph, temperature=1.0, velocity_scale=1.0) -> CycleAffinityReport`
+
+Schnakenberg cycle affinities in kT (`n_cycles`, `rms_affinity_kt`,
+`max_affinity_kt`, `mean_abs_affinity_kt`).
+
+### `irreversibility.cyclic_flow_per_cell(pts, vels, graph)`
+
+Per-cell share of the cyclic flow energy: *where* circulation lives.
+
 ### `estimate_entropy_production(points, velocity, densities, diffusions, graph, config) -> EntropyProductionReport`
 
-Seifert entropy-production rate with bootstrap CIs and a permutation null
+Legacy Seifert entropy-production rate with bootstrap CIs and a permutation null
 (`entropy_production_rate`, `permutation_p_value`, `bootstrap_ci`, `null_mean`).
+Kept for comparison: it is significant on reversible ground truth, so do not use
+it alone for irreversibility claims.
 
 ### `calibrate_fit(fit) -> CalibrationReport`  ·  `calibrate(path_energies, coords)`
 

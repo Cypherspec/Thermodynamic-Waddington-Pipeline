@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Premium, evidence-gated orchestration for Thermodynamic Waddington.
 
 This module turns the research package into a reproducible platform surface:
@@ -8,11 +6,13 @@ and emits a machine-readable release decision. It never upgrades an
 observational result into a causal biological claim.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
 import platform
 import sys
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 

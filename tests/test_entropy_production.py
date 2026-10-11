@@ -4,14 +4,14 @@ import math
 import random
 import unittest
 
-from thermodynamic_waddington.graph import build_knn, estimate_local_diffusion, local_density
 from thermodynamic_waddington.entropy_production import (
     EntropyProductionConfig,
     compute_pair_fluxes,
+    cross_validate_with_jarzynski,
     estimate_entropy_production,
     stationarity_residual,
-    cross_validate_with_jarzynski,
 )
+from thermodynamic_waddington.graph import build_knn, estimate_local_diffusion, local_density
 from thermodynamic_waddington.synthetic import make_synthetic_dataset
 
 

@@ -7,7 +7,6 @@ from thermodynamic_waddington.config import FitConfig
 from thermodynamic_waddington.model import fit_landscape
 from thermodynamic_waddington.synthetic import make_synthetic_dataset
 
-
 # neighbors defaults to 24 and dimensions to 6 in FitConfig; every fixture
 # here uses enough cells/genes to satisfy both without needing to override
 # config just to get past validation, matching how the rest of tests/ sizes

@@ -3,10 +3,13 @@ outputs (v2/v3 pancreas replication, kNN sensitivity, dentate gyrus
 independent-dataset tests). No numbers invented, nothing borrowed from
 the older experiments/ files this session did not produce or verify."""
 import json
+
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+
 
 def load(name):
     return json.load(open(f"experiments/{name}"))

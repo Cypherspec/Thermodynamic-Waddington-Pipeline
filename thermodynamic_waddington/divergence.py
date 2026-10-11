@@ -23,8 +23,8 @@ import math
 from dataclasses import dataclass
 from typing import Sequence
 
-from .graph import NeighborGraph
 from .arrays import mean
+from .graph import NeighborGraph
 
 
 @dataclass

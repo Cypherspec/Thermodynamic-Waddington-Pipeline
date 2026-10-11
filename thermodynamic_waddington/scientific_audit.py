@@ -4,7 +4,7 @@ import math
 from typing import Any, Sequence
 
 from .arrays import mean, variance
-from .graph import Edge, NeighborGraph, velocity_alignment
+from .graph import Edge, NeighborGraph
 
 
 def _finite_fraction(values: Sequence[float]) -> float:

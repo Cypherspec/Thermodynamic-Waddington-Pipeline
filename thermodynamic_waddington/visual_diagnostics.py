@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import math
-from dataclasses import dataclass, asdict
-from typing import Any, Sequence
+from dataclasses import asdict, dataclass
+from typing import Any
 
 from .arrays import mean, percentile
 from .model import LandscapeFit

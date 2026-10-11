@@ -5,7 +5,7 @@ import json
 import math
 import random
 from dataclasses import asdict, dataclass, field
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Iterable, Sequence
 
 Number = int | float
 Row = Sequence[Number]

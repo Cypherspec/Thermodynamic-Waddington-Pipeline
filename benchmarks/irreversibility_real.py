@@ -21,11 +21,10 @@ import json
 from pathlib import Path
 
 import numpy as np
+from generalization import DATASETS, load_dataset
 
 from thermodynamic_waddington.graph import build_knn
 from thermodynamic_waddington.irreversibility import cyclic_irreversibility
-
-from generalization import DATASETS, load_dataset
 
 
 def pca_project(expr, vel, dims=6):
@@ -42,8 +41,8 @@ def frac(pts, vel, seed=0):
 
 
 def detection_power(spec, cells=1500, genes=100, omegas=(0.0, 0.5, 1.0, 2.0)):
-    # inject known circulation into the real geometry and show the measure responds:
-    # confirms a near-zero real result is a real finding, not a dead measure.
+    # inject known circulation into the real geometry to probe detection power there;
+    # on these near-1D lineages it barely moves the fraction (few cycles to carry it).
     sp, vel, lab = load_dataset(spec["path"], spec["key"], spec["lineage"], genes)
     idx = np.random.default_rng(0).choice(sp.shape[0], size=min(cells, sp.shape[0]), replace=False)
     pts, v = pca_project(sp[idx], vel[idx])

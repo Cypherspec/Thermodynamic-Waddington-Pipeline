@@ -4,7 +4,7 @@ import math
 from dataclasses import dataclass
 from typing import Sequence
 
-from .arrays import mean, variance
+from .arrays import variance
 from .graph import Edge, adjacency
 
 

@@ -4,8 +4,8 @@ import math
 from dataclasses import asdict, dataclass
 from typing import Any, Sequence
 
-from .cell_atlas import PROGRAMS, CellInterpretation, interpret_cell
 from .arrays import mean
+from .cell_atlas import CellInterpretation, interpret_cell
 
 
 @dataclass(frozen=True)

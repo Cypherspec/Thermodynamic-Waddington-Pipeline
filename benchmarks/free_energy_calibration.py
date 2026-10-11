@@ -19,12 +19,11 @@ import json
 from pathlib import Path
 
 import numpy as np
+from pancreas_entropy_validation import BRANCH, load_branch
 
-from thermodynamic_waddington.calibration import basin_barriers_kt, boltzmann_free_energy, calibrate
+from thermodynamic_waddington.calibration import basin_barriers_kt, calibrate
 from thermodynamic_waddington.config import FitConfig
 from thermodynamic_waddington.model import fit_landscape
-
-from pancreas_entropy_validation import BRANCH, load_branch
 
 
 def run(path, cells, genes, seed, permutations):

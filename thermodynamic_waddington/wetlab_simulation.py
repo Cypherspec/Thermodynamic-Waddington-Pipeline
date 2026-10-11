@@ -1,11 +1,11 @@
-from __future__ import annotations
-
 """Deterministic synthetic wet-lab study generator.
 
 This creates a complete mock study with randomized donors, interventions, wells,
 lineage barcodes, viability, orthogonal fate calls, and target probabilities. It
 is useful for exercising the full pipeline, but it is never biological evidence.
 """
+
+from __future__ import annotations
 
 import json
 import random
@@ -68,7 +68,7 @@ def generate_simulated_cells(config: SimulationConfig | None = None) -> list[Stu
         donor = f"sim_donor_{donor_index + 1:02d}"
         donor_shift = rng.gauss(0.0, config.effect_noise)
         for intervention, nominal_rate in groups:
-            well = f"{donor}_{intervention}_well_{rng.randrange(1, 5):02d}"
+            rng.randrange(1, 5)  # well draw, kept so the random stream is unchanged
             rate = max(0.0, min(1.0, nominal_rate + donor_shift))
             for cell_index in range(config.cells_per_group):
                 cell_id = f"{donor}:{intervention}:{cell_index:04d}"

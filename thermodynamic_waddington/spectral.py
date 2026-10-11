@@ -6,7 +6,7 @@ from typing import Sequence
 
 import numpy as np
 
-from .arrays import mean, percentile
+from .arrays import mean
 from .graph import Edge
 
 

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Closed-loop experimental design for cell-fate hypotheses.
 
 The engine is deliberately asymmetric about evidence: computational predictions
@@ -7,13 +5,15 @@ can propose experiments, but only measured perturbation outcomes can update a
 claim from ``hypothesis`` to ``experimentally_supported``.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
 import math
 import random
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Sequence
 
 
 @dataclass(frozen=True)

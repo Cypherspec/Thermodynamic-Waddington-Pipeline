@@ -19,16 +19,14 @@ import json
 from pathlib import Path
 
 import numpy as np
+from pancreas_entropy_validation import BRANCH, load_branch
 from scipy.stats import spearmanr
 
-from thermodynamic_waddington.calibration import boltzmann_free_energy
 from thermodynamic_waddington.config import FitConfig
 from thermodynamic_waddington.developmental import developmental_coordinate
 from thermodynamic_waddington.graph import Edge
 from thermodynamic_waddington.mfpt import estimate_mfpt
 from thermodynamic_waddington.model import fit_landscape
-
-from pancreas_entropy_validation import BRANCH, load_branch
 
 
 def run(path, cells, genes, seed, max_attractors):

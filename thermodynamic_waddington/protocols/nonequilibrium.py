@@ -4,7 +4,7 @@ import math
 from dataclasses import dataclass
 from typing import Sequence
 
-from ..arrays import dot, mean, safe_exp
+from ..arrays import mean, safe_exp
 
 
 @dataclass(frozen=True)

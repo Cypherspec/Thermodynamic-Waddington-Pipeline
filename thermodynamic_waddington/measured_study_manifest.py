@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Schema and gates for ingesting a real measured intervention study."""
+
+from __future__ import annotations
 
 import hashlib
 import json

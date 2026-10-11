@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from .arrays import mean, percentile
-from .cell_atlas import interpret_population
 from .model import LandscapeFit
 from .multimodal import cell_modalities
 
@@ -257,7 +256,6 @@ def render_report(fit: LandscapeFit, output: str | Path) -> None:
     diagnostics = fit.diagnostics
     coverage = float(diagnostics.get("coverage", 0.0))
     velocity_observed = bool(diagnostics.get("velocity_observed", fit.metadata.get("velocity_observed", True)))
-    velocity_status = str(diagnostics.get("velocity_status", fit.metadata.get("velocity_status", "observed")))
     alignment_value = diagnostics.get("velocity_alignment", diagnostics.get("mean_velocity_alignment"))
     alignment = float(alignment_value) if alignment_value is not None else float("nan")
     rows = "".join(f'<tr><td>{html.escape(str(label))}</td><td>{mean(values):+.3f}</td><td>{len(values)}</td></tr>' for label, values in sorted(((str(label), [float(energy) for energy, item in zip(fit.energies, fit.labels) if str(item) == str(label)]) for label in set(fit.labels)), key=lambda item: mean(item[1])))

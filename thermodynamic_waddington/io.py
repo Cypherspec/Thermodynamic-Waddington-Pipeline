@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any
 
 from .arrays import read_matrix
-from .synthetic import SyntheticDataset
 
 
 def read_bundle(path: str | Path) -> dict[str, Any]:

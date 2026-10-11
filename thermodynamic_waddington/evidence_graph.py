@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Deterministic evidence graph for auditable computational biology releases.
 
 The graph makes a scientific claim inspectable as a chain from raw provenance
@@ -8,11 +6,13 @@ experiments. It is an accountability layer, not a claim amplifier: missing
 measured evidence remains an explicit blocker.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Iterable, Mapping
+from typing import Any
 
 
 @dataclass(frozen=True)

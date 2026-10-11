@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """A reviewer-facing submission dossier with explicit claims, null results, and gates."""
+
+from __future__ import annotations
 
 import hashlib
 import json

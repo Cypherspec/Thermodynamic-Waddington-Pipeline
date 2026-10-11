@@ -15,11 +15,10 @@ import json
 from pathlib import Path
 
 import numpy as np
+from pancreas_entropy_validation import BRANCH, load_branch
 from scipy.stats import spearmanr, wilcoxon
 
 from thermodynamic_waddington import FitConfig, developmental_coordinate, fit_landscape
-
-from pancreas_entropy_validation import BRANCH, load_branch
 
 
 def _pca(expr, dims=6):

@@ -27,13 +27,12 @@ import math
 from pathlib import Path
 
 import numpy as np
+from pancreas_entropy_validation import BRANCH, load_branch
 from sklearn.metrics import roc_auc_score
 
 from thermodynamic_waddington.entropy_production import EntropyProductionConfig, estimate_entropy_production
 from thermodynamic_waddington.graph import build_knn, estimate_local_diffusion, local_density
 from thermodynamic_waddington.linalg import pca
-
-from pancreas_entropy_validation import BRANCH, load_branch
 
 
 def _core(expr, vel, seed, k=20, dims=6):
@@ -91,7 +90,6 @@ METHODS = {
 def run(path, seeds, cells, genes, perms):
     labels_bin = []
     scores = {name: [] for name in METHODS}
-    directed_p, control_p = [], []
     for s in range(seeds):
         expr, vel, labels = load_branch(path, BRANCH, cells, genes, s)
         rng = np.random.default_rng(1000 + s)

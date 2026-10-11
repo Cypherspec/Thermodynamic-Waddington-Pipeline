@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Evidence-backed intervention hypotheses for hematopoietic fate studies.
 
 These entries are literature-supported hypotheses, not measured effects in the
@@ -7,10 +5,12 @@ current Thermodynamic Waddington project. Numeric intervention vectors must be
 learned from a matched perturbation dataset; this module never fabricates them.
 """
 
+from __future__ import annotations
+
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 
 @dataclass(frozen=True)

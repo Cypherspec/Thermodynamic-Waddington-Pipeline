@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass
 from typing import Sequence
 
-from .arrays import norm
 from .graph import Edge, adjacency
 
 
@@ -56,10 +54,6 @@ def basin_membership(energies: Sequence[float], attractors: Sequence[int]) -> li
     if not energies or not attractors:
         return []
     return [min(attractors, key=lambda attractor: abs(energies[index] - energies[attractor])) for index in range(len(energies))]
-
-
-def stochastic_paths(edges: Sequence[Edge], energies: Sequence[float], starts: Sequence[int], attractors: Sequence[int], temperature: float = 1.0, replicates: int = 8) -> list[Trajectory]:
-    return integrate(edges, energies, starts, max_steps=max(1, len(energies)))
 
 
 def trajectory_summary(trajectories: Sequence[Trajectory]) -> dict[str, float]:

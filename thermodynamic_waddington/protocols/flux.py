@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Sequence
 
-from ..arrays import dot, mean, norm
+from ..arrays import dot, norm
 
 
 @dataclass(frozen=True)

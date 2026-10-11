@@ -1,11 +1,11 @@
-from __future__ import annotations
-
 """Leakage-resistant real LARRY predictors with train-only feature selection.
 
 The module compares a locked marker model with a training-only panel selected from
 the official enriched-gene list. Held-out outcomes are never used for feature
 selection, scaling, tuning, or intervention claims.
 """
+
+from __future__ import annotations
 
 import hashlib
 import json

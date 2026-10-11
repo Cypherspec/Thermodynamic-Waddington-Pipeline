@@ -1,6 +1,10 @@
 from __future__ import annotations
-import argparse, json
+
+import argparse
+import json
+
 from .robustness import write_robustness_report
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run specification-multiverse robustness checks")

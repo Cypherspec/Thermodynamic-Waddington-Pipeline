@@ -2,19 +2,27 @@
 
 **Is this a replacement for scVelo or CellRank?**
 No. Those estimate pseudotime, fate probabilities, and transport, and do it well.
-This adds a complementary layer they do not have: it measures whether the process
-is thermodynamically irreversible. Use them together.
+This adds a complementary layer they do not have: a calibrated measure of how
+far from equilibrium the process is, and a commitment coordinate with a kT
+barrier. Use them together.
 
 **Do I need RNA velocity?**
-Yes, in some form. Velocity supplies the direction that makes the entropy-
-production and path-work computations meaningful. You can supply scVelo dynamical
+Yes, in some form. Velocity supplies the direction that makes the
+irreversibility and path-work computations meaningful. You can supply scVelo dynamical
 velocity or a transparent unspliced-minus-spliced proxy. Without measured
 velocity the velocity-dependent outputs are disclosed as unavailable.
 
-**What does a significant entropy-production p-value mean?**
-That the observed irreversibility is not reproducible by shuffling the velocity
-assignment, i.e. the process is measurably out of equilibrium. It does not by
-itself measure a physical dissipation rate in joules.
+**Which irreversibility number should I report?**
+The calibrated cyclic fraction (`report.irreversibility_cyclic_fraction`),
+compared with a matched gradient floor, and optionally the cycle affinity in kT.
+Not the legacy entropy-production p-value: that test is significant even on
+reversible ground truth, so a small p-value does not mean the process is out of
+equilibrium. Neither number is a physical dissipation rate in joules.
+
+**My real lineage has a cyclic fraction near the floor. Is the method broken?**
+No. A linear lineage has an arrow of time (captured by the committor) but little
+circulation, so a near-reversible reading is the expected result. The measure's
+detection power is established on synthetic ground truth with a known drive.
 
 **Why is my landscape's raw free energy not a good pseudotime?**
 Because it is not meant to be. The raw energy is the landscape; the commitment

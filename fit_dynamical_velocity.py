@@ -28,10 +28,10 @@ from __future__ import annotations
 import json
 import time
 
-import numpy as np
-import scvelo as scv
-import scanpy as sc
 import anndata as ad
+import numpy as np
+import scanpy as sc
+import scvelo as scv
 
 DATA_PATH = "data/real/endocrinogenesis_day15.h5ad"
 N_TOP_GENES = 300   # kept modest: single-core EM fit, one gene at a time

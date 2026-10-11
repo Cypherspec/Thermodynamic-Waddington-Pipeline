@@ -7,7 +7,7 @@ from pathlib import Path
 from .model import LandscapeFit
 from .reporting import write_graphviz, write_manifest, write_markdown_summary
 from .visual_diagnostics import diagnostics_payload
-from .visual_queue import render_queue_html, queue_from_fit_stages, queue_terminal_summary
+from .visual_queue import queue_from_fit_stages, queue_terminal_summary, render_queue_html
 
 
 def main(argv: list[str] | None = None) -> int:

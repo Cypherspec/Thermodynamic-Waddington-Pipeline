@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Reproducible research capsule for external review.
 
 An award-worthy project needs an auditable artifact: exact claims, data hashes,
@@ -7,15 +5,16 @@ locked metrics, negative results, environment, and a one-command reproduction
 recipe. This capsule packages that evidence without overstating it.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
 import platform
-import subprocess
 import sys
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 
 @dataclass(frozen=True)

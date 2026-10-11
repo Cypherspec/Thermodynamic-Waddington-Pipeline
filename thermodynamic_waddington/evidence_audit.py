@@ -1,10 +1,10 @@
-from __future__ import annotations
-
 """Cross-artifact integrity audit for evidence-bounded research releases."""
+
+from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 

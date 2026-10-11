@@ -7,10 +7,10 @@ import unittest
 from pathlib import Path
 
 from thermodynamic_waddington.falsification import (
+    FalsificationCase,
     _rank_correlation,
     run_falsification_suite,
     write_falsification_report,
-    FalsificationCase,
 )
 
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Sequence
 
-from .arrays import matrix_multiply, matvec, transpose
+from .arrays import matvec, transpose
 
 
 @dataclass(frozen=True)

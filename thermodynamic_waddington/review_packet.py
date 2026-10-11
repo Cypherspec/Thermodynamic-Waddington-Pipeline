@@ -1,11 +1,11 @@
-from __future__ import annotations
-
 """Generate a reviewer-facing, evidence-bounded research packet.
 
 This is deliberately a claim audit, not a marketing generator: it records what
 was measured, what was benchmarked, what failed, and which experiment is still
 required before a causal biological claim is permitted.
 """
+
+from __future__ import annotations
 
 import hashlib
 import json

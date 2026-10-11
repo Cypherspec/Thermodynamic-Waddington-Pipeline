@@ -10,7 +10,7 @@ engine used by discovery_engine.py). If you are looking for
 that used to be exported here, those were part of the removed placeholder
 code and were never functionally distinct from each other.
 """
-from .core import ObservationContract, EvidenceLedger, OnlineMoments, ReproducibleEngine
+from .core import EvidenceLedger, ObservationContract, OnlineMoments, ReproducibleEngine
 from .fate_control import FateControlConfig, FateControlEngine, Intervention, run_fate_control
 
 __all__ = [

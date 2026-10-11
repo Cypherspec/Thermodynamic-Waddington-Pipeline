@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Adversarial, deterministic falsification checks for the effective landscape.
 
 These checks are deliberately not biological validation. They probe whether the
@@ -7,13 +5,15 @@ estimator reacts in ways that would reveal leakage, coordinate dependence,
 velocity sign errors, graph sparsity, or unsupported thermodynamic language.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
 import math
 import random
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Callable, Sequence
+from typing import Any, Sequence
 
 from .config import FitConfig
 from .model import fit_landscape

@@ -11,7 +11,7 @@ import math
 from dataclasses import dataclass
 from typing import Sequence
 
-from .arrays import mean, shape
+from .arrays import shape
 
 
 @dataclass(frozen=True)

@@ -1,7 +1,10 @@
 from __future__ import annotations
+
 import unittest
+
 from thermodynamic_waddington.robustness import evaluate_robustness, run_synthetic_robustness
 from thermodynamic_waddington.synthetic import make_synthetic_dataset
+
 
 class RobustnessTests(unittest.TestCase):
     def test_synthetic_report_is_deterministic(self):

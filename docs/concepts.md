@@ -27,25 +27,34 @@ term. Free energies are then propagated by multi-source Jarzynski exponential
 averaging, so every cell receives a value from the minimum-work path in its
 component. This is an *effective* landscape, not a molecular free energy.
 
-## Entropy production - the central quantity
+## Irreversibility - the central quantity
 
-For a system in equilibrium, forward and reverse transitions balance and no
-entropy is produced. A driven system breaks that balance. Following Seifert's
-stochastic thermodynamics, the pipeline estimates the entropy-production rate
-from the net probability fluxes between cell states.
+For a system in equilibrium, forward and reverse transitions balance (detailed
+balance) and no entropy is produced. A driven system breaks that balance.
 
-The key is the **null test**: the velocity assignment is shuffled across cells
-many times to build a distribution of entropy production under "no real
-direction". The observed value's permutation p-value is the test for departure
-from equilibrium. A small p-value means the process is measurably irreversible;
-a large one means it is not distinguishable from equilibrium. Always read the
-p-value, not the raw rate.
+**Why the naive test fails.** A natural estimator is Seifert's pair-flux entropy
+production with a null built by shuffling velocity across cells. But a shuffle
+destroys *all* velocity structure, not only broken detailed balance, so the test
+also fires on a perfectly reversible gradient flow: on synthetic equilibrium
+ground truth it reports significance every time. It detects velocity-position
+coupling, not irreversibility. It is kept in the package for comparison only.
+
+**The calibrated measure.** Any edge flow on a graph splits uniquely (discrete
+Hodge decomposition) into a gradient part, which is the flow of a potential and is
+reversible, and a cyclic part, which circulates and is what breaks detailed
+balance. The **cyclic fraction** - the share of flow energy in the cyclic part -
+is ~0 for a conservative field and rises with real circulation. It is validated
+on a linear diffusion with a known rotational drive (AUROC 1.00, monotonic in the
+drive). Compare it with a matched gradient floor at the same sample size, since a
+finite kNN graph gives a small non-zero floor.
 
 ## Schnakenberg cycles
 
-The global entropy production can be decomposed exactly into contributions from
-the fundamental cycles of the graph (Schnakenberg's network theory). This
-attributes irreversibility to specific loops in state space.
+Schnakenberg's network theory attributes entropy production to the fundamental
+cycles of the graph. The pipeline computes the thermodynamic affinity of every
+cycle, in kT, from a spanning-tree potential: zero for a conservative field
+(Kolmogorov's criterion), non-zero with circulation. It is a physical-units
+companion to the cyclic fraction.
 
 ## The committor and commitment
 
@@ -67,7 +76,7 @@ landscape carries non-equilibrium structure the density landscape cannot see.
 
 MFPT gives the expected number of graph steps for a cell to first reach an
 attractor (Kemeny-Snell theory), a kinetic commitment timescale that complements
-the thermodynamic entropy-production rate.
+the thermodynamic irreversibility measures.
 
 ## References
 

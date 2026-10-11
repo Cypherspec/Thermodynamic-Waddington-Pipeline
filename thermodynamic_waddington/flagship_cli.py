@@ -1,6 +1,10 @@
 from __future__ import annotations
-import argparse, json
+
+import argparse
+import json
+
 from .flagship_benchmark import write_report
+
 
 def main():
  p=argparse.ArgumentParser(description='Locked donor/clone/timepoint benchmark')

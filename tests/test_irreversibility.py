@@ -70,7 +70,12 @@ class TestCyclicIrreversibility(unittest.TestCase):
     def test_sparse_matches_dense(self):
         # the scalable sparse projection must reproduce the dense pseudo-inverse
         from thermodynamic_waddington.irreversibility import (
-            _edge_flow, _frac_dense, _frac_sparse, _incidence, _laplacian_pinv, _pairs,
+            _edge_flow,
+            _frac_dense,
+            _frac_sparse,
+            _incidence,
+            _laplacian_pinv,
+            _pairs,
         )
         pts, vel = _sample(1.0, 5, n=500)
         g = build_knn(pts.tolist(), 20)

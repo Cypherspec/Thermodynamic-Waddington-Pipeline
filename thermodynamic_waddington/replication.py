@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Independent-study replication analysis.
 
 This module makes the strongest useful computational upgrade without confusing
@@ -8,13 +6,15 @@ study or donor-level experimental run, never an individual cell. Reports retain
 study fingerprints, exclusions, heterogeneity, and preregistered claim gates.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
 import math
 import random
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 from .flagship_benchmark import Observation, _metrics
 

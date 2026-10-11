@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import Sequence
 
 from .arrays import mean, variance
-from .graph import Edge, adjacency
+from .graph import Edge
 
 
 @dataclass(frozen=True)

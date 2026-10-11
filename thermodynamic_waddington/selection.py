@@ -3,7 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Sequence
 
-from .arrays import mean, variance
 from .graph import Edge
 
 

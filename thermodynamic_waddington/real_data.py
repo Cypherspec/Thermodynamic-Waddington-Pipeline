@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import json
 import urllib.request
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
-
 
 PAUL15_URL = "https://exampledata.scverse.org/scanpy/paul15.h5"
 PANCREAS_URL = "https://github.com/theislab/scvelo_notebooks/raw/master/data/Pancreas/endocrinogenesis_day15.h5ad"

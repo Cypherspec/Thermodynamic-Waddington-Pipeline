@@ -90,8 +90,8 @@ everywhere), so the comparison uses two boundaries; an earlier 150-cell,
 single-terminal run gave a noisy, non-meaningful CellRank number and is
 superseded. The script includes a numpy-2 compatibility shim (for pygpcca) and
 runs CellRank single-process to avoid a Windows multiprocessing hang. The durable
-point: CellRank does fate mapping well, and this pipeline adds the
-entropy-production test and kT barrier it does not compute.
+point: CellRank does fate mapping well, and this pipeline adds the calibrated
+irreversibility measure and kT barrier it does not compute.
 
 ## Performance and scale
 
@@ -112,3 +112,8 @@ The headline results were re-run on real scVelo dynamical velocity: the committo
 ordering held (0.98 on pancreas), and one entropy-production run came back non-
 significant under scVelo's Ms-smoothed representation specifically, which the
 gene-count and normalization sweeps then bounded. `benchmarks/dynamical_velocity_validation.py`.
+
+The calibrated measure gives the same answer under both velocity models: on 800
+pancreas cells the cyclic-fraction excess over the gradient floor is -0.003 for
+the proxy and -0.001 for scVelo dynamical velocity, so the near-reversible
+reading is not an artifact of the proxy. `benchmarks/dynamical_cyclic.py`.

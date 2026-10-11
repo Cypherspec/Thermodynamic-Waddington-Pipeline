@@ -54,7 +54,6 @@ from typing import Callable, Sequence
 from .arrays import mean
 from .observability import fingerprint
 
-
 # --------------------------------------------------------------------------
 # Cost, kernels, and numerically stable log-domain Sinkhorn
 # --------------------------------------------------------------------------
@@ -64,7 +63,6 @@ def squared_euclidean_cost(source: Sequence[Sequence[float]], target: Sequence[S
     cost = []
     for x in source:
         row = []
-        width = max(len(x), 1)
         for y in target:
             w = min(len(x), len(y))
             s = 0.0

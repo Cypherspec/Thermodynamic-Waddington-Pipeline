@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """One-command, evidence-bounded reproducibility runner."""
+
+from __future__ import annotations
 
 import json
 import platform
@@ -11,9 +11,9 @@ from pathlib import Path
 from typing import Any
 
 from .award_capsule import fingerprint, write_capsule
-from .review_packet import write_review_packet
-from .falsification import write_falsification_report
 from .evidence_audit import write_evidence_audit
+from .falsification import write_falsification_report
+from .review_packet import write_review_packet
 from .review_submission import write_submission_dossier
 
 

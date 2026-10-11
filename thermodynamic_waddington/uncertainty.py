@@ -51,18 +51,9 @@ def calibrate_scores(scores: Sequence[float], labels: Sequence[int], bins: int =
     return {"bins": groups, "expected_calibration_error": error}
 
 
-def bootstrap(values: Sequence[float], draws: int = 128, seed: int = 7) -> Interval:
-    import random
-    if not values:
-        return interval([])
-    rng = random.Random(seed)
-    samples = [mean(rng.choice(list(values)) for _ in values) for _ in range(max(1, draws))]
-    return interval(samples)
-
-
 def bootstrap(values: Sequence[float], draws: int = 128, seed: int = 7):
-    from dataclasses import dataclass
     import random
+    from dataclasses import dataclass
     @dataclass(frozen=True)
     class BootstrapSummary:
         mean: float

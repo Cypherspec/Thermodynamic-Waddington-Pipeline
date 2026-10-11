@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Formal claim ladder for reproducible biology and discovery review.
 
 No model output can skip levels. The gate is intentionally stricter than a
@@ -7,10 +5,12 @@ benchmark leaderboard because publication, causal, and translational claims
 need different evidence.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
 from dataclasses import asdict, dataclass, field
-from typing import Any, Mapping, Sequence
+from typing import Any, Sequence
 
 LEVELS = (
     "computational_pattern",

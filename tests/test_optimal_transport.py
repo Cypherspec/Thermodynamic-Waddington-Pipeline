@@ -6,12 +6,11 @@ import unittest
 
 from thermodynamic_waddington.optimal_transport import (
     SinkhornConfig,
-    sinkhorn,
-    squared_euclidean_cost,
-    estimate_growth_weights,
-    displacement_interpolate,
-    fit_schrodinger_chain,
     chain_diagnostic_report,
+    displacement_interpolate,
+    estimate_growth_weights,
+    fit_schrodinger_chain,
+    sinkhorn,
 )
 from thermodynamic_waddington.synthetic import make_synthetic_dataset
 

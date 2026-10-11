@@ -5,9 +5,6 @@ import math
 import random
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Sequence
-
-from .arrays import norm
 
 
 @dataclass

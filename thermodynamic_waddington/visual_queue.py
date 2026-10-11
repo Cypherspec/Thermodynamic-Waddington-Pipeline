@@ -2,13 +2,10 @@ from __future__ import annotations
 
 import html
 import json
-import math
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Iterable, Sequence
-
-from .arrays import mean, percentile
+from typing import Any, Callable, Sequence
 
 
 @dataclass(frozen=True)

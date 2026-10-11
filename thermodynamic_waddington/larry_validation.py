@@ -43,7 +43,6 @@ def validate_larry_fate_ground_truth(root: str | Path = "data/real/larry", predi
     names = [line.strip() for line in (root / "FINAL_fate_names.txt").read_text().splitlines() if line.strip()]
     if fate.ndim != 2 or fate.shape[1] != len(names):
         raise ValueError("LARRY fate matrix and fate-name list disagree")
-    dominant = fate.argmax(axis=1).tolist()
     selected = [i for i, flag in enumerate(early.tolist()) if bool(flag)]
     if early_indices is not None:
         selected = [int(i) for i in early_indices]

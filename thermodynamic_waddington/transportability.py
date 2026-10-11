@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Audited cross-study transportability for cell-fate predictors.
 
 This module evaluates whether a fixed predictor behaves consistently across
@@ -7,6 +5,8 @@ independent datasets without converting predictive agreement into causal or
 thermodynamic evidence. It requires explicit study provenance and keeps
 cell-weighted and equal-study summaries separate.
 """
+
+from __future__ import annotations
 
 import hashlib
 import json

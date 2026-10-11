@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from .premium_platform import run_premium_platform, write_premium_report
+from .premium_platform import run_premium_platform
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -6,7 +6,7 @@ from typing import Sequence
 
 import numpy as np
 
-from .arrays import dot, norm, safe_log, sub, variance
+from .arrays import dot, norm, sub, variance
 
 
 @dataclass(frozen=True)

@@ -9,7 +9,7 @@ from .config import FitConfig
 from .io import read_bundle
 from .model import LandscapeFit, fit_landscape
 from .render import render_report
-from .synthetic import SyntheticDataset, make_synthetic_dataset
+from .synthetic import make_synthetic_dataset
 
 
 def _fit_from_bundle(bundle: dict[str, object], args: argparse.Namespace) -> LandscapeFit:

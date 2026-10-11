@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from typing import Sequence
 
-from .arrays import mean, normalize, safe_log
+from .arrays import mean
 
 
 def pearson(x: Sequence[float], y: Sequence[float]) -> float:

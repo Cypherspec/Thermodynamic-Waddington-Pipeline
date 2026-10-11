@@ -28,7 +28,7 @@ import math
 from dataclasses import dataclass
 from typing import Sequence
 
-from .arrays import dot, norm, mean
+from .arrays import dot, mean, norm
 from .graph import NeighborGraph
 
 

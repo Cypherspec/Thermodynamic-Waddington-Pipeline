@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "thermodynamic-waddington"
-version = "0.3.0"
-description = "Non-equilibrium thermodynamics of single-cell fate: path-work free-energy landscapes, entropy production, and irreversibility from RNA velocity"
+version = "1.0.0"
+description = "Non-equilibrium thermodynamics of single-cell fate: calibrated irreversibility, committor commitment barriers, and kT free-energy landscapes from RNA velocity"
 requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "MIT"}
@@ -23,7 +23,7 @@ keywords = [
     "scRNA-seq",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
@@ -85,4 +85,12 @@ extend-exclude = ["experiments", "figures"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
-ignore = ["E501", "E741"]
+# E701/E702: compact one-line statements are used deliberately in the numeric core.
+ignore = ["E501", "E741", "E701", "E702"]
+
+[tool.ruff.lint.per-file-ignores]
+# Package __init__ files re-export the public API in grouped blocks.
+"**/__init__.py" = ["F401", "E402"]
+# Stand-alone scripts put the repo on sys.path before importing the package.
+"benchmarks/*.py" = ["E402"]
+"examples/*.py" = ["E402"]

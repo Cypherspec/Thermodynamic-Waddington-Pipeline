@@ -139,7 +139,6 @@ def plot(report, out):
     cyc = [r["cyclic_fraction_mean"] for r in rows]
     cyc_sd = [r["cyclic_fraction_std"] for r in rows]
     coh = [r["coherence_mean"] for r in rows]
-    old = [r["old_ep_frac_significant"] for r in rows]
     fig, ax = plt.subplots(1, 2, figsize=(11, 4.5))
 
     ax[0].errorbar(w, cyc, yerr=cyc_sd, fmt="o-", color="#0f7d99", lw=2, capsize=3, label="cyclic fraction (new)")

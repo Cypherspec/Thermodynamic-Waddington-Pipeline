@@ -22,17 +22,17 @@ from __future__ import annotations
 import json
 import time
 
-import numpy as np
-import scvelo as scv
-import scanpy as sc
 import anndata as ad
+import numpy as np
+import scanpy as sc
+import scvelo as scv
 
-from thermodynamic_waddington.preprocessing import velocity_in_transformed_space
-from thermodynamic_waddington.graph import build_knn, local_density, estimate_local_diffusion
 from thermodynamic_waddington.entropy_production import (
     EntropyProductionConfig,
     estimate_entropy_production,
 )
+from thermodynamic_waddington.graph import build_knn, estimate_local_diffusion, local_density
+from thermodynamic_waddington.preprocessing import velocity_in_transformed_space
 
 DATA_PATH = "data/DentateGyrus/10X43_1.h5ad"
 STAGE_ORDER = ["Radial Glia-like", "nIPC", "Neuroblast", "Granule immature", "Granule mature"]

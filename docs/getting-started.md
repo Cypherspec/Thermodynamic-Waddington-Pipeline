@@ -30,8 +30,8 @@ report = analyze(ds.expression, ds.velocity, labels=labels,
                  source_labels=[sorted(set(labels))[0]],
                  target_labels=[sorted(set(labels))[-1]])
 
-report.is_irreversible            # from the permutation test
-report.entropy_production_pvalue
+report.irreversibility_cyclic_fraction    # calibrated irreversibility (Hodge)
+report.irreversibility_cycle_affinity_kt  # cycle affinities in kT (Schnakenberg)
 report.landscape_range_kt         # landscape depth in kT
 report.committor_order            # cell types ordered by commitment
 report.commitment_label           # where the committor crosses 0.5
@@ -53,8 +53,28 @@ fit = fit_landscape(ds.expression, ds.velocity, config=cfg, labels=ds.labels)
 
 fit.energies         # per-cell effective free energy
 fit.attractors       # detected attractor cells
-fit.diagnostics["entropy_production"]["permutation_p_value"]
 fit.diagnostics["schnakenberg"]   # cycle decomposition
+fit.diagnostics["entropy_production"]  # legacy Seifert EP, kept for comparison only
+```
+
+The legacy Seifert entropy-production test over-detects (see
+[Benchmarks](benchmarks.md)); use the calibrated measure below for
+irreversibility claims.
+
+## 3b. Calibrated irreversibility
+
+```python
+import numpy as np
+from thermodynamic_waddington.graph import build_knn
+from thermodynamic_waddington.irreversibility import (
+    cyclic_irreversibility, cycle_affinities, cyclic_flow_per_cell,
+)
+
+pts, vel = np.asarray(ds.expression), np.asarray(ds.velocity)  # same space for both
+graph = build_knn(pts, k=15)
+cyclic_irreversibility(pts, vel, graph).cyclic_fraction
+cycle_affinities(pts, vel, graph).rms_affinity_kt
+cyclic_flow_per_cell(pts, vel, graph)   # where along the lineage circulation lives
 ```
 
 ## 4. The committor and the commitment barrier

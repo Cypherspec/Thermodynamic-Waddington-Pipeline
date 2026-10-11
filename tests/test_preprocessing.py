@@ -4,7 +4,10 @@ import math
 import unittest
 
 from thermodynamic_waddington.preprocessing import (
-    normalize_total, log1p, normalize_expression, scale_velocity_to_expression,
+    log1p,
+    normalize_expression,
+    normalize_total,
+    scale_velocity_to_expression,
     velocity_in_transformed_space,
 )
 
