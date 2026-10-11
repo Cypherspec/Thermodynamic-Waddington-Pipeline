@@ -28,9 +28,10 @@ decomposition of the velocity flow into gradient (reversible) and cyclic
 (irreversible) parts. The cyclic fraction is calibrated on the same ground truth
 (AUROC 1.00, monotonic in a known drive, equilibrium floor 0.12). Applied to three
 developmental lineages (pancreatic endocrinogenesis, gastrulation erythropoiesis,
-bone marrow erythropoiesis), it shows they are close to reversible: pancreas
-carries a modest excess of 0.05 over a matched gradient floor, the other two
-essentially none, under both a velocity proxy and scVelo dynamical velocity. The
+bone marrow erythropoiesis), it shows they are close to reversible. Against a
+noise-free gradient floor pancreas appears to carry a small excess (0.05), but a
+noise-matched null, which we introduce because noise itself looks cyclic, shows
+that none of the lineages circulates beyond its own noise. The
 same holds in a second phylum: on Drosophila spermatogenesis (Fly Cell Atlas),
 with velocity built from the raw reads, the germline is near-reversible, and the
 committor orders it far better than principal-component pseudotime. On
@@ -147,7 +148,9 @@ the cyclic fraction of real proxy velocity against a matched gradient floor is
 0.151 vs 0.099 on pancreatic endocrinogenesis (Bastidas-Ponce et al., 2019;
 excess +0.051), 0.080 vs 0.085 on gastrulation erythropoiesis (Pijuan-Sala et
 al., 2019; -0.005), and 0.108 vs 0.097 on bone marrow erythropoiesis (Setty et al., 2019; +0.012),
-all far below a shuffled ceiling of 0.29-0.35. On 800 pancreas cells, scVelo
+all far below a shuffled ceiling of 0.29-0.35. Against the noise-matched null
+introduced below, the excess is -0.011, -0.005 and -0.010 (|z| <= 1): the
+pancreas excess over the clean floor is noise. On 800 pancreas cells, scVelo
 dynamical velocity gives the same reading as the proxy (excess -0.001 vs -0.003).
 A linear lineage has an arrow of time, carried by the committor, but little
 circulation. We note a limit on this null: injecting a rotation into the real
@@ -184,7 +187,8 @@ signs; the method's own bias is estimated on reference datasets that are
 reversible by construction and subtracted. Across 200 ground-truth runs the
 false-positive rate at equilibrium falls from 1.00 to 0.00 at every noise level,
 and pooled equilibrium-vs-driven AUROC rises from 0.76 to 0.96, with power
-decreasing with noise as expected.
+decreasing with noise as expected. Applied to all four real lineages, it finds no
+circulation beyond noise in any of them.
 
 **A second phylum: Drosophila spermatogenesis.** The Fly Cell Atlas testis (Li
 et al., 2022) provides no spliced/unspliced layers, so we built them from the

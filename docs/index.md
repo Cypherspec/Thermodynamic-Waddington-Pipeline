@@ -25,6 +25,11 @@ package replaces it with a calibrated one.
   the cyclic fraction is ~0 for reversible flow and rises with real circulation.
   AUROC 1.00 on equilibrium-vs-driven ground truth, where the naive
   entropy-production permutation test false-positives every time.
+- **Robust to noise and sequencing depth.** A noise-matched null built from the
+  data's own noise: false positives 100% -> 0% on noisy ground truth.
+- **Validated across two phyla.** Pancreas, gastrulation and bone marrow
+  (vertebrate) and Drosophila spermatogenesis (Fly Cell Atlas, velocity built
+  from the raw reads, FlyBase-linked genes).
 - **A free-energy landscape** on a physical kT scale, from a Jarzynski path-work
   functional and a density-anchored Boltzmann inversion.
 - **A commitment coordinate.** The transition-path-theory committor, which

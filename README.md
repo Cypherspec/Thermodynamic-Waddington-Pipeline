@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-230%20passing-brightgreen.svg)](tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-online-teal.svg)](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)
@@ -116,10 +116,11 @@ heuristic, and on a synthetic *equilibrium* field it false-positives every time
 flow into reversible (gradient) and irreversible (cyclic) parts — is validated on
 ground truth: AUROC **1.00** separating equilibrium from non-equilibrium with
 monotonic recovery of a known drive, where the old test scores 0.44 and coherence
-0.53. Applied to real proxy velocity, the three developmental lineages are close
-to gradient-like (pancreas carries a modest excess over the reversible floor,
-gastrulation and bone marrow essentially none) — the correct, honest reading: a
-linear lineage has an arrow of time but little circulation.
+0.53. Applied to real proxy velocity and read against a noise-matched null, all
+four developmental lineages (pancreas, gastrulation, bone marrow, fly testis) are
+reversible within their own noise (excess -0.011 to -0.005) — the correct,
+honest reading: a linear lineage has an arrow of time but little circulation. A
+small pancreas excess over the clean floor (+0.05) turned out to be noise.
 
 ![irreversibility ground truth](figures/synthetic_ground_truth.png)
 
@@ -223,8 +224,11 @@ loop the software analyzes and would run the
 
 The irreversibility measure is calibrated on synthetic ground truth (correct FPR,
 AUROC 1.0, monotonic recovery). On real proxy velocity it shows the three
-developmental lineages are close to gradient-like (reversible): only pancreas
-carries a modest cyclic excess. This **corrects** an earlier claim: the
+developmental lineages are gradient-like (reversible): against the noise-matched
+null none of the four lineages, in two phyla, shows circulation beyond its own
+noise (the earlier +0.05 pancreas excess over the clean floor was noise), though
+power to detect circulation on these near-1D geometries is low. This **corrects**
+an earlier claim: the
 density-based Seifert permutation test reported significant entropy production
 across tissues, but it over-detects (100% false-positive rate on equilibrium
 ground truth), so that reading did not survive calibration. The legacy EP test and
@@ -245,7 +249,7 @@ falsifiable test of the commitment prediction is preregistered in
 @software{kommisetty_thermodynamic_waddington,
   author  = {Kommisetty, Nischay},
   title   = {Thermodynamic Waddington Pipeline},
-  version = {1.2.0},
+  version = {1.3.0},
   year    = {2026},
   url     = {https://github.com/Cypherspec/Thermodynamic-Waddington-Pipeline},
   license = {MIT}

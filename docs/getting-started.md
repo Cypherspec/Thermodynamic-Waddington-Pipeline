@@ -32,6 +32,8 @@ report = analyze(ds.expression, ds.velocity, labels=labels,
 
 report.irreversibility_cyclic_fraction    # calibrated irreversibility (Hodge)
 report.irreversibility_cycle_affinity_kt  # cycle affinities in kT (Schnakenberg)
+report.irreversibility_noise_matched_excess  # circulation beyond the data's own noise (~0 = reversible)
+report.irreversibility_noise_matched_z
 report.landscape_range_kt         # landscape depth in kT
 report.committor_order            # cell types ordered by commitment
 report.commitment_label           # where the committor crosses 0.5

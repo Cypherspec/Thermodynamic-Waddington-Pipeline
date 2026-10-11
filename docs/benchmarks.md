@@ -25,19 +25,25 @@ non-equilibrium where coherence sits at 0.53. `benchmarks/synthetic_ground_truth
 **What the real tissues show (reported straight).** On real proxy velocity the
 three developmental lineages are close to gradient-like:
 
-| tissue | cyclic fraction | reversible floor | excess |
-|---|---|---|---|
-| pancreas endocrine | 0.151 | 0.099 | **+0.051** |
-| gastrulation erythroid | 0.080 | 0.085 | -0.005 |
-| bone marrow erythroid | 0.108 | 0.097 | +0.012 |
+| tissue | cyclic fraction | clean floor | excess over clean floor | noise-matched excess |
+|---|---|---|---|---|
+| pancreas endocrine | 0.151 | 0.099 | +0.051 | **-0.011** (z = -1.0) |
+| gastrulation erythroid | 0.080 | 0.085 | -0.005 | **-0.005** (z = -0.5) |
+| bone marrow erythroid | 0.108 | 0.097 | +0.012 | **-0.010** (z = -0.8) |
+| fly testis germline | 0.097 | 0.086 | +0.011 | **-0.007** (z = -0.6) |
 
-Only pancreas carries a modest excess over the reversible floor; gastrulation and
-bone marrow essentially none. A linear lineage has an arrow of time but little
+Against the clean floor pancreas looked like it carried a modest excess; against
+the noise-matched null (below) it does not, and no lineage does: all four are
+reversible within their own noise. A linear lineage has an arrow of time but little
 circulation, so low cyclic entropy production is the expected, correct result. The
 measure's power is established on the synthetic geometry above (AUROC 1.00); on
 these near-1D real lineages, even injecting a rotation barely moves the fraction,
 because a 1D structure has no cycles to carry circulation -- which is itself why
-the real result sits at the floor. `benchmarks/irreversibility_real.py`.
+the real result sits at the floor. The same holds for the noise-matched readout:
+injecting rotation into the pancreas geometry moves it only at the strongest
+drive (+0.010 at w = 2). `benchmarks/irreversibility_real.py`.
+
+![four tissues](https://raw.githubusercontent.com/Cypherspec/Thermodynamic-Waddington-Pipeline/master/figures/irreversibility_four_tissues.png)
 
 The directional progression is captured by the committor. The strong "irreversible
 across three tissues" reading of the old permutation test does not survive

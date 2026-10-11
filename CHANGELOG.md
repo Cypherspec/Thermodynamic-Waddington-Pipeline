@@ -3,6 +3,24 @@
 All notable changes to this project are documented here. Format loosely follows
 Keep a Changelog. Versioning is semantic.
 
+## [1.3.0] - 2026-10-11
+
+### Changed
+- The noise-matched readout now runs on all four lineages
+  (`benchmarks/irreversibility_real.py`, new figure
+  `figures/irreversibility_four_tissues.png`): pancreas -0.011, gastrulation
+  -0.005, bone marrow -0.010, fly testis -0.007 (all |z| <= 1). None circulates
+  beyond its own noise.
+
+### Fixed
+- The docs, README and manuscript described pancreas as carrying a "modest
+  excess" (+0.05) over the reversible floor. Against the noise-matched null that
+  excess is -0.011: it was noise. Corrected everywhere; the near-1D detection-power
+  caveat is kept ("no circulation detected", not "none").
+
+### Added
+- `benchmarks/plot_overview.py` regenerates the pipeline overview diagram.
+
 ## [1.2.0] - 2026-10-11
 
 ### Added

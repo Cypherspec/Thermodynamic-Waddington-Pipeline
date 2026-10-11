@@ -9,9 +9,12 @@ where it does not. This page is that statement. None of it is hidden elsewhere.
   equilibrium from non-equilibrium ground truth (AUROC 1.00) and tracks a known
   drive monotonically, with a correct false-positive rate. This is the core,
   defensible methodological claim.
-- **Real lineages are close to reversible.** On pancreas, gastrulation
-  erythroid, and bone marrow erythroid, the cyclic fraction sits at or modestly
-  above a matched gradient floor (pancreas +0.05, the others ~0).
+- **Real lineages are reversible within their noise.** On pancreas,
+  gastrulation erythroid, bone marrow erythroid, and the Drosophila testis
+  germline, the noise-matched excess is -0.011 to -0.005 (|z| <= 1). Against the
+  clean floor pancreas showed +0.05; the noise-matched null shows it is noise.
+  Power on these near-1D geometries is low, so this is "no circulation detected",
+  not proof of none.
 - **The commitment barrier.** 1.6 kT [1.4, 1.9] on pancreas across 8 subsamples.
 - **Committor ordering on a long staged lineage.** On Drosophila spermatogenesis
   the committor beats PC1 in 8/8 subsamples (0.78 vs 0.47).

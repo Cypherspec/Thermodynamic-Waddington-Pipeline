@@ -10,7 +10,10 @@
       "cyclic_fraction_real_std": 0.0087,
       "gradient_floor": 0.0994,
       "random_ceiling": 0.2898,
-      "excess_over_floor": 0.0513
+      "excess_over_floor": 0.0513,
+      "noise_matched_excess": -0.0106,
+      "noise_matched_excess_std": 0.0019,
+      "noise_matched_z": -1.03
     },
     {
       "dataset": "gastrulation erythroid",
@@ -20,7 +23,10 @@
       "cyclic_fraction_real_std": 0.0069,
       "gradient_floor": 0.0851,
       "random_ceiling": 0.353,
-      "excess_over_floor": -0.0053
+      "excess_over_floor": -0.0053,
+      "noise_matched_excess": -0.0051,
+      "noise_matched_excess_std": 0.0015,
+      "noise_matched_z": -0.5
     },
     {
       "dataset": "bone marrow erythroid",
@@ -30,26 +36,37 @@
       "cyclic_fraction_real_std": 0.0127,
       "gradient_floor": 0.0965,
       "random_ceiling": 0.304,
-      "excess_over_floor": 0.0118
+      "excess_over_floor": 0.0118,
+      "noise_matched_excess": -0.0101,
+      "noise_matched_excess_std": 0.0043,
+      "noise_matched_z": -0.79
     }
   ],
   "detection_power_pancreas_geometry": [
     {
       "omega": 0.0,
-      "cyclic_fraction": 0.1632
+      "cyclic_fraction": 0.1632,
+      "noise_matched_excess": -0.0109,
+      "noise_matched_z": -1.08
     },
     {
       "omega": 0.5,
-      "cyclic_fraction": 0.1401
+      "cyclic_fraction": 0.1401,
+      "noise_matched_excess": -0.0169,
+      "noise_matched_z": -1.68
     },
     {
       "omega": 1.0,
-      "cyclic_fraction": 0.1294
+      "cyclic_fraction": 0.1294,
+      "noise_matched_excess": -0.0134,
+      "noise_matched_z": -1.33
     },
     {
       "omega": 2.0,
-      "cyclic_fraction": 0.139
+      "cyclic_fraction": 0.139,
+      "noise_matched_excess": 0.0102,
+      "noise_matched_z": 0.97
     }
   ],
-  "note": "Cyclic fraction of real velocity vs a matched gradient (reversible) floor and a shuffled ceiling on the same cells. Excess over the floor indicates circulation beyond what a reversible field produces at this sample size. Descriptive placement, not a calibrated p-value. detection_power injects a PC1-PC2 rotation into the real geometry: it barely moves the fraction, because these lineages are near-1D and a 1D structure has no cycles to carry circulation. The measure's power is established on the 2D synthetic ground truth (AUROC 1.0), not here; this null is consistent with the near-floor real result."
+  "note": "Cyclic fraction of real velocity vs a matched gradient (reversible) floor and a shuffled ceiling on the same cells. Excess over the floor indicates circulation beyond what a reversible field produces at this sample size. Descriptive placement, not a calibrated p-value. detection_power injects a PC1-PC2 rotation into the real geometry: it barely moves the fraction, because these lineages are near-1D and a 1D structure has no cycles to carry circulation. The measure's power is established on the 2D synthetic ground truth (AUROC 1.0), not here; this null is consistent with the near-floor real result. noise_matched_excess reads the same field against a null built from the data's own noise (noise_matched_irreversibility), robust to velocity noise and sequencing depth."
 }
