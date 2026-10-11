@@ -290,3 +290,119 @@ def cycle_affinities(pts, vels, graph, temperature=1.0, velocity_scale=1.0):
         max_affinity_kt=float(aff.max()),
         mean_abs_affinity_kt=float(aff.mean()),
     )
+
+
+@dataclass
+class NoiseMatchedReport:
+    """Cyclic fraction read against a null built from the data's own noise.
+
+    `excess` is the observed cyclic fraction minus the noise-matched null mean,
+    bias-corrected by running the same procedure on reference datasets that are
+    reversible by construction. ~0 means the circulation is what this dataset's
+    noise produces on a reversible flow; > 0 means circulation beyond it.
+    """
+
+    cyclic_fraction: float
+    null_mean: float
+    bias: float
+    excess: float
+    z: float
+    draws: int
+    references: int
+    n_cells: int
+    per_cell_excess: np.ndarray | None = None
+
+    def to_dict(self):
+        return {
+            "cyclic_fraction": self.cyclic_fraction, "null_mean": self.null_mean, "bias": self.bias,
+            "excess": self.excess, "z": self.z, "draws": self.draws, "references": self.references,
+            "n_cells": self.n_cells, "method": "noise_matched_hodge_cyclic_fraction",
+        }
+
+
+def _neighbor_matrix(graph, n):
+    # each cell plus its kNN, padded with self so rows are equal length
+    width = 1 + max((len(nb) for nb in graph.neighbors), default=0)
+    out = np.empty((n, width), dtype=int)
+    for i, nb in enumerate(graph.neighbors):
+        row = [i, *nb]
+        out[i] = row + [i] * (width - len(row))
+    return out
+
+
+def _reversible_velocity(pts, vels, pairs, nbm, ridge=1e-8):
+    """Per-cell velocity of the best potential flow: fit a node potential U to the
+    work along every edge, then take its local least-squares gradient."""
+    from scipy.sparse.linalg import lsqr
+
+    i, j = pairs[:, 0], pairs[:, 1]
+    work = 0.5 * np.einsum("kd,kd->k", vels[i] + vels[j], pts[j] - pts[i])
+    U = -lsqr(_incidence(pairs, len(pts)), work, atol=1e-10, btol=1e-10, iter_lim=10000)[0]
+    D = pts[nbm[:, 1:]] - pts[:, None, :]                  # n x k x d displacements
+    y = U[nbm[:, 1:]] - U[:, None]                          # n x k potential differences
+    G = np.einsum("nkd,nke->nde", D, D) + ridge * np.eye(pts.shape[1])
+    return np.linalg.solve(G, np.einsum("nkd,nk->nd", D, y)[..., None])[..., 0]
+
+
+def noise_matched_irreversibility(pts, vels, graph, draws=10, references=5, seed=0, per_cell=False,
+                                  systematic=0.01):
+    """Cyclic fraction against a null that carries the data's own noise.
+
+    The matched gradient floor (a clean radial field) has no noise, so noisy or
+    shallow-sequenced regions read as circulating. Here the null is built from
+    the data itself: a reversible velocity (the local gradient of the potential
+    that best explains the work along each edge) plus the observed residual
+    noise (each cell's velocity minus its neighbourhood mean), re-drawn from
+    neighbouring cells with random signs. Running the identical procedure on
+    `references` reversible-by-construction datasets estimates the method's own
+    bias, which is subtracted.
+
+    Returns a NoiseMatchedReport; z uses the null and reference spread plus a
+    `systematic` term (the largest residual bias seen on ground truth) so that
+    nearly noise-free data cannot produce an inflated z.
+    """
+    pts = np.asarray(pts, dtype=float)
+    vels = np.asarray(vels, dtype=float)
+    n = len(pts)
+    pairs = _pairs(graph)
+    if len(pairs) == 0 or n < 4:
+        return NoiseMatchedReport(0.0, 0.0, 0.0, 0.0, 0.0, draws, references, n)
+    B = _incidence(pairs, n)
+    nbm = _neighbor_matrix(graph, n)
+    rng = np.random.default_rng(seed)
+
+    def frac(v):
+        return _frac_sparse(B, _edge_flow(pts, v, pairs))
+
+    def redraw(vrev, resid):
+        pick = nbm[np.arange(n), rng.integers(0, nbm.shape[1], size=n)]
+        return vrev + rng.choice([-1.0, 1.0], size=n)[:, None] * resid[pick]
+
+    def null_of(v, k, local):
+        vrev = _reversible_velocity(pts, v, pairs, nbm)
+        resid = v - v[nbm].mean(axis=1)
+        fields = [redraw(vrev, resid) for _ in range(k)]
+        glob = np.array([frac(f) for f in fields])
+        loc = np.mean([cyclic_fraction_per_cell(pts, f, graph) for f in fields], axis=0) if local else None
+        return glob, loc, vrev, resid
+
+    obs = frac(vels)
+    nulls, null_loc, vrev, resid = null_of(vels, draws, per_cell)
+    bias, bias_loc = [], []
+    for _ in range(references):
+        ref = redraw(vrev, resid)
+        rn, rl, _, _ = null_of(ref, draws, per_cell)
+        bias.append(frac(ref) - rn.mean())
+        if per_cell:
+            bias_loc.append(cyclic_fraction_per_cell(pts, ref, graph) - rl)
+    bias = np.asarray(bias)
+    excess = obs - nulls.mean() - bias.mean()
+    spread = float(np.sqrt(nulls.var() + bias.var() + systematic ** 2))
+    local = None
+    if per_cell:
+        local = cyclic_fraction_per_cell(pts, vels, graph) - null_loc - np.mean(bias_loc, axis=0)
+    return NoiseMatchedReport(
+        cyclic_fraction=float(obs), null_mean=float(nulls.mean()), bias=float(bias.mean()),
+        excess=float(excess), z=float(excess / spread), draws=draws, references=references, n_cells=n,
+        per_cell_excess=local,
+    )

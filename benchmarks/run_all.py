@@ -21,6 +21,7 @@ SYNTHETIC = [
     ["benchmarks/plot_scaling.py"],
     ["benchmarks/scaling.py"],
     ["benchmarks/generalization.py"],
+    ["benchmarks/noise_matched_ground_truth.py"],
 ]
 REAL_DATA = [
     ["benchmarks/pancreas_entropy_validation.py"],

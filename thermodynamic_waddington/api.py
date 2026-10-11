@@ -43,6 +43,8 @@ class AnalysisReport:
     path_vs_density_r2: float | None
     irreversibility_cyclic_fraction: float | None = None
     irreversibility_cycle_affinity_kt: float | None = None
+    irreversibility_noise_matched_excess: float | None = None
+    irreversibility_noise_matched_z: float | None = None
     committor_order: list[str] | None = None
     commitment_label: str | None = None
     commitment_barrier_kt: float | None = None
@@ -73,12 +75,13 @@ def _cyclic_fraction(expression, velocity, dims):
         cyclic_flow_per_cell,
         cyclic_fraction_per_cell,
         cyclic_irreversibility,
+        noise_matched_irreversibility,
     )
 
     X = np.asarray(expression, dtype=float)
     V = np.asarray(velocity, dtype=float)
     if len(X) < 4:
-        return None, None, None, None
+        return None, None, None, None, None
     Xc = X - X.mean(axis=0)
     _, _, vt = np.linalg.svd(Xc, full_matrices=False)
     comp = vt[: max(2, dims)].T
@@ -89,7 +92,8 @@ def _cyclic_fraction(expression, velocity, dims):
     aff = cycle_affinities(pts, vpca, graph).rms_affinity_kt
     per_cell = cyclic_flow_per_cell(pts, vpca, graph)
     per_cell_fraction = cyclic_fraction_per_cell(pts, vpca, graph)
-    return frac, aff, per_cell, per_cell_fraction
+    noise_matched = noise_matched_irreversibility(pts, vpca, graph, draws=6, references=3, per_cell=True)
+    return frac, aff, per_cell, per_cell_fraction, noise_matched
 
 
 def _report_from_fit(fit, config, labels, source_labels, target_labels, significance):
@@ -151,9 +155,12 @@ def analyze(
     fit = fit_landscape(expression, velocity, config=config, labels=labels)
     report, _ = _report_from_fit(fit, config, labels, source_labels, target_labels, significance)
     try:
-        frac, aff, _, _ = _cyclic_fraction(expression, velocity, (config or FitConfig()).dimensions)
+        frac, aff, _, _, nm = _cyclic_fraction(expression, velocity, (config or FitConfig()).dimensions)
         report.irreversibility_cyclic_fraction = frac
         report.irreversibility_cycle_affinity_kt = aff
+        if nm is not None:
+            report.irreversibility_noise_matched_excess = nm.excess
+            report.irreversibility_noise_matched_z = nm.z
     except Exception as exc:
         report.warnings.append(f"irreversibility measures unavailable: {exc}")
     return report
@@ -186,7 +193,9 @@ def analyze_adata(
     `adata.obs['{key_added}_energy']`; the per-cell irreversibility to
     `adata.obs['{key_added}_cyclic_fraction']` (local cyclic fraction, 0..1,
     comparable across regions) and `adata.obs['{key_added}_irreversibility']`
-    (share of cyclic flow energy, which also grows with velocity magnitude);
+    (share of cyclic flow energy, which also grows with velocity magnitude),
+    and `adata.obs['{key_added}_cyclic_excess']` (local cyclic fraction above the
+    noise-matched null, ~0 where the flow is reversible given the data's noise);
     and the report to `adata.uns['{key_added}']`.
     """
     import numpy as np
@@ -220,11 +229,14 @@ def analyze_adata(
 
     fit = fit_landscape(expr.tolist(), vel.tolist(), config=config, labels=labels)
     report, committor = _report_from_fit(fit, config, labels, source, target, significance)
-    per_cell_irrev = per_cell_frac = None
+    per_cell_irrev = per_cell_frac = nm = None
     try:
-        frac, aff, per_cell_irrev, per_cell_frac = _cyclic_fraction(expr, vel, (config or FitConfig()).dimensions)
+        frac, aff, per_cell_irrev, per_cell_frac, nm = _cyclic_fraction(expr, vel, (config or FitConfig()).dimensions)
         report.irreversibility_cyclic_fraction = frac
         report.irreversibility_cycle_affinity_kt = aff
+        if nm is not None:
+            report.irreversibility_noise_matched_excess = nm.excess
+            report.irreversibility_noise_matched_z = nm.z
     except Exception as exc:
         report.warnings.append(f"irreversibility measures unavailable: {exc}")
 
@@ -236,6 +248,8 @@ def analyze_adata(
             adata.obs[f"{key_added}_irreversibility"] = np.asarray(per_cell_irrev, dtype=float)
         if per_cell_frac is not None:
             adata.obs[f"{key_added}_cyclic_fraction"] = np.asarray(per_cell_frac, dtype=float)
+        if nm is not None and nm.per_cell_excess is not None:
+            adata.obs[f"{key_added}_cyclic_excess"] = np.asarray(nm.per_cell_excess, dtype=float)
         adata.uns[key_added] = report.to_dict()
     except Exception as exc:  # writing back is best-effort
         report.warnings.append(f"could not write results into adata: {exc}")

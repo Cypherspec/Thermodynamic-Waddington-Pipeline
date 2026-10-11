@@ -21,6 +21,8 @@ class TestAnalyze(unittest.TestCase):
         self.assertIsInstance(rep, AnalysisReport)
         self.assertEqual(rep.n_cells, 120)
         self.assertGreater(rep.n_edges, 0)
+        self.assertIsNotNone(rep.irreversibility_noise_matched_excess)
+        self.assertIn("irreversibility_noise_matched_z", rep.to_dict())
 
     def test_committor_fields_present(self):
         labs = sorted(set(self.ds.labels))

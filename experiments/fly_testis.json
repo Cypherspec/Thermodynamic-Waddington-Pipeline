@@ -132,6 +132,13 @@
     "gradient_floor": 0.0862,
     "random_ceiling": 0.5177,
     "excess_over_floor": 0.0108,
+    "noise_matched": {
+      "null_mean": 0.1206,
+      "bias": -0.0168,
+      "excess": -0.0068,
+      "excess_std": 0.0027,
+      "z_mean": -0.6
+    },
     "per_stage": [
       {
         "label": "spermatogonium",
@@ -140,6 +147,8 @@
         "cyclic_fraction_std": 0.018,
         "gradient_floor": 0.125,
         "excess_over_floor": 0.03,
+        "noise_matched_excess": 0.046,
+        "noise_matched_excess_std": 0.036,
         "relative_cyclic_energy": 0.309,
         "relative_cyclic_energy_std": 0.164,
         "seeds_present": 5
@@ -151,6 +160,8 @@
         "cyclic_fraction_std": 0.026,
         "gradient_floor": 0.122,
         "excess_over_floor": 0.028,
+        "noise_matched_excess": 0.042,
+        "noise_matched_excess_std": 0.026,
         "relative_cyclic_energy": 0.223,
         "relative_cyclic_energy_std": 0.067,
         "seeds_present": 5
@@ -162,6 +173,8 @@
         "cyclic_fraction_std": 0.019,
         "gradient_floor": 0.11,
         "excess_over_floor": 0.033,
+        "noise_matched_excess": 0.06,
+        "noise_matched_excess_std": 0.042,
         "relative_cyclic_energy": 0.136,
         "relative_cyclic_energy_std": 0.031,
         "seeds_present": 5
@@ -173,6 +186,8 @@
         "cyclic_fraction_std": 0.035,
         "gradient_floor": 0.152,
         "excess_over_floor": 0.034,
+        "noise_matched_excess": 0.038,
+        "noise_matched_excess_std": 0.023,
         "relative_cyclic_energy": 0.254,
         "relative_cyclic_energy_std": 0.065,
         "seeds_present": 5
@@ -184,6 +199,8 @@
         "cyclic_fraction_std": 0.034,
         "gradient_floor": 0.286,
         "excess_over_floor": 0.005,
+        "noise_matched_excess": 0.029,
+        "noise_matched_excess_std": 0.015,
         "relative_cyclic_energy": 0.99,
         "relative_cyclic_energy_std": 0.146,
         "seeds_present": 5
@@ -195,6 +212,8 @@
         "cyclic_fraction_std": 0.006,
         "gradient_floor": 0.243,
         "excess_over_floor": 0.004,
+        "noise_matched_excess": 0.022,
+        "noise_matched_excess_std": 0.014,
         "relative_cyclic_energy": 1.547,
         "relative_cyclic_energy_std": 0.253,
         "seeds_present": 5
@@ -206,6 +225,8 @@
         "cyclic_fraction_std": 0.014,
         "gradient_floor": 0.152,
         "excess_over_floor": 0.006,
+        "noise_matched_excess": 0.004,
+        "noise_matched_excess_std": 0.013,
         "relative_cyclic_energy": 2.258,
         "relative_cyclic_energy_std": 0.303,
         "seeds_present": 5
@@ -217,6 +238,8 @@
         "cyclic_fraction_std": 0.005,
         "gradient_floor": 0.086,
         "excess_over_floor": 0.008,
+        "noise_matched_excess": -0.002,
+        "noise_matched_excess_std": 0.006,
         "relative_cyclic_energy": 3.054,
         "relative_cyclic_energy_std": 0.412,
         "seeds_present": 5
@@ -228,6 +251,8 @@
         "cyclic_fraction_std": 0.005,
         "gradient_floor": 0.068,
         "excess_over_floor": 0.007,
+        "noise_matched_excess": -0.002,
+        "noise_matched_excess_std": 0.003,
         "relative_cyclic_energy": 4.433,
         "relative_cyclic_energy_std": 0.578,
         "seeds_present": 5
@@ -239,6 +264,8 @@
         "cyclic_fraction_std": 0.005,
         "gradient_floor": 0.063,
         "excess_over_floor": 0.006,
+        "noise_matched_excess": -0.008,
+        "noise_matched_excess_std": 0.002,
         "relative_cyclic_energy": 6.975,
         "relative_cyclic_energy_std": 0.807,
         "seeds_present": 5
@@ -250,6 +277,8 @@
         "cyclic_fraction_std": 0.01,
         "gradient_floor": 0.116,
         "excess_over_floor": -0.017,
+        "noise_matched_excess": 0.018,
+        "noise_matched_excess_std": 0.013,
         "relative_cyclic_energy": 0.288,
         "relative_cyclic_energy_std": 0.075,
         "seeds_present": 5
@@ -261,6 +290,8 @@
         "cyclic_fraction_std": 0.011,
         "gradient_floor": 0.08,
         "excess_over_floor": 0.021,
+        "noise_matched_excess": 0.011,
+        "noise_matched_excess_std": 0.004,
         "relative_cyclic_energy": 2.037,
         "relative_cyclic_energy_std": 0.47,
         "seeds_present": 5
@@ -272,6 +303,8 @@
         "cyclic_fraction_std": 0.012,
         "gradient_floor": 0.109,
         "excess_over_floor": 0.076,
+        "noise_matched_excess": 0.006,
+        "noise_matched_excess_std": 0.02,
         "relative_cyclic_energy": 0.186,
         "relative_cyclic_energy_std": 0.032,
         "seeds_present": 5
@@ -283,6 +316,8 @@
         "cyclic_fraction_std": 0.023,
         "gradient_floor": 0.126,
         "excess_over_floor": 0.153,
+        "noise_matched_excess": -0.019,
+        "noise_matched_excess_std": 0.012,
         "relative_cyclic_energy": 0.137,
         "relative_cyclic_energy_std": 0.037,
         "seeds_present": 5
@@ -294,6 +329,8 @@
         "cyclic_fraction_std": 0.021,
         "gradient_floor": 0.129,
         "excess_over_floor": 0.117,
+        "noise_matched_excess": -0.012,
+        "noise_matched_excess_std": 0.019,
         "relative_cyclic_energy": 0.457,
         "relative_cyclic_energy_std": 0.064,
         "seeds_present": 5
@@ -305,6 +342,8 @@
         "cyclic_fraction_std": 0.02,
         "gradient_floor": 0.116,
         "excess_over_floor": 0.133,
+        "noise_matched_excess": -0.014,
+        "noise_matched_excess_std": 0.023,
         "relative_cyclic_energy": 1.135,
         "relative_cyclic_energy_std": 0.553,
         "seeds_present": 5
@@ -313,6 +352,9 @@
     "excess_vs_depth_spearman": -0.768,
     "excess_vs_unspliced_spearman": -0.753,
     "energy_vs_depth_spearman": 0.838,
+    "noise_matched_vs_depth_spearman": 0.059,
+    "noise_matched_max_abs_stage_excess": 0.06,
+    "noise_matched_post_meiotic_mean": -0.01,
     "excess_pre_meiotic_mean": 0.014,
     "excess_post_meiotic_mean": 0.12
   },

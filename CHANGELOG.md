@@ -3,6 +3,23 @@
 All notable changes to this project are documented here. Format loosely follows
 Keep a Changelog. Versioning is semantic.
 
+## [1.2.0] - 2026-10-11
+
+### Added
+- `irreversibility.noise_matched_irreversibility`: the cyclic fraction against a
+  null built from the data's own noise (reversible velocity from the
+  best-fitting potential plus neighbour-redrawn, sign-flipped residuals),
+  bias-corrected by a parametric double bootstrap on reversible references;
+  global and per-cell. `analyze()` reports
+  `irreversibility_noise_matched_excess` / `_z`; `analyze_adata` writes
+  `obs['tw_cyclic_excess']`.
+- `benchmarks/noise_matched_ground_truth.py`: ground truth with measurement
+  noise (none / uniform / uneven): false-positive rate at equilibrium 1.00 for
+  the clean-floor excess vs 0.00 noise-matched; pooled AUROC 0.76 -> 0.96.
+- Fly benchmark reports the noise-matched readout: germline excess -0.007
+  (z = -0.6); the post-meiotic +0.12 over the clean floor is -0.010, and the
+  per-stage excess no longer tracks depth.
+
 ## [1.1.0] - 2026-10-11
 
 ### Added

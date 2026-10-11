@@ -39,6 +39,7 @@ class TestAnalyzeAdata(unittest.TestCase):
         self.assertIn("tw_cyclic_fraction", a.obs.columns)
         frac = a.obs["tw_cyclic_fraction"].to_numpy()
         self.assertTrue(((frac >= 0) & (frac <= 1 + 1e-9)).all())
+        self.assertIn("tw_cyclic_excess", a.obs.columns)
         self.assertIn("tw", a.uns)
         self.assertEqual(len(a.obs["tw_energy"]), a.n_obs)
 

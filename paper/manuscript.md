@@ -123,7 +123,7 @@ diagnostic of non-equilibrium departure.
 **Implementation.** The numeric core is vectorized (numpy) with an exact KD-tree
 graph; results are bit-identical to a pure-Python reference. Graph construction
 and both irreversibility measures run on 50,000 cells in seconds. The package is
-typed, lint-clean, tested (225 unit tests), and reproducible in one command.
+typed, lint-clean, tested (230 unit tests), and reproducible in one command.
 
 ## 3. Results
 
@@ -173,6 +173,19 @@ two-boundary absorption probability orders best (0.99), ahead of the committor
 ordering method; its value is as a commitment coordinate tied to the
 thermodynamics.
 
+**A noise-matched null.** The matched gradient floor is noise-free, but
+measured velocity is not, and noise looks cyclic. Adding measurement noise to
+the ground truth (uniform, or uneven with half the cells 10x noisier), the
+clean-floor excess false-positives in every equilibrium run. We therefore build
+the null from the data: a reversible velocity, the local gradient of the
+potential that best fits the work along each edge, plus the observed residuals
+(velocity minus its neighbourhood mean) re-drawn among neighbours with random
+signs; the method's own bias is estimated on reference datasets that are
+reversible by construction and subtracted. Across 200 ground-truth runs the
+false-positive rate at equilibrium falls from 1.00 to 0.00 at every noise level,
+and pooled equilibrium-vs-driven AUROC rises from 0.76 to 0.96, with power
+decreasing with noise as expected.
+
 **A second phylum: Drosophila spermatogenesis.** The Fly Cell Atlas testis (Li
 et al., 2022) provides no spliced/unspliced layers, so we built them from the
 raw reads: 61.8M reads (about 10% of library FCA59) streamed from the unaligned
@@ -188,8 +201,10 @@ overlap 0.36 between independent fits against 0.011 by chance), but a regulator
 list fixed in advance is not enriched in it. The analysis also exposed an
 artifact in a per-cell map: cyclic flow *energy* tracks sequencing depth (Spearman
 +0.84 across stages) and produced a spurious late-spermatocyte peak. A
-magnitude-invariant per-cell cyclic fraction, read against a local reversible
-floor, removes it.
+magnitude-invariant per-cell cyclic fraction removes it. Against the clean
+floor, post-meiotic spermatids still showed an excess (+0.12) that ran opposite
+to depth; against the noise-matched null it is -0.010, and the germline as a
+whole is -0.007 (z = -0.6): reversible within its own noise.
 
 **Prior negative result.** The legacy entropy-production signal did not replicate
 on dentate gyrus neurogenesis across seven independent tests, including a
@@ -222,7 +237,7 @@ reports where it fails is more useful than one that does not.
 
 All results reproduce from the released code with `python benchmarks/run_all.py`;
 individual benchmarks and figures are listed in the README. The package installs
-with `pip install -e .`, passes 225 unit tests, and pins its numerical core to
+with `pip install -e .`, passes 230 unit tests, and pins its numerical core to
 bit-identical outputs across versions. Public datasets are obtained through
 scVelo. An end-to-end tutorial runs on synthetic data with no download.
 

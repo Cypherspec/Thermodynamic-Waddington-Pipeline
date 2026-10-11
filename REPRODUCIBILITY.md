@@ -16,7 +16,7 @@ pip install -e ".[all]"
 ## Tests
 
 ```bash
-pytest        # 225 unit tests
+pytest        # 230 unit tests
 ruff check .  # lint, also enforced in CI
 ```
 

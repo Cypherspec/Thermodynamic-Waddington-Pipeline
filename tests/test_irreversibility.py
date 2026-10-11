@@ -10,6 +10,7 @@ from thermodynamic_waddington.irreversibility import (
     cyclic_flow_per_cell,
     cyclic_fraction_per_cell,
     cyclic_irreversibility,
+    noise_matched_irreversibility,
 )
 
 J = np.array([[0.0, -1.0], [1.0, 0.0]])
@@ -168,6 +169,53 @@ class TestPerCellFraction(unittest.TestCase):
         out = cyclic_fraction_per_cell(np.zeros((2, 2)), np.zeros((2, 2)), g)
         self.assertEqual(out.shape, (2,))
         self.assertEqual(float(out.sum()), 0.0)
+
+
+def _noisy(omega, seed, n=300, uneven=True):
+    pts, vel = _sample(omega, seed, n=n)
+    rng = np.random.default_rng(100 + seed)
+    sd = 0.5 * (np.where(pts[:, 0] > 0, 3.0, 0.3) if uneven else np.ones(n))
+    return pts, vel + rng.normal(size=vel.shape) * sd[:, None]
+
+
+class TestNoiseMatched(unittest.TestCase):
+    def test_noisy_equilibrium_has_no_excess(self):
+        pts, vel = _noisy(0.0, 0)
+        g = build_knn(pts.tolist(), 20)
+        naive = cyclic_irreversibility(pts, vel, g).cyclic_fraction - cyclic_irreversibility(pts, -pts, g).cyclic_fraction
+        r = noise_matched_irreversibility(pts, vel, g, draws=6, references=3)
+        self.assertGreater(naive, 0.15)              # the clean floor mistakes noise for circulation
+        self.assertLess(abs(r.excess), 0.03)
+        self.assertLess(r.z, 2.0)
+
+    def test_detects_real_circulation_through_noise(self):
+        pts, vel = _noisy(2.0, 1)
+        r = noise_matched_irreversibility(pts, vel, build_knn(pts.tolist(), 20), draws=6, references=3)
+        self.assertGreater(r.excess, 0.1)
+        self.assertGreater(r.z, 3.0)
+
+    def test_per_cell_ignores_uneven_noise(self):
+        pts, vel = _noisy(0.0, 2)
+        g = build_knn(pts.tolist(), 20)
+        r = noise_matched_irreversibility(pts, vel, g, draws=6, references=3, per_cell=True)
+        noisy = pts[:, 0] > 0
+        naive = cyclic_fraction_per_cell(pts, vel, g) - cyclic_fraction_per_cell(pts, -pts, g)
+        self.assertEqual(r.per_cell_excess.shape, (len(pts),))
+        self.assertGreater(naive[noisy].mean(), 0.2)
+        self.assertLess(abs(r.per_cell_excess[noisy].mean()), 0.05)
+
+    def test_deterministic_and_serializable(self):
+        pts, vel = _noisy(0.5, 3, n=200)
+        g = build_knn(pts.tolist(), 15)
+        a = noise_matched_irreversibility(pts, vel, g, draws=4, references=2, seed=9)
+        b = noise_matched_irreversibility(pts, vel, g, draws=4, references=2, seed=9)
+        self.assertEqual(a.excess, b.excess)
+        self.assertEqual(a.to_dict()["method"], "noise_matched_hodge_cyclic_fraction")
+
+    def test_degenerate(self):
+        g = build_knn([[0.0, 0.0], [1.0, 0.0]], 1)
+        r = noise_matched_irreversibility(np.zeros((2, 2)), np.zeros((2, 2)), g)
+        self.assertEqual(r.excess, 0.0)
 
 
 if __name__ == "__main__":

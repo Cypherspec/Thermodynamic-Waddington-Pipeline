@@ -15,7 +15,7 @@ where it does not. This page is that statement. None of it is hidden elsewhere.
 - **The commitment barrier.** 1.6 kT [1.4, 1.9] on pancreas across 8 subsamples.
 - **Committor ordering on a long staged lineage.** On Drosophila spermatogenesis
   the committor beats PC1 in 8/8 subsamples (0.78 vs 0.47).
-- **The software.** Deterministic given a seed, 225 unit tests, lint-clean CI,
+- **The software.** Deterministic given a seed, 230 unit tests, lint-clean CI,
   reproducible in one command, numeric core pinned to bit-identical outputs.
 
 ## What is dataset-dependent
@@ -32,6 +32,12 @@ where it does not. This page is that statement. None of it is hidden elsewhere.
   permutation test. That test false-positives on equilibrium ground truth (FPR
   1.0), so the reading is withdrawn; the calibrated measure shows near-reversible
   lineages instead. The legacy test remains in the package for comparison.
+- **A clean floor mistakes noise for circulation.** Against the noise-free radial
+  floor, noisy equilibrium data false-positives every time (ground truth with
+  measurement noise). Use `noise_matched_irreversibility`; its own limits: power
+  falls with noise, and residuals are estimated from kNN neighbourhoods, so
+  real circulation at the scale of a single neighbourhood is partly treated as
+  noise (conservative).
 - **A depth-confounded per-cell map.** The per-cell cyclic-energy map
   (`cyclic_flow_per_cell`) grows with velocity magnitude; on the fly testis it
   produced a 7x "peak" that tracked sequencing depth. Use the magnitude-invariant
@@ -65,8 +71,8 @@ where it does not. This page is that statement. None of it is hidden elsewhere.
 
 ## How to use it responsibly
 
-- Report the cyclic fraction next to its matched gradient floor, not the legacy
-  entropy-production p-value.
+- Report the cyclic fraction with its noise-matched excess (and the clean floor
+  for reference), not the legacy entropy-production p-value.
 - Treat kT barriers as pseudopotential barriers.
 - State the velocity model and preprocessing.
 - If applying to a new system, compute the gradient floor at the same sample

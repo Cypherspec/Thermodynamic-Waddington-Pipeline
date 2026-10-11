@@ -18,13 +18,15 @@ unspliced-minus-spliced proxy), uses the top-`n_top_genes` by variance, and writ
 the per-cell committor, energy, and irreversibility map to
 `adata.obs['{key_added}_committor']`, `adata.obs['{key_added}_energy']`, and
 `adata.obs['{key_added}_irreversibility']`, plus the magnitude-invariant
-`adata.obs['{key_added}_cyclic_fraction']`, with the report in
+`adata.obs['{key_added}_cyclic_fraction']` and the noise-matched
+`adata.obs['{key_added}_cyclic_excess']`, with the report in
 `adata.uns['{key_added}']`.
 
 ### `AnalysisReport`
 
 Dataclass with: `n_cells`, `n_edges`, `n_attractors`,
 `irreversibility_cyclic_fraction`, `irreversibility_cycle_affinity_kt`,
+`irreversibility_noise_matched_excess`, `irreversibility_noise_matched_z`,
 `landscape_range_kt`, `path_vs_density_r2`, `committor_order`,
 `commitment_label`, `commitment_barrier_kt`, `transition_state_q`, `warnings`,
 and the legacy `entropy_production_rate`, `entropy_production_pvalue`,
@@ -86,6 +88,15 @@ velocity flow from a discrete Hodge decomposition (`cyclic_fraction`,
 
 Schnakenberg cycle affinities in kT (`n_cycles`, `rms_affinity_kt`,
 `max_affinity_kt`, `mean_abs_affinity_kt`).
+
+### `irreversibility.noise_matched_irreversibility(pts, vels, graph, draws=10, references=5, seed=0, per_cell=False)`
+
+Cyclic fraction against a null carrying the data's own noise (reversible
+velocity from the best-fitting potential, plus residuals re-drawn among
+neighbours with random signs), bias-corrected on reversible-by-construction
+references. Returns `NoiseMatchedReport` (`cyclic_fraction`, `null_mean`,
+`bias`, `excess`, `z`, and `per_cell_excess` when `per_cell=True`). Use it
+whenever velocity noise or sequencing depth varies across the data.
 
 ### `irreversibility.cyclic_fraction_per_cell(pts, vels, graph)`
 

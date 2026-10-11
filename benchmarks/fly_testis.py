@@ -16,8 +16,8 @@ commitment_barrier.py) so the numbers are directly comparable:
   2. irreversibility  Hodge cyclic fraction vs a matched gradient floor and a
                       shuffled ceiling, 1500 cells x 100 genes, 5 seeds.
   3. where            per-stage cyclic fraction (magnitude-invariant) against a
-                      per-stage gradient floor on the same cells, plus the
-                      cyclic-energy share (1 = uniform), which also tracks speed.
+                      clean per-stage floor (naive) and against the
+                      noise-matched null built from the data's own noise.
   4. commitment       committor spermatogonia -> late elongating spermatids:
                       where it crosses 0.5, the PMF barrier in kT with a 95%
                       CI, and stage-ordering Spearman against PC1.
@@ -48,6 +48,7 @@ from thermodynamic_waddington.irreversibility import (
     cyclic_flow_per_cell,
     cyclic_fraction_per_cell,
     cyclic_irreversibility,
+    noise_matched_irreversibility,
 )
 
 PATH = "data/fly/testis_velocity.h5ad"
@@ -130,6 +131,8 @@ def irreversibility(d, cells, seeds):
     stage_density = {lab: [] for lab in STAGES}
     stage_frac = {lab: [] for lab in STAGES}
     stage_floor = {lab: [] for lab in STAGES}
+    stage_nm = {lab: [] for lab in STAGES}
+    nm_glob = []
     for s in range(seeds):
         idx = np.random.default_rng(s).choice(n, size=min(cells, n), replace=False)
         pts, v = pca_project(d["spliced"][idx], d["velocity"][idx])
@@ -141,6 +144,8 @@ def irreversibility(d, cells, seeds):
         share = np.asarray(cyclic_flow_per_cell(pts, v, g)) * len(idx)   # 1 = uniform
         local = cyclic_fraction_per_cell(pts, v, g)
         local_floor = cyclic_fraction_per_cell(pts, pts.mean(axis=0) - pts, g)
+        nm = noise_matched_irreversibility(pts, v, g, seed=s, per_cell=True)
+        nm_glob.append(nm)
         lab = d["labels"][idx]
         for name in STAGES:
             m = lab == name
@@ -148,11 +153,14 @@ def irreversibility(d, cells, seeds):
                 stage_density[name].append(float(share[m].mean()))
                 stage_frac[name].append(float(local[m].mean()))
                 stage_floor[name].append(float(local_floor[m].mean()))
+                stage_nm[name].append(float(nm.per_cell_excess[m].mean()))
     where = [{"label": k, "stage": STAGES[k],
               "cyclic_fraction": round(float(np.mean(stage_frac[k])), 3),
               "cyclic_fraction_std": round(float(np.std(stage_frac[k])), 3),
               "gradient_floor": round(float(np.mean(stage_floor[k])), 3),
               "excess_over_floor": round(float(np.mean(stage_frac[k]) - np.mean(stage_floor[k])), 3),
+              "noise_matched_excess": round(float(np.mean(stage_nm[k])), 3),
+              "noise_matched_excess_std": round(float(np.std(stage_nm[k])), 3),
               "relative_cyclic_energy": round(float(np.mean(v)), 3),
               "relative_cyclic_energy_std": round(float(np.std(v)), 3), "seeds_present": len(v)}
              for k, v in stage_density.items() if v]
@@ -163,6 +171,13 @@ def irreversibility(d, cells, seeds):
         "gradient_floor": round(float(np.mean(floor)), 4),
         "random_ceiling": round(float(np.mean(ceil)), 4),
         "excess_over_floor": round(float(np.mean(real) - np.mean(floor)), 4),
+        "noise_matched": {
+            "null_mean": round(float(np.mean([r.null_mean for r in nm_glob])), 4),
+            "bias": round(float(np.mean([r.bias for r in nm_glob])), 4),
+            "excess": round(float(np.mean([r.excess for r in nm_glob])), 4),
+            "excess_std": round(float(np.std([r.excess for r in nm_glob])), 4),
+            "z_mean": round(float(np.mean([r.z for r in nm_glob])), 2),
+        },
         "per_stage": sorted(where, key=lambda r: r["stage"]),
     }
 
@@ -371,12 +386,14 @@ def plot(report, d, idx, q, out):
     a.set_ylabel("unspliced / total UMIs")
     b2 = a.twinx()
     w = report["irreversibility"]["per_stage"]
-    b2.errorbar([r["stage"] for r in w], [r["cyclic_fraction"] for r in w], yerr=[r["cyclic_fraction_std"] for r in w],
-                fmt="s-", color=teal, lw=1.5, capsize=2, label="local cyclic fraction")
-    b2.plot([r["stage"] for r in w], [r["gradient_floor"] for r in w], ":", color=grey, lw=1.5,
-            label="reversible floor (same cells)")
-    b2.set_ylabel("local cyclic fraction", color=teal)
-    a.set_title("D  Velocity check (post-meiotic shutdown) and local\ncyclic fraction vs its reversible floor, by stage")
+    b2.plot([r["stage"] for r in w], [r["excess_over_floor"] for r in w], "s:", color=grey, lw=1.5,
+            label="excess vs clean floor (naive)")
+    b2.errorbar([r["stage"] for r in w], [r["noise_matched_excess"] for r in w],
+                yerr=[r["noise_matched_excess_std"] for r in w], fmt="s-", color=teal, lw=1.8, capsize=2,
+                label="noise-matched excess")
+    b2.axhline(0, color=teal, lw=0.8, alpha=0.5)
+    b2.set_ylabel("local excess cyclic fraction", color=teal)
+    a.set_title("D  Velocity check (post-meiotic shutdown) and local\nirreversibility: naive vs noise-matched, by stage")
     h1, l1 = a.get_legend_handles_labels(); h2, l2 = b2.get_legend_handles_labels()
     a.legend(h1 + h2, l1 + l2, frameon=False, fontsize=9, loc="upper center", bbox_to_anchor=(0.5, -0.13), ncol=3)
 
@@ -421,12 +438,19 @@ def main():
     irr["excess_vs_unspliced_spearman"] = round(_spearman([r["excess_over_floor"] for r in ps],
                                                           [depth[r["label"]]["unspliced_fraction"] for r in ps]), 3)
     irr["energy_vs_depth_spearman"] = round(_spearman([r["relative_cyclic_energy"] for r in ps], [umi[r["label"]] for r in ps]), 3)
+    irr["noise_matched_vs_depth_spearman"] = round(_spearman([r["noise_matched_excess"] for r in ps], [umi[r["label"]] for r in ps]), 3)
+    irr["noise_matched_max_abs_stage_excess"] = round(float(max(abs(r["noise_matched_excess"]) for r in ps)), 3)
+    irr["noise_matched_post_meiotic_mean"] = round(float(np.mean([r["noise_matched_excess"] for r in ps if r["stage"] >= 12])), 3)
     pre = [r["excess_over_floor"] for r in ps if r["stage"] <= 11]
     post = [r["excess_over_floor"] for r in ps if r["stage"] >= 12]
     irr["excess_pre_meiotic_mean"], irr["excess_post_meiotic_mean"] = round(float(np.mean(pre)), 3), round(float(np.mean(post)), 3)
     print(f"  per stage: excess pre-meiotic {irr['excess_pre_meiotic_mean']:+.3f}, post-meiotic {irr['excess_post_meiotic_mean']:+.3f}")
     print(f"  Spearman over stages: excess vs depth {irr['excess_vs_depth_spearman']}, excess vs unspliced "
           f"{irr['excess_vs_unspliced_spearman']}; cyclic energy vs depth {irr['energy_vs_depth_spearman']}")
+    nmr = irr["noise_matched"]
+    print(f"  noise-matched: null={nmr['null_mean']:.3f} bias={nmr['bias']:+.3f} excess={nmr['excess']:+.3f} "
+          f"(z={nmr['z_mean']:+.2f}); per stage max |excess| {irr['noise_matched_max_abs_stage_excess']}, "
+          f"post-meiotic {irr['noise_matched_post_meiotic_mean']:+.3f}")
     print("4. commitment")
     com = commitment(d, args.commit_cells, args.commit_seeds)
     ref_path = Path("experiments/irreversibility_real.json")

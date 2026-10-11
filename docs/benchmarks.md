@@ -43,6 +43,41 @@ The directional progression is captured by the committor. The strong "irreversib
 across three tissues" reading of the old permutation test does not survive
 calibration, and is corrected here. `benchmarks/generalization.py`.
 
+## Noise-matched irreversibility (robust to sequencing depth)
+
+The matched gradient floor is a clean radial field: it has no noise. Real
+velocity does, and noise looks cyclic, so shallow-sequenced or noisy cells read
+as circulating. `noise_matched_irreversibility` builds the null from the data
+itself: a reversible velocity (the local gradient of the potential that best
+explains the work along each edge) plus the observed residual noise (each cell's
+velocity minus its neighbourhood mean), re-drawn from neighbouring cells with
+random signs. Running the identical procedure on reference datasets that are
+reversible by construction estimates the method's own bias, which is subtracted
+(a parametric double bootstrap).
+
+`benchmarks/noise_matched_ground_truth.py` adds measurement noise to the linear
+diffusion ground truth -- none, uniform, or uneven (half the cells 10x noisier,
+like shallow cells) -- over 5 drives x 4 noise settings x 10 seeds:
+
+| | clean-floor excess | noise-matched excess |
+|---|---|---|
+| false-positive rate at equilibrium, any noise | **1.00** | **0.00** |
+| AUROC equilibrium vs driven, pooled over noise | 0.76 | **0.96** |
+| noisy equilibrium ranked above a clean weak drive | 1.00 | **0.00** |
+| per-cell excess in the noisy half, at equilibrium | +0.46 | **-0.001** |
+
+Power falls with noise, as it should: under heavy uneven noise a weak drive is
+no longer detectable, while w >= 1 still is. `analyze()` reports
+`irreversibility_noise_matched_excess` and `..._z`; `analyze_adata` writes the
+per-cell version to `obs['tw_cyclic_excess']`.
+
+On the fly germline it settles the spermatid question: the post-meiotic excess
+of +0.12 over the clean floor becomes **-0.010** against the noise-matched null,
+the per-stage excess no longer tracks depth (Spearman +0.06, was -0.77), and the
+whole germline is **-0.007** (z = -0.6): reversible within its own noise.
+
+![noise-matched ground truth](https://raw.githubusercontent.com/Cypherspec/Thermodynamic-Waddington-Pipeline/master/figures/noise_matched_ground_truth.png)
+
 ## Drosophila spermatogenesis (a second phylum)
 
 `benchmarks/fly_testis.py` runs the same calibrated readouts on the male germline
@@ -59,7 +94,7 @@ barcode. Genes carry FlyBase IDs.
 | readout | result |
 |---|---|
 | velocity sanity check | unspliced fraction **0.19 in spermatocytes -> 0.04 in spermatids** (5x drop): the known post-meiotic transcription shutdown, recovered from reads quantified here |
-| calibrated irreversibility | cyclic fraction **0.097** vs reversible floor 0.086 (excess **+0.011**), shuffled ceiling 0.52 -- near-reversible, like the three vertebrate tissues |
+| calibrated irreversibility | cyclic fraction **0.097** vs reversible floor 0.086 (excess **+0.011**), shuffled ceiling 0.52; noise-matched excess **-0.007** (z = -0.6) -- reversible within its noise, like the vertebrate tissues |
 | committor ordering vs stage | Spearman **0.78 +/- 0.05 vs PC1 0.47**, committor wins **8/8** subsamples |
 | where commitment happens | inside the spermatocyte program in 7/8 subsamples (spermatocyte 4 to 7a) |
 | commitment barrier | 2.1 kT [1.6, 2.6], 8 subsamples |
@@ -78,8 +113,9 @@ stages it tracks sequencing depth (Spearman +0.84). The new magnitude-invariant
 `cyclic_fraction_per_cell`, read against a per-stage reversible floor on the same
 cells, removes it: the pre-meiotic germline sits within +0.014 of reversible. The
 residual post-meiotic excess (+0.12) runs opposite to depth (-0.77) and to the
-unspliced fraction (-0.75): it appears exactly where the velocity signal vanishes,
-so it is read as noise, not circulation.
+unspliced fraction (-0.75): it appears exactly where the velocity signal vanishes.
+The noise-matched null (above) confirms it is noise: against it the spermatids
+read -0.010.
 
 ![fly testis](https://raw.githubusercontent.com/Cypherspec/Thermodynamic-Waddington-Pipeline/master/figures/fly_testis.png)
 
