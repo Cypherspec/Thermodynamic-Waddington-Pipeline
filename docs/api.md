@@ -133,6 +133,17 @@ Mean first-passage times and per-cell commitment times.
 `sinkhorn`, `fit_schrodinger_chain`, `displacement_interpolate`,
 `estimate_growth_weights` - work-cost optimal transport chained across stages.
 
+## Export
+
+### `export.export_cells(expression, velocity, labels, source_labels, target_labels, out_dir, prefix="tw", coords=None, cell_ids=None, stage_order=None, ...) -> ExportResult`
+
+Runs the calibrated readouts on one lineage and writes `<prefix>_cells.csv` (one row
+per cell: `tw_id`, `tw_text`, `tw_stage`, `tw_x`, `tw_y`, `tw_committor`, `tw_phase`,
+`tw_energy`, `tw_cyclic_fraction`, `tw_cyclic_excess`, `tw_downstream`) and
+`<prefix>_summary.json` (commitment stage, barrier and its PMF curve, phase counts,
+per-stage means, noise-matched irreversibility, and a description of every column).
+The `tw-export` command does the same from an `.h5ad`.
+
 ## Data
 
 `make_synthetic_dataset(cells, genes, seed) -> SyntheticDataset` for a labeled

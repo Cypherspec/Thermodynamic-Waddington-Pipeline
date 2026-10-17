@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-230%20passing-brightgreen.svg)](tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-online-teal.svg)](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)
@@ -177,6 +177,20 @@ excess that the noise-matched null shows is noise (+0.12 -> -0.01). Details in
 
 ![fly testis](figures/fly_testis.png)
 
+**Export a lineage for any data platform.**
+`tw-export` runs the calibrated readouts on an AnnData lineage and writes one row
+per cell (stage, 2-D coordinates, committor, commitment phase, free energy, local
+and noise-matched irreversibility, the cells further along the committor, and a
+one-sentence description for platforms that embed text) plus a summary with the
+barrier curve. Load the table into a map-based platform and every cell carries its
+thermodynamic state.
+
+```bash
+tw-export data.h5ad --label-key clusters --source Ductal --target Beta --out exports/
+```
+
+![commitment maps](figures/commitment_maps.png)
+
 ## How it works
 
 - builds a kNN graph over cells in PCA space (exact KD-tree, scales to 50k cells)
@@ -249,7 +263,7 @@ falsifiable test of the commitment prediction is preregistered in
 @software{kommisetty_thermodynamic_waddington,
   author  = {Kommisetty, Nischay},
   title   = {Thermodynamic Waddington Pipeline},
-  version = {1.3.0},
+  version = {1.4.0},
   year    = {2026},
   url     = {https://github.com/Cypherspec/Thermodynamic-Waddington-Pipeline},
   license = {MIT}

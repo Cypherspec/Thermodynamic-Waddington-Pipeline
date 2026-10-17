@@ -3,6 +3,24 @@
 All notable changes to this project are documented here. Format loosely follows
 Keep a Changelog. Versioning is semantic.
 
+## [1.4.0] - 2026-10-17
+
+### Added
+- `thermodynamic_waddington.export` and the `tw-export` command: one row per cell
+  (stage, coordinates, committor, commitment phase, free energy, local and
+  noise-matched irreversibility, downstream cells along the committor, and a
+  one-sentence text description) plus a self-describing summary (barrier and PMF
+  curve, phase counts, per-stage means). Ready to load into map-based data
+  platforms.
+- `benchmarks/export_examples.py` writes example exports for Drosophila
+  spermatogenesis (3,000 germline cells) and pancreas (1,500 cells) to
+  `examples/exports/`; `benchmarks/plot_commitment_maps.py` draws them
+  (`figures/commitment_maps.png`).
+
+### Fixed
+- `CITATION.cff` declared `cff-version: 1.3.0` (a version bump had also matched the
+  schema version); it is back to the valid `1.2.0`.
+
 ## [1.3.0] - 2026-10-11
 
 ### Added
