@@ -3,6 +3,29 @@
 All notable changes to this project are documented here. Format loosely follows
 Keep a Changelog. Versioning is semantic.
 
+## [1.5.0] - 2026-10-17
+
+### Added
+- `benchmarks/plot_landscape_gallery.py`, three figures from the example exports:
+  `figures/waddington_landscape_3d.png` (a density pseudo-potential surface over the
+  UMAP, coloured by the committor, with the q = 0.5 separatrix),
+  `figures/commitment_flow_field.png` (the committor as a field, streamlines of its
+  gradient, isocommittor contours) and `figures/barrier_bootstrap.png` (the barrier
+  with a cell-resampling band, its bootstrap distribution, and the barrier against
+  the number of cells).
+- A manuscript section on the per-cell commitment geometry, with the three figures.
+
+### Changed
+- `figures/tw_pipeline_overview.png` redrawn: each result card now carries a small
+  view of the real readout from the pancreas export.
+
+### Documented
+- The commitment barrier depends on the number of cells it is estimated from: the
+  KDE bandwidth shrinks as n^(-1/5), and on the pancreas export the barrier rises
+  from 1.5 kT at 400 cells to 2.7 kT at 1,500. Barriers are comparable only at
+  matched cell numbers; resampling the cells of one fit understates the spread
+  across independent fits. Stated in the README and the manuscript.
+
 ## [1.4.0] - 2026-10-17
 
 ### Added

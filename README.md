@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.5.0-blue.svg)](CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-233%20passing-brightgreen.svg)](tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-online-teal.svg)](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)
@@ -34,7 +34,7 @@ measure that is calibrated on ground truth.
 | **Landscape on a physical scale** | **~5 kT** deep | density-anchored kT calibration |
 | **Fast, scalable core** | **2–6× faster**, 50k cells in seconds | vectorized, bit-identical outputs |
 | **Second phylum: Drosophila** | committor beats PC1 **8/8** (0.78 vs 0.47) | Fly Cell Atlas testis, velocity built from raw reads |
-| **Engineering** | **230 tests**, lint-clean CI, typed, MIT | one-command reproducible |
+| **Engineering** | **233 tests**, lint-clean CI, typed, MIT | one-command reproducible |
 
 Two honest caveats kept front and center. The committor's *ordering* advantage
 over PCA pseudotime holds on pancreas (0.94 vs 0.89, 10/10 seeds) but **not** on
@@ -191,6 +191,23 @@ tw-export data.h5ad --label-key clusters --source Ductal --target Beta --out exp
 
 ![commitment maps](figures/commitment_maps.png)
 
+**Landscape gallery.** The same exports, read as geometry
+(`benchmarks/plot_landscape_gallery.py`): the Waddington surface as a density
+pseudo-potential coloured by the committor, the committor as a field with
+streamlines of its gradient, and how sure the barrier is.
+
+![Waddington landscape](figures/waddington_landscape_3d.png)
+
+![commitment flow field](figures/commitment_flow_field.png)
+
+![barrier uncertainty](figures/barrier_bootstrap.png)
+
+The barrier depends on the number of cells it is estimated from: the KDE
+bandwidth shrinks as n^(-1/5), so on the pancreas export it rises from 1.5 kT at
+400 cells to 2.7 kT at 1,500. Compare barriers only at matched cell numbers, and
+report them across independent fits: resampling the cells of one fit gives a
+much narrower band than the spread between fits.
+
 ## How it works
 
 - builds a kNN graph over cells in PCA space (exact KD-tree, scales to 50k cells)
@@ -209,7 +226,7 @@ transparent spliced/unspliced proxy).
 
 ```bash
 python benchmarks/run_all.py     # regenerates every experiments/*.json and figures/*.png
-pytest                           # 230 unit tests
+pytest                           # 233 unit tests
 ```
 
 Individual benchmarks (irreversibility, commitment barrier, calibration,
@@ -220,7 +237,7 @@ availability are in [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
 ## Package
 
 - Installable, typed (`py.typed`), MIT, builds a clean wheel and sdist.
-- 230 unit tests and ruff lint, both enforced by GitHub Actions CI on Python 3.10–3.12.
+- 233 unit tests and ruff lint, both enforced by GitHub Actions CI on Python 3.10–3.12.
 - High-level `analyze()` plus the full module API; console entry points.
 - Contributions welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -263,7 +280,7 @@ falsifiable test of the commitment prediction is preregistered in
 @software{kommisetty_thermodynamic_waddington,
   author  = {Kommisetty, Nischay},
   title   = {Thermodynamic Waddington Pipeline},
-  version = {1.4.0},
+  version = {1.5.0},
   year    = {2026},
   url     = {https://github.com/Cypherspec/Thermodynamic-Waddington-Pipeline},
   license = {MIT}

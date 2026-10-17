@@ -56,6 +56,8 @@ def main() -> None:
     if DATA.exists() or FLY_DATA.exists():
         ok = run(["benchmarks/export_examples.py"]) and ok
         ok = run(["benchmarks/plot_commitment_maps.py"]) and ok
+        ok = run(["benchmarks/plot_landscape_gallery.py"]) and ok
+        ok = run(["benchmarks/plot_overview.py"]) and ok
     else:
         print(f"skip Drosophila benchmark: {FLY_DATA} not found (run benchmarks/fly_testis_prepare.py)")
     print("ALL OK" if ok else "SOME FAILED")
