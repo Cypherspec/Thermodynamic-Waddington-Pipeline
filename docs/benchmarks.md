@@ -131,6 +131,24 @@ The potential of mean force along the committor gives a commitment barrier of
 **1.6 kT [1.4, 1.9]** on the pancreas branch, with the transition state mid-
 trajectory. `benchmarks/commitment_barrier.py`.
 
+### Resolution-matched barriers
+
+With Silverman's bandwidth the barrier rises with the number of cells (the
+committor has point masses at 0 and 1 and a sparse transition region, so the
+bandwidth keeps narrowing). `benchmarks/barrier_resolution.py` tests a fixed
+resolution (h = 0.08, reflected at the boundaries) with a bootstrap bias correction:
+
+| | Silverman | resolved, corrected |
+|---|---|---|
+| double well, error at 400 cells (truth 4.28 kT) | -1.57 kT | +0.07 kT |
+| double well, drift 400 to 6,400 cells | +0.85 kT | -0.03 kT |
+| pancreas refits, drift 300 to 1,200 cells | +0.89 kT | +0.31 kT |
+| fly refits, drift 500 to 2,000 cells | +0.23 kT | -0.39 kT |
+
+The systematic drift is gone on ground truth and much reduced on pancreas; what
+remains on real data is the spread between independent fits (0.7 kT), larger than
+any drift. `benchmarks/commitment_ensemble.py` measures that spread directly.
+
 ## Physical calibration
 
 The landscape is **~5 kT** deep on a kT scale; the low path-work-vs-density R^2

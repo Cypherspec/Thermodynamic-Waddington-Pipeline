@@ -45,6 +45,10 @@ COLUMNS = {
     "tw_cyclic_excess": "local cyclic fraction above the noise-matched null (~0 = reversible within noise)",
     "tw_downstream": "identifiers of kNN neighbours further along the committor, separated by '|'",
 }
+# Written only when the export runs a commitment ensemble (ensemble_fits > 0).
+ENSEMBLE_COLUMNS = {
+    "tw_committor_sd": "spread of the committor across independent refits on 80% subsets (blank if in fewer than two)",
+}
 
 
 @dataclass
@@ -83,10 +87,24 @@ def export_cells(
     downstream: int = 3,
     seed: int = 0,
     dataset: str = "",
+    ensemble_fits: int = 0,
 ) -> ExportResult:
-    """Run the calibrated readouts on one lineage and write the cell table and summary."""
+    """Run the calibrated readouts on one lineage and write the cell table and summary.
+
+    With `ensemble_fits` > 1 the landscape is also refitted on that many random 80% subsets of the
+    cells (`commitment_ensemble`), adding a per-cell `tw_committor_sd` column and the barrier's
+    spread across fits to the summary.
+    """
+    from .commitment_ensemble import commitment_ensemble
     from .config import FitConfig
-    from .developmental import commitment_profile, committor_free_energy_profile, developmental_coordinate
+    from .developmental import (
+        RESOLVED_BANDWIDTH,
+        barrier_convergence,
+        commitment_profile,
+        committor_free_energy_profile,
+        developmental_coordinate,
+        resolved_barrier,
+    )
     from .graph import build_knn
     from .irreversibility import cyclic_fraction_per_cell, noise_matched_irreversibility
     from .model import fit_landscape
@@ -106,6 +124,9 @@ def export_cells(
     energy = np.asarray(fit.energies, dtype=float)
     profile = commitment_profile(fit, source_labels, target_labels)
     pmf = committor_free_energy_profile(q.tolist())
+    resolved = committor_free_energy_profile(q.tolist(), bandwidth=RESOLVED_BANDWIDTH)
+    corrected = resolved_barrier(q, seed=seed)
+    convergence = barrier_convergence(q, bandwidth=RESOLVED_BANDWIDTH, seed=seed)
 
     comp = _pca(X, dims)
     pts, vp = (X - X.mean(axis=0)) @ comp, V @ comp
@@ -113,6 +134,14 @@ def export_cells(
     local = cyclic_fraction_per_cell(pts, vp, graph)
     nm = noise_matched_irreversibility(pts, vp, graph, seed=seed, per_cell=True)
     xy = np.asarray(coords, dtype=float)[:, :2] if coords is not None else pts[:, :2]
+    ens = None
+    if ensemble_fits > 1:
+        ens_cfg = FitConfig(neighbors=neighbors, dimensions=dims, bootstrap_replicates=2, enable_cycle_decomposition=False,
+                            entropy_production_bootstrap_replicates=2, entropy_production_permutation_replicates=2,
+                            seed=seed + 1)
+        ens = commitment_ensemble(X, V, labels, source_labels, target_labels, fits=ensemble_fits, config=ens_cfg,
+                                  seed=seed + 1)
+    columns = {**COLUMNS, **(ENSEMBLE_COLUMNS if ens is not None else {})}
 
     down = []
     for i, nb in enumerate(graph.neighbors):
@@ -124,13 +153,16 @@ def export_cells(
     cells_path = out / f"{prefix}_cells.csv"
     with cells_path.open("w", newline="") as fh:
         w = csv.writer(fh, lineterminator="\n")
-        w.writerow(list(COLUMNS))
+        w.writerow(list(columns))
         for i in range(n):
             ph = phase_of(q[i])
             text = (f"{labels[i]} cell in the {ph} band of commitment (committor q = {q[i]:.2f}); "
                     f"free energy {energy[i]:.2f}; local irreversibility beyond noise {nm.per_cell_excess[i]:+.3f}.")
-            w.writerow([ids[i], text, labels[i], f"{xy[i, 0]:.5f}", f"{xy[i, 1]:.5f}", f"{q[i]:.5f}", ph,
-                        f"{energy[i]:.5f}", f"{local[i]:.5f}", f"{nm.per_cell_excess[i]:.5f}", down[i]])
+            row = [ids[i], text, labels[i], f"{xy[i, 0]:.5f}", f"{xy[i, 1]:.5f}", f"{q[i]:.5f}", ph,
+                   f"{energy[i]:.5f}", f"{local[i]:.5f}", f"{nm.per_cell_excess[i]:.5f}", down[i]]
+            if ens is not None:
+                row.append(f"{ens.q_sd[i]:.5f}" if np.isfinite(ens.q_sd[i]) else "")
+            w.writerow(row)
 
     order = list(stage_order) if stage_order is not None else list(profile.order)
     stages = []
@@ -145,6 +177,12 @@ def export_cells(
         "n_cells": n, "source": list(source_labels), "target": list(target_labels),
         "commitment": {"commitment_stage": profile.commitment_label, "barrier_kt": round(float(pmf.barrier_kt), 4),
                        "transition_state_q": round(float(pmf.barrier_q), 4),
+                       "barrier_resolved_kt": round(float(corrected.barrier_kt), 4),
+                       "barrier_resolved_se_kt": round(float(corrected.se_kt), 4),
+                       "barrier_resolved_raw_kt": round(float(resolved.barrier_kt), 4),
+                       "resolved_bandwidth": RESOLVED_BANDWIDTH,
+                       "resolved_barrier_drift_kt": round(float(convergence.drift_kt), 4),
+                       "pmf_resolved_kt": [round(float(x), 4) for x in resolved.free_energy_kt],
                        "pmf_q": [round(float(x), 4) for x in pmf.q_grid],
                        "pmf_kt": [round(float(x), 4) for x in pmf.free_energy_kt]},
         "irreversibility": {"cyclic_fraction": round(nm.cyclic_fraction, 4), "noise_matched_null": round(nm.null_mean, 4),
@@ -152,9 +190,17 @@ def export_cells(
         "phases": [{"name": name, "q_min": lo, "q_max": min(hi, 1.0),
                     "n_cells": int(sum(phase_of(x) == name for x in q))} for lo, hi, name in PHASES],
         "stages": stages,
-        "columns": COLUMNS,
+        "columns": columns,
         "files": {"cells": cells_path.name},
     }
+    if ens is not None:
+        summary["ensemble"] = {k: (round(v, 4) if isinstance(v, float) else v) for k, v in ens.to_dict().items()
+                               if k not in ("barriers_kt", "barrier_se_kt", "sd_by_phase")}
+        summary["ensemble"].update({
+            "barriers_kt": [round(b, 4) for b in ens.barriers_kt],
+            "barrier_se_kt": [round(b, 4) for b in ens.barrier_se_kt],
+            "sd_by_phase": {k: round(v, 4) for k, v in ens.sd_by_phase.items()},
+        })
     summary_path = out / f"{prefix}_summary.json"
     summary_path.write_text(json.dumps(summary, indent=2))
     return ExportResult(cells_path, summary_path, summary)
@@ -176,6 +222,8 @@ def main(argv: Sequence[str] | None = None) -> None:
     ap.add_argument("--genes", type=int, default=100, help="top genes by spliced variance")
     ap.add_argument("--embedding", default="X_umap", help="obsm key for 2-D coordinates (PCA if absent)")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--ensemble-fits", type=int, default=0,
+                    help="also refit on this many 80%% subsets for a per-cell committor spread (0 = off)")
     args = ap.parse_args(argv)
 
     import anndata as ad
@@ -198,7 +246,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     coords = np.asarray(a.obsm[args.embedding]) if args.embedding in a.obsm else None
     res = export_cells(sp, un - sp, a.obs[args.label_key].astype(str).to_numpy(), args.source, args.target, args.out,
                        prefix=args.prefix, coords=coords, cell_ids=list(a.obs_names), stage_order=args.lineage,
-                       seed=args.seed, dataset=str(args.h5ad))
+                       seed=args.seed, dataset=str(args.h5ad), ensemble_fits=args.ensemble_fits)
     s = res.summary
     print(f"wrote {res.cells_path} and {res.summary_path}: {s['n_cells']} cells, commits at "
           f"{s['commitment']['commitment_stage']}, barrier {s['commitment']['barrier_kt']} kT, "

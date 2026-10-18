@@ -4,7 +4,7 @@ import tempfile
 import unittest
 
 from thermodynamic_waddington import make_synthetic_dataset
-from thermodynamic_waddington.export import COLUMNS, export_cells, phase_of
+from thermodynamic_waddington.export import COLUMNS, ENSEMBLE_COLUMNS, export_cells, phase_of
 
 
 class ExportTests(unittest.TestCase):
@@ -32,6 +32,23 @@ class ExportTests(unittest.TestCase):
         self.assertEqual(sum(p["n_cells"] for p in summary["phases"]), 150)
         self.assertEqual(len(summary["commitment"]["pmf_q"]), len(summary["commitment"]["pmf_kt"]))
         self.assertIn("noise_matched_excess", summary["irreversibility"])
+        self.assertNotIn("ensemble", summary)
+
+    def test_ensemble_adds_committor_spread(self):
+        ds = make_synthetic_dataset(cells=120, genes=16, seed=4)
+        labs = sorted(set(ds.labels))
+        with tempfile.TemporaryDirectory() as tmp:
+            res = export_cells(ds.expression, ds.velocity, ds.labels, [labs[0]], [labs[-1]], tmp, ensemble_fits=3)
+            rows = list(csv.DictReader(res.cells_path.open()))
+            summary = json.loads(res.summary_path.read_text())
+        self.assertEqual(list(rows[0]), list(COLUMNS) + list(ENSEMBLE_COLUMNS))
+        spreads = [float(r["tw_committor_sd"]) for r in rows if r["tw_committor_sd"]]
+        self.assertGreater(len(spreads), 60)
+        self.assertTrue(all(0.0 <= v <= 0.7072 for v in spreads))  # sample sd of values in [0, 1], ddof=1
+        ens = summary["ensemble"]
+        self.assertEqual(ens["fits"], 3)
+        self.assertEqual(len(ens["barriers_kt"]), 3)
+        self.assertIn("tw_committor_sd", summary["columns"])
 
     def test_rejects_mismatched_inputs(self):
         with self.assertRaises(ValueError):

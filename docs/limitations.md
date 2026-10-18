@@ -15,10 +15,17 @@ where it does not. This page is that statement. None of it is hidden elsewhere.
   clean floor pancreas showed +0.05; the noise-matched null shows it is noise.
   Power on these near-1D geometries is low, so this is "no circulation detected",
   not proof of none.
-- **The commitment barrier.** 1.6 kT [1.4, 1.9] on pancreas across 8 subsamples.
+- **The commitment barrier.** 1.6 kT [1.4, 1.9] on pancreas across 8 subsamples
+  of 400 cells (Silverman bandwidth). That estimate depends on cell number; the
+  resolution-matched barrier (`resolved_barrier`) does not on ground truth, but the
+  spread between independent fits on real data (about 0.7 kT) is larger than one
+  fit's bootstrap error. Quote barriers with the across-fit spread.
+- **No stage-level reactive pathways.** Transition-path reactive currents between
+  stages on the 6-D PCA kNN graph were tried and not shipped: they were dominated by
+  graph shortcuts that skip stages and by trap states, and did not conserve current.
 - **Committor ordering on a long staged lineage.** On Drosophila spermatogenesis
   the committor beats PC1 in 8/8 subsamples (0.78 vs 0.47).
-- **The software.** Deterministic given a seed, 230 unit tests, lint-clean CI,
+- **The software.** Deterministic given a seed, 242 unit tests, lint-clean CI,
   reproducible in one command, numeric core pinned to bit-identical outputs.
 
 ## What is dataset-dependent

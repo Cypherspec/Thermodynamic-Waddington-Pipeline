@@ -10,8 +10,8 @@ authors:
   - family-names: Kommisetty
     given-names: Nischay
     email: nischay.kommisetty@gmail.com
-version: 1.6.0
-date-released: 2026-10-11
+version: 1.7.0
+date-released: 2026-10-18
 license: MIT
 repository-code: "https://github.com/Cypherspec/thermodynamic-waddington-pipeline"
 keywords:

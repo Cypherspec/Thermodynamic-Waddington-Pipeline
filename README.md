@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-1.6.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.7.0-blue.svg)](CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-233%20passing-brightgreen.svg)](tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-online-teal.svg)](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)
@@ -204,11 +204,27 @@ streamlines of its gradient, and how sure the barrier is.
 
 ![barrier uncertainty](figures/barrier_bootstrap.png)
 
-The barrier depends on the number of cells it is estimated from: the KDE
-bandwidth shrinks as n^(-1/5), so on the pancreas export it rises from 1.5 kT at
-400 cells to 2.7 kT at 1,500. Compare barriers only at matched cell numbers, and
-report them across independent fits: resampling the cells of one fit gives a
-much narrower band than the spread between fits.
+**A barrier comparable across datasets.** With Silverman's bandwidth the barrier
+rises with the number of cells (on the pancreas export, 1.5 kT at 400 cells to 2.7 kT
+at 1,500), because the committor has point masses at 0 and 1 and the bandwidth keeps
+narrowing. `resolved_barrier` fixes the resolution in committor units (h = 0.08),
+reflects the kernel at the boundaries and bias-corrects by bootstrap. On a double
+well with an exact committor it is within 0.07 kT of the truth at 400 cells, where
+Silverman is 1.6 kT low, and it stays on the truth out to 6,400 cells
+(`benchmarks/barrier_resolution.py`).
+
+![barrier resolution](figures/barrier_resolution.png)
+
+**How reproducible is commitment?** `commitment_ensemble` refits the landscape on
+random 80% subsets and pools the committors (`benchmarks/commitment_ensemble.py`).
+An uncommitted cell's committor moves by about 0.2 between fits. The fits order the
+cells alike on pancreas (Spearman 0.79 between fits) and only moderately within the
+fly spermatocyte programme (0.58). The barrier's spread between fits (0.35 kT on
+both lineages) is about twice one fit's bootstrap error, so quote barriers with the
+across-fit spread. `tw-export --ensemble-fits 6` adds the per-cell spread as a
+`tw_committor_sd` column.
+
+![commitment ensemble](figures/commitment_ensemble.png)
 
 ## How it works
 
@@ -228,7 +244,7 @@ transparent spliced/unspliced proxy).
 
 ```bash
 python benchmarks/run_all.py     # regenerates every experiments/*.json and figures/*.png
-pytest                           # 233 unit tests
+pytest                           # unit tests
 ```
 
 Individual benchmarks (irreversibility, commitment barrier, calibration,
@@ -239,7 +255,7 @@ availability are in [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
 ## Package
 
 - Installable, typed (`py.typed`), MIT, builds a clean wheel and sdist.
-- 233 unit tests and ruff lint, both enforced by GitHub Actions CI on Python 3.10–3.12.
+- 242 unit tests and ruff lint, both enforced by GitHub Actions CI on Python 3.10–3.12.
 - High-level `analyze()` plus the full module API; console entry points.
 - Contributions welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -282,7 +298,7 @@ falsifiable test of the commitment prediction is preregistered in
 @software{kommisetty_thermodynamic_waddington,
   author  = {Kommisetty, Nischay},
   title   = {Thermodynamic Waddington Pipeline},
-  version = {1.6.0},
+  version = {1.7.0},
   year    = {2026},
   url     = {https://github.com/Cypherspec/Thermodynamic-Waddington-Pipeline},
   license = {MIT}

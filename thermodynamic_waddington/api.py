@@ -27,6 +27,7 @@ from .developmental import (
     commitment_profile,
     committor_free_energy_profile,
     developmental_coordinate,
+    resolved_barrier,
 )
 from .model import fit_landscape
 
@@ -49,6 +50,8 @@ class AnalysisReport:
     commitment_label: str | None = None
     commitment_barrier_kt: float | None = None
     transition_state_q: float | None = None
+    commitment_barrier_resolved_kt: float | None = None   # fixed resolution, bias-corrected: comparable across sizes
+    commitment_barrier_resolved_se_kt: float | None = None
     warnings: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:
@@ -134,6 +137,9 @@ def _report_from_fit(fit, config, labels, source_labels, target_labels, signific
             report.commitment_label = prof.commitment_label
             report.commitment_barrier_kt = barrier.barrier_kt
             report.transition_state_q = barrier.barrier_q
+            resolved = resolved_barrier(committor, temperature=(config or FitConfig()).temperature)
+            report.commitment_barrier_resolved_kt = resolved.barrier_kt
+            report.commitment_barrier_resolved_se_kt = resolved.se_kt
         except ValueError as exc:
             report.warnings.append(f"commitment coordinate skipped: {exc}")
     elif source_labels or target_labels:

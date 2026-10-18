@@ -37,3 +37,30 @@ python benchmarks/fly_testis.py
 
 Outputs: `experiments/fly_testis.json`, `figures/fly_testis.png`. Results and
 caveats are in `docs/benchmarks.md`.
+
+## Resolution-matched commitment barriers
+
+`barrier_resolution.py` asks whether a commitment barrier is comparable across
+datasets of different sizes. It compares Silverman's bandwidth with a fixed
+resolution (h = 0.08, reflected at q = 0 and 1, bootstrap bias-corrected) on a
+double well with an exact committor, on independent refits of pancreas and fly
+spermatogenesis at three cell numbers, and across bandwidths.
+
+```bash
+python benchmarks/barrier_resolution.py --seeds 5
+```
+
+Outputs: `experiments/barrier_resolution.json`, `figures/barrier_resolution.png`.
+
+## Commitment ensemble
+
+`commitment_ensemble.py` refits the landscape on ten random 80% subsets of 1,500
+cells per lineage and pools the committors: where the committor is uncertain,
+whether every fit names the same commitment stage, and how the spread of the
+barrier between fits compares with one fit's bootstrap error.
+
+```bash
+python benchmarks/commitment_ensemble.py --fits 10 --cells 1500
+```
+
+Outputs: `experiments/commitment_ensemble.json`, `figures/commitment_ensemble.png`.

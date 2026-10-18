@@ -74,7 +74,30 @@ Orders cell types by mean committor and locates commitment (`order`,
 ### `committor_free_energy_profile(committor, temperature=1.0, grid=60) -> FreeEnergyProfile`
 
 Potential of mean force along the committor. Returns `q_grid`, `free_energy_kt`,
-`barrier_kt`, `barrier_q`.
+`barrier_kt`, `barrier_q`. `bandwidth=None` uses Silverman's rule (the default; the
+barrier then rises with the number of cells). A number fixes the resolution in
+committor units and reflects the kernel at q = 0 and q = 1.
+
+### `resolved_barrier(committor, bandwidth=RESOLVED_BANDWIDTH, bootstraps=60) -> ResolvedBarrier`
+
+The barrier at a fixed resolution (h = 0.08), bootstrap bias-corrected
+(`2 * raw - mean(bootstrap)`), so barriers from datasets of different sizes estimate
+the same quantity. Returns `barrier_kt` (corrected), `raw_kt`, `bias_kt`, `se_kt`,
+`barrier_q`, `bandwidth`, `n_cells`. Validated on a double well with an exact
+committor: within 0.07 kT of the truth at 400 cells.
+
+### `barrier_convergence(committor, sizes=(200, 400, 800, 1600), bandwidth=RESOLVED_BANDWIDTH) -> BarrierConvergence`
+
+The barrier on subsamples of increasing size (`sizes`, `mean_kt`, `low_kt`,
+`high_kt`, `drift_kt`): a direct check of whether a barrier depends on cell number.
+
+### `commitment_ensemble(expression, velocity, labels, source_labels, target_labels, fits=8, fraction=0.8) -> CommitmentEnsemble`
+
+Refits the landscape on `fits` random subsets and pools the committors: per-cell
+`q_mean`, `q_sd` and `n_fits`; per-fit `commitment_stages`, `barriers_kt` and
+`barrier_se_kt`; `barrier_mean_kt`, `barrier_sd_kt`, `commitment_agreement` and
+`sd_by_phase`. Use the across-fit spread, not one fit's bootstrap, as a barrier's
+error bar.
 
 ## Thermodynamics
 

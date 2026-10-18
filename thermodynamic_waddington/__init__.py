@@ -6,7 +6,7 @@ from importlib.metadata import version as _pkg_version
 try:
     __version__ = _pkg_version("thermodynamic-waddington")
 except PackageNotFoundError:
-    __version__ = "1.6.0"
+    __version__ = "1.7.0"
 
 from .causal import InterventionEffect, intervention_scan, rank_targets
 from .config import FitConfig
@@ -184,14 +184,18 @@ from .calibration import CalibrationReport, basin_barriers_kt, boltzmann_free_en
 __all__ += ["CalibrationReport", "basin_barriers_kt", "boltzmann_free_energy", "calibrate", "calibrate_fit"]
 
 from .developmental import (
+    RESOLVED_BANDWIDTH,
+    BarrierConvergence,
     CommitmentReport,
     FreeEnergyProfile,
+    barrier_convergence,
     commitment_profile,
     committor_free_energy_profile,
     developmental_coordinate,
+    resolved_barrier,
 )
 
-__all__ += ["CommitmentReport", "FreeEnergyProfile", "commitment_profile", "committor_free_energy_profile", "developmental_coordinate"]
+__all__ += ["RESOLVED_BANDWIDTH", "BarrierConvergence", "ResolvedBarrier", "barrier_convergence", "resolved_barrier", "CommitmentReport", "FreeEnergyProfile", "commitment_profile", "committor_free_energy_profile", "developmental_coordinate"]
 
 from .api import AnalysisReport, analyze, analyze_adata
 
@@ -212,3 +216,7 @@ __all__ += [
     "compute_pair_fluxes", "estimate_entropy_production", "stationarity_residual",
     "cross_validate_with_jarzynski",
 ]
+
+from .commitment_ensemble import CommitmentEnsemble, commitment_ensemble
+
+__all__ += ["CommitmentEnsemble", "commitment_ensemble"]

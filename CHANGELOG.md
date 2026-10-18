@@ -3,6 +3,33 @@
 All notable changes to this project are documented here. Format loosely follows
 Keep a Changelog. Versioning is semantic.
 
+## [1.7.0] - 2026-10-18
+
+### Added
+- `resolved_barrier` and `barrier_convergence`: the commitment barrier at a fixed resolution in
+  committor units (h = 0.08, `RESOLVED_BANDWIDTH`), with the kernel reflected at q = 0 and 1 and a
+  bootstrap bias correction, so barriers from datasets of different sizes estimate the same
+  quantity. `committor_free_energy_profile` takes `bandwidth=` (Silverman remains the default).
+- `commitment_ensemble`: refits the landscape on random 80% subsets and pools the committors, giving
+  each cell a committor mean and spread, each fit its commitment stage and barrier, the barrier an
+  across-fit error bar, and the agreement between fits in how they order the cells.
+- `export_cells(..., ensemble_fits=N)` and `tw-export --ensemble-fits N`: a `tw_committor_sd`
+  column and an `ensemble` block in the summary. The example exports use six fits.
+- The export summary carries the resolution-matched barrier (`barrier_resolved_kt`, its standard
+  error, the raw value, the bandwidth, and its drift with cell number); `AnalysisReport` carries
+  `commitment_barrier_resolved_kt` and `commitment_barrier_resolved_se_kt`.
+- `benchmarks/barrier_resolution.py` (`figures/barrier_resolution.png`): both estimators against an
+  exact double-well committor from 100 to 6,400 cells, on independent refits of two lineages, and
+  across bandwidths.
+- `benchmarks/commitment_ensemble.py` (`figures/commitment_ensemble.png`): committor uncertainty
+  on the atlas maps, rank agreement between fits, between-fit against within-fit barrier error,
+  and the commitment stage each fit names.
+- A manuscript section on resolution-matched barriers and the reproducibility of commitment.
+
+### Changed
+- Documented a negative result: stage-level reactive-current pathways on the 6-D PCA kNN graph
+  were dominated by graph shortcuts and trap states and are not shipped (`docs/limitations.md`).
+
 ## [1.6.0] - 2026-10-18
 
 ### Added

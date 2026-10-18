@@ -29,7 +29,7 @@ def fly(cells=3000, seed=0):
     order = [k for k, _ in sorted(ft.STAGES.items(), key=lambda kv: kv[1])]
     res = export_cells(d["spliced"][idx], d["velocity"][idx], d["labels"][idx], ft.SOURCE, ft.TARGET, OUT,
                        prefix="fly_testis", coords=d["umap"][idx], cell_ids=[f"FCA59_{n}" for n in names],
-                       stage_order=order, seed=seed,
+                       stage_order=order, seed=seed, ensemble_fits=6,
                        dataset="Fly Cell Atlas testis germline (library FCA59), velocity from raw reads")
     s = res.summary
     print(f"fly: {s['n_cells']} cells, commits at {s['commitment']['commitment_stage']}, "
@@ -55,7 +55,7 @@ def pancreas(cells=1500, genes=100, seed=0):
     un = np.asarray(a.layers["unspliced"][:, top].toarray(), dtype=float)
     res = export_cells(sp, un - sp, a.obs["clusters"].astype(str).to_numpy(), ["Ductal"], ["Beta"], OUT,
                        prefix="pancreas", coords=np.asarray(a.obsm["X_umap"]), cell_ids=list(a.obs_names),
-                       stage_order=order, seed=seed, dataset="Pancreatic endocrinogenesis E15.5 (scVelo)")
+                       stage_order=order, seed=seed, ensemble_fits=6, dataset="Pancreatic endocrinogenesis E15.5 (scVelo)")
     s = res.summary
     print(f"pancreas: {s['n_cells']} cells, commits at {s['commitment']['commitment_stage']}, "
           f"barrier {s['commitment']['barrier_kt']} kT, noise-matched excess {s['irreversibility']['noise_matched_excess']}")

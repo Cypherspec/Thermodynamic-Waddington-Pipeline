@@ -1,11 +1,16 @@
 import unittest
 
+import numpy as np
+
 from thermodynamic_waddington import (
+    RESOLVED_BANDWIDTH,
     FitConfig,
+    barrier_convergence,
     commitment_profile,
     committor_free_energy_profile,
     developmental_coordinate,
     fit_landscape,
+    resolved_barrier,
 )
 from thermodynamic_waddington.synthetic import make_synthetic_dataset
 
@@ -62,6 +67,40 @@ class TestDevelopmental(unittest.TestCase):
         self.assertGreaterEqual(prof.barrier_q, 0.0)
         self.assertLessEqual(prof.barrier_q, 1.0)
         self.assertAlmostEqual(min(prof.free_energy_kt), 0.0, places=9)
+
+    def test_resolved_profile_reflects_and_validates(self):
+        q = developmental_coordinate(self.fit, self.src, self.tgt)
+        prof = committor_free_energy_profile(q, bandwidth=RESOLVED_BANDWIDTH)
+        self.assertEqual(len(prof.q_grid), 60)
+        self.assertAlmostEqual(min(prof.free_energy_kt), 0.0, places=9)
+        self.assertGreaterEqual(prof.barrier_kt, 0.0)
+        with self.assertRaises(ValueError):
+            committor_free_energy_profile(q, bandwidth=0.0)
+
+    def test_resolved_barrier_does_not_drift_with_cell_number(self):
+        # A committor distribution with atoms at 0 and 1 and a sparse transition region, as on real data.
+        rng = np.random.default_rng(3)
+        q = np.concatenate([np.zeros(1200), np.ones(800), rng.beta(0.7, 0.7, 2000)])
+        silverman = barrier_convergence(q, sizes=(200, 800, 3200), bandwidth=None, replicates=30)
+        resolved = barrier_convergence(q, sizes=(200, 800, 3200), bandwidth=RESOLVED_BANDWIDTH, replicates=30)
+        self.assertEqual(resolved.sizes, [200, 800, 3200, 4000])
+        self.assertGreater(silverman.drift_kt, 0.3)
+        self.assertLess(abs(resolved.drift_kt), 0.15)
+        for lo, m, hi in zip(resolved.low_kt, resolved.mean_kt, resolved.high_kt):
+            self.assertLessEqual(lo, m)
+            self.assertLessEqual(m, hi)
+
+    def test_resolved_barrier_bias_correction(self):
+        # Double-well-like committor: atoms at 0 and 1 and a sparse middle, small sample.
+        rng = np.random.default_rng(8)
+        q = np.concatenate([np.zeros(150), np.ones(120), rng.beta(0.6, 0.6, 130)])
+        r = resolved_barrier(q, bootstraps=40, seed=1)
+        raw = committor_free_energy_profile(q, bandwidth=RESOLVED_BANDWIDTH)
+        self.assertAlmostEqual(r.raw_kt, raw.barrier_kt, places=12)
+        self.assertAlmostEqual(r.raw_kt - r.bias_kt, r.barrier_kt, places=12)
+        self.assertGreater(r.se_kt, 0.0)
+        self.assertEqual(r.n_cells, 400)
+        self.assertEqual(r, resolved_barrier(q, bootstraps=40, seed=1))
 
     def test_missing_labels_raise(self):
         with self.assertRaises(ValueError):
