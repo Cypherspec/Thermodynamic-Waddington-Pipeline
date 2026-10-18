@@ -15,6 +15,8 @@ Three figures, one row per lineage (pancreatic endocrinogenesis, Drosophila sper
 
 The surface and the field are descriptive views of the exported per-cell readouts; the barrier
 band measures sampling variability of one fit (cells resampled), not variability across refits.
+The figures follow the manuscript's style: white ground, panel letters, the committor in viridis
+(as in the Drosophila figure) and the separatrix or transition state in red.
 
     python benchmarks/export_examples.py      # writes examples/exports/
     python benchmarks/plot_landscape_gallery.py
@@ -30,10 +32,9 @@ import numpy as np
 EXPORTS = Path("examples/exports")
 LINEAGES = [("pancreas", "Pancreatic endocrinogenesis", "Ductal", "Beta"),
             ("fly_testis", "Drosophila spermatogenesis", "spermatogonia", "elongating spermatids")]
-BG, PANEL, INK, MUTED, FAINT = "#07080c", "#0c0e14", "#eef0f6", "#8b90a0", "#5b6070"
-GRID = (1, 1, 1, 0.07)
-TONES = ["#67e8f9", "#5b9dff", "#818cf8", "#a78bfa", "#e879f9"]   # one tone per commitment phase
-GLOW = "#a5dcff"
+INK, MUTED, GRID = "#1f2328", "#5f6672", "#e3e6eb"
+TEAL, PURPLE, RED = "#0f7d99", "#6a4c93", "#c0392b"
+FLOOR = np.array([0.93, 0.94, 0.95])          # the landscape where there are no cells
 GRID_N = 140
 BOOTSTRAPS = 400
 
@@ -71,11 +72,6 @@ def kernel_fields(xy, q, X, Y, scale=0.035):
     return dens.reshape(X.shape), qf.reshape(X.shape)
 
 
-def cmap():
-    from matplotlib.colors import LinearSegmentedColormap
-    return LinearSegmentedColormap.from_list("commitment", TONES)
-
-
 def setup():
     import matplotlib
     matplotlib.use("Agg")
@@ -84,143 +80,133 @@ def setup():
 
     family = "Inter" if any("Inter" in f.name for f in font_manager.fontManager.ttflist) else "DejaVu Sans"
     plt.rcParams.update({
-        "font.family": family, "figure.facecolor": BG, "axes.facecolor": PANEL, "savefig.facecolor": BG,
-        "text.color": INK, "axes.labelcolor": MUTED, "xtick.color": FAINT, "ytick.color": FAINT,
-        "axes.edgecolor": GRID, "axes.titlecolor": INK, "axes.titleweight": "semibold", "axes.titlesize": 12,
-        "axes.titlelocation": "left", "axes.titlepad": 10, "font.size": 9,
+        "font.family": family, "font.size": 9, "axes.titlesize": 10, "axes.titleweight": "semibold",
+        "axes.titlelocation": "left", "axes.labelsize": 9, "axes.labelcolor": INK, "axes.edgecolor": "#9aa1ab",
+        "axes.linewidth": 0.8, "xtick.color": MUTED, "ytick.color": MUTED, "xtick.labelsize": 8,
+        "ytick.labelsize": 8, "axes.spines.top": False, "axes.spines.right": False, "figure.facecolor": "white",
+        "savefig.facecolor": "white", "legend.frameon": False,
     })
     return plt
 
 
-def eyebrow(fig, text, title, sub):
-    fig.text(0.035, 0.965, text.upper(), color=GLOW, fontsize=8.5, weight="bold", va="top",
-             fontfamily="DejaVu Sans Mono")
-    fig.text(0.035, 0.935, title, color=INK, fontsize=19, weight="bold", va="top")
-    fig.text(0.035, 0.885, sub, color=MUTED, fontsize=10, va="top")
+def letter(fig, x, y, text):
+    fig.text(x, y, text, fontsize=13, weight="bold", color=INK, va="top")
 
 
 def colorbar(fig, rect, label):
     import matplotlib as mpl
     ax = fig.add_axes(rect)
-    cb = fig.colorbar(mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(0, 1), cmap=cmap()), cax=ax,
+    cb = fig.colorbar(mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(0, 1), cmap="viridis"), cax=ax,
                       orientation="horizontal")
-    cb.outline.set_visible(False)
+    cb.outline.set_linewidth(0.5)
     cb.set_ticks([0, 0.5, 1])
-    cb.set_ticklabels(["0 · source", "0.5", "1 · target"])
-    ax.tick_params(colors=MUTED, labelsize=8, length=0)
-    ax.set_title(label, color=MUTED, fontsize=8, loc="left", pad=4)
+    cb.set_ticklabels(["0 (source)", "0.5", "1 (target)"])
+    ax.tick_params(labelsize=8, length=2)
+    ax.set_title(label, fontsize=8.5, loc="center", pad=3, weight="normal", color=INK)
 
 
 def landscape_3d(plt, out):
-    fig = plt.figure(figsize=(15, 7.6), dpi=200)
-    eyebrow(fig, "Thermodynamic Waddington · landscape", "The Waddington surface, measured",
-            "Density pseudo-potential U = −ln(p/p_max + 0.04) over the UMAP (deeper = more cells), coloured by the committor; the white line "
-            "is the q = 0.5 separatrix, traced where cells are.")
-    cm = cmap()
+    import contourpy
+    from matplotlib.colors import LightSource
+    from scipy.interpolate import RegularGridInterpolator
+
+    cm = plt.get_cmap("viridis")
+    fig = plt.figure(figsize=(12, 5.6), dpi=220)
     for col, (prefix, title, src, tgt) in enumerate(LINEAGES):
         xy, q, s = load(prefix)
         X, Y = grid_over(xy, pad=0.12)
         dens, qf = kernel_fields(xy, q, X, Y, scale=0.032)
         support = dens / dens.max()
-        # A density floor keeps the walls soft: the surface is a continuous terrain whose valleys are the
-        # regions holding cells, rising to a plateau of about -ln(0.04) = 3.2 where there are none.
+        # A density floor keeps the walls soft: a continuous terrain whose valleys are the regions holding
+        # cells, rising to a plateau of about -ln(0.04) = 3.2 where there are none.
         U = -np.log(support + 0.04)
         U = U - U.min()
         cap = float(U.max())
-        ax = fig.add_axes([0.02 + 0.49 * col, 0.04, 0.47, 0.8], projection="3d")
-        ax.set_facecolor(BG)
-        from matplotlib.colors import LightSource
-        slate = np.array([0.10, 0.12, 0.18])
+        ax = fig.add_axes([0.0 + 0.5 * col, 0.08, 0.5, 0.8], projection="3d")
         mix = np.clip(support / 0.08, 0, 1) ** 0.6
-        base_rgb = cm(np.clip(qf, 0, 1))[..., :3] * mix[..., None] + slate * (1 - mix[..., None])
-        shaded = LightSource(azdeg=300, altdeg=40).shade_rgb(base_rgb, U, blend_mode="soft", vert_exag=3.0)
+        rgb = cm(np.clip(qf, 0, 1))[..., :3] * mix[..., None] + FLOOR * (1 - mix[..., None])
+        shaded = LightSource(azdeg=300, altdeg=42).shade_rgb(rgb, U, blend_mode="soft", vert_exag=3.0)
         ax.plot_surface(X, Y, U, facecolors=shaded, rstride=1, cstride=1, linewidth=0, antialiased=True, shade=False)
-        # The separatrix q = 0.5, traced on the surface where cells are.
-        import contourpy
-        from scipy.interpolate import RegularGridInterpolator
         height = RegularGridInterpolator((Y[:, 0], X[0]), U)
         for line in contourpy.contour_generator(X, Y, np.where(support > 0.05, qf, np.nan)).lines(0.5):
-            if len(line) < 4:
-                continue
-            z = height(line[:, ::-1]) - 0.06
-            for lw, alpha in ((6, 0.14), (1.8, 1.0)):
-                ax.plot(line[:, 0], line[:, 1], z, color=(0.88, 0.95, 1.0, alpha), lw=lw, zorder=10)
+            if len(line) >= 4:
+                ax.plot(line[:, 0], line[:, 1], height(line[:, ::-1]) - 0.05, color=RED, lw=1.6, zorder=10)
         ax.view_init(elev=56, azim=-64)
         ax.set_zlim(-0.1, cap + 0.2)
         ax.set_box_aspect((1, 1, 0.42))
         for axis in (ax.xaxis, ax.yaxis, ax.zaxis):
-            axis.set_pane_color((0, 0, 0, 0))
-            axis.line.set_color((1, 1, 1, 0.08))
-            axis._axinfo["grid"]["color"] = (1, 1, 1, 0.05)
+            axis.set_pane_color((1, 1, 1, 0))
+            axis.line.set_color("#c4c9d1")
+            axis._axinfo["grid"]["color"] = (0.85, 0.87, 0.9, 1)
+            axis._axinfo["grid"]["linewidth"] = 0.5
         ax.set_xticklabels([])
         ax.set_yticklabels([])
         ax.set_zticks([0, 1, 2, 3])
-        ax.tick_params(colors=FAINT, labelsize=7, pad=0)
-        ax.set_zlabel("U = −ln p  (valleys = where cells are)", color=FAINT, fontsize=8, labelpad=4)
+        ax.tick_params(labelsize=7, pad=0, colors=MUTED)
+        ax.set_xlabel("UMAP 1", fontsize=8, labelpad=-10, color=MUTED)
+        ax.set_ylabel("UMAP 2", fontsize=8, labelpad=-10, color=MUTED)
+        ax.set_zlabel("U = −ln(p/p_max + 0.04)", fontsize=8, labelpad=2, color=MUTED)
         c = s["commitment"]
-        fig.text(0.05 + 0.49 * col, 0.82, title, color=INK, fontsize=13, weight="bold")
-        fig.text(0.05 + 0.49 * col, 0.795, f"{src} → {tgt} · {len(q):,} cells · commits at {c['commitment_stage']} · "
-                 f"barrier {c['barrier_kt']:.2f} kT at q = {c['transition_state_q']:.2f}", color=MUTED, fontsize=9)
-    colorbar(fig, [0.39, 0.06, 0.22, 0.014], "committor q")
-    fig.savefig(out, dpi=200)
+        letter(fig, 0.02 + 0.5 * col, 0.97, "ab"[col])
+        fig.text(0.05 + 0.5 * col, 0.965, title, fontsize=10.5, weight="semibold", color=INK, va="top")
+        fig.text(0.05 + 0.5 * col, 0.925, f"{src} → {tgt}; {len(q):,} cells; commits at {c['commitment_stage']}",
+                 fontsize=8.5, color=MUTED, va="top")
+    colorbar(fig, [0.4, 0.07, 0.2, 0.018], "committor q (surface colour); red: q = 0.5 separatrix")
+    fig.savefig(out, dpi=220)
     plt.close(fig)
     print(f"wrote {out}")
 
 
 def flow_field(plt, out):
-    fig = plt.figure(figsize=(15, 7.4), dpi=200)
-    eyebrow(fig, "Thermodynamic Waddington · commitment field", "Where cells commit, and which way",
-            "Committor as a field over the UMAP (kernel regression); streamlines follow its gradient, the direction of "
-            "commitment; contours every 0.2; the bright line is the q = 0.5 separatrix.")
-    cm = cmap()
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5.2), dpi=220, gridspec_kw={"wspace": 0.08})
+    fig.subplots_adjust(left=0.03, right=0.97, top=0.86, bottom=0.17)
+    cm = plt.get_cmap("viridis")
     for col, (prefix, title, src, tgt) in enumerate(LINEAGES):
+        ax = axes[col]
         xy, q, s = load(prefix)
         X, Y = grid_over(xy)
         dens, qf = kernel_fields(xy, q, X, Y)
         support = dens / dens.max()
         inside = support > 0.02
-        ax = fig.add_axes([0.035 + 0.485 * col, 0.11, 0.45, 0.66])
-        ax.set_facecolor(BG)
         rgba = cm(np.clip(qf, 0, 1))
-        rgba[..., 3] = np.clip(support ** 0.45, 0, 1) * 0.55
+        rgba[..., 3] = np.clip(support ** 0.45, 0, 1) * 0.35
         ax.imshow(rgba, origin="lower", extent=(X.min(), X.max(), Y.min(), Y.max()), aspect="auto",
                   interpolation="bilinear")
         gy, gx = np.gradient(qf, Y[:, 0], X[0])
         mag = np.hypot(gx, gy)
         gx = np.where(inside, gx, np.nan)
         gy = np.where(inside, gy, np.nan)
-        width = 0.35 + 1.6 * np.nan_to_num(mag / np.nanpercentile(mag[inside], 95)).clip(0, 1) * support.clip(0, 1) ** 0.3
-        ax.streamplot(X, Y, gx, gy, color=(0.85, 0.92, 1.0, 0.55), linewidth=width, density=1.5, arrowsize=0.7,
+        width = 0.3 + 1.3 * np.nan_to_num(mag / np.nanpercentile(mag[inside], 95)).clip(0, 1) * support.clip(0, 1) ** 0.3
+        ax.streamplot(X, Y, gx, gy, color="#3a3f47", linewidth=width, density=1.4, arrowsize=0.6,
                       arrowstyle="-|>", broken_streamlines=True)
         masked = np.where(inside, qf, np.nan)
-        ax.contour(X, Y, masked, levels=[0.2, 0.4, 0.6, 0.8], colors=[(1, 1, 1, 0.22)], linewidths=0.7)
-        for lw, alpha in ((7, 0.06), (4, 0.12), (1.6, 0.95)):
-            ax.contour(X, Y, masked, levels=[0.5], colors=[(0.78, 0.9, 1.0, alpha)], linewidths=lw)
-        ax.scatter(xy[:, 0], xy[:, 1], c=q, cmap=cm, vmin=0, vmax=1, s=2.2, lw=0, alpha=0.85, rasterized=True)
+        cs = ax.contour(X, Y, masked, levels=[0.2, 0.4, 0.6, 0.8], colors="#8a919c", linewidths=0.5)
+        ax.clabel(cs, fontsize=6.5, fmt="%.1f", inline_spacing=2)
+        ax.contour(X, Y, masked, levels=[0.5], colors=RED, linewidths=1.6)
+        ax.scatter(xy[:, 0], xy[:, 1], c=q, cmap=cm, vmin=0, vmax=1, s=1.6, lw=0, alpha=0.9, rasterized=True)
         ax.set_xticks([])
         ax.set_yticks([])
+        for side in ("top", "right"):
+            ax.spines[side].set_visible(True)
         for spine in ax.spines.values():
-            spine.set_color(GRID)
+            spine.set_color("#c4c9d1")
         c = s["commitment"]
-        ax.set_title(title, fontsize=13, pad=26)
-        ax.text(0, 1.015, f"{src} → {tgt} · commits at {c['commitment_stage']}", transform=ax.transAxes,
-                color=MUTED, fontsize=9, va="bottom")
-    colorbar(fig, [0.39, 0.055, 0.22, 0.014], "committor q")
-    fig.savefig(out, dpi=200)
+        ax.set_title(title, pad=18)
+        ax.text(0, 1.012, f"{src} → {tgt}; commits at {c['commitment_stage']}", transform=ax.transAxes,
+                fontsize=8.5, color=MUTED, va="bottom")
+        ax.text(-0.025, 1.09, "ab"[col], transform=ax.transAxes, fontsize=13, weight="bold", color=INK, va="bottom")
+        ax.set_xlabel("UMAP 1", color=MUTED, fontsize=8)
+        ax.set_ylabel("UMAP 2", color=MUTED, fontsize=8)
+    colorbar(fig, [0.4, 0.07, 0.2, 0.022], "committor q; grey: isocommittors; red: q = 0.5; lines: gradient of q")
+    fig.savefig(out, dpi=220)
     plt.close(fig)
     print(f"wrote {out}")
 
 
 def barrier_bootstrap(plt, out):
-    from matplotlib.collections import LineCollection
-
     from thermodynamic_waddington.developmental import committor_free_energy_profile
 
-    fig = plt.figure(figsize=(15, 10.2), dpi=200)
-    eyebrow(fig, "Thermodynamic Waddington · commitment barrier", "How sure is the barrier?",
-            f"Left: F(q) with a 95% band from {BOOTSTRAPS} cell resamples of one fit. Middle: the resampled barrier. "
-            "Right: the barrier against the number of cells it is estimated from.\nThe KDE bandwidth shrinks as "
-            "n^(-1/5), so the barrier rises with cell number: barriers are comparable only at matched cell numbers.")
+    fig = plt.figure(figsize=(12, 7.6), dpi=220)
     rng = np.random.default_rng(0)
     for row, (prefix, title, src, tgt) in enumerate(LINEAGES):
         xy, q, s = load(prefix)
@@ -235,46 +221,43 @@ def barrier_bootstrap(plt, out):
         curves = np.asarray(curves)
         lo, hi = np.percentile(curves, [2.5, 97.5], axis=0)
         h_lo, h_hi = np.percentile(heights, [2.5, 97.5])
-        top = 0.72 - row * 0.41
-        height = 0.26
+        top = 0.9 - row * 0.47
+        height = 0.33
+        letters = "abc" if row == 0 else "def"
 
-        ax = fig.add_axes([0.05, top - height, 0.42, height])
-        for k, (a, b) in enumerate([(0, 0.2), (0.2, 0.4), (0.4, 0.6), (0.6, 0.8), (0.8, 1.0)]):
-            ax.axvspan(a, b, color=TONES[k], alpha=0.06, lw=0)
-        ax.fill_between(xs, lo, hi, color="#5b9dff", alpha=0.22, lw=0)
-        pts = np.stack([xs, np.asarray(base.free_energy_kt)], axis=1)
-        segs = np.stack([pts[:-1], pts[1:]], axis=1)
-        for lw, alpha in ((8, 0.08), (4.5, 0.16), (2.2, 1.0)):
-            lc = LineCollection(segs, cmap=cmap(), linewidths=lw, alpha=alpha)
-            lc.set_array((xs[:-1] + xs[1:]) / 2)
-            ax.add_collection(lc)
-        ax.axvline(base.barrier_q, color=GLOW, lw=0.9, ls=(0, (2, 3)), alpha=0.8)
-        ax.scatter([base.barrier_q], [base.barrier_kt], s=60, color=BG, edgecolor=GLOW, lw=1.8, zorder=5)
-        ax.annotate(f"‡ {base.barrier_kt:.2f} kT  [{h_lo:.2f}, {h_hi:.2f}]", (base.barrier_q, base.barrier_kt),
-                    xytext=(10, 8), textcoords="offset points", color=INK, fontsize=9, weight="bold")
+        ax = fig.add_axes([0.07, top - height, 0.4, height])
+        for k in range(5):
+            if k % 2:
+                ax.axvspan(0.2 * k, 0.2 * (k + 1), color="#f1f3f6", lw=0)
+        ax.fill_between(xs, lo, hi, color=TEAL, alpha=0.18, lw=0, label="95% band (cells resampled)")
+        ax.plot(xs, base.free_energy_kt, color=TEAL, lw=2, label="F(q), one fit")
+        ax.axvline(base.barrier_q, color=RED, lw=0.9, ls="--")
+        ax.plot([base.barrier_q], [base.barrier_kt], "o", ms=5, mfc="white", mec=RED, mew=1.4)
+        ax.annotate(f"{base.barrier_kt:.2f} kT [{h_lo:.2f}, {h_hi:.2f}]", (base.barrier_q, base.barrier_kt),
+                    xytext=(8, 6), textcoords="offset points", fontsize=8.5, color=INK)
         ax.set_xlim(0, 1)
-        ylim = (0, max(hi.max(), base.barrier_kt) * 1.18)
+        ylim = (0, max(hi.max(), base.barrier_kt) * 1.2)
         ax.set_ylim(ylim)
         ax.set_xlabel("committor q")
-        ax.set_ylabel("F(q)  [kT]")
-        ax.grid(color=GRID, lw=0.6)
-        ax.set_title(title, fontsize=13, pad=22)
-        ax.text(0, 1.015, f"{src} → {tgt} · one fit, {len(q):,} cells", transform=ax.transAxes, color=MUTED,
-                fontsize=9, va="bottom")
+        ax.set_ylabel("free energy F(q) (kT)")
+        ax.grid(axis="y", color=GRID, lw=0.6)
+        ax.legend(loc="upper right", fontsize=7.5)
+        ax.set_title(f"{title}: one fit, {len(q):,} cells", pad=6)
+        ax.text(-0.13, 1.1, letters[0], transform=ax.transAxes, fontsize=13, weight="bold", color=INK, va="bottom")
 
-        hx = fig.add_axes([0.5, top - height, 0.13, height])
-        hx.hist(heights, bins=24, orientation="horizontal", color="#818cf8", alpha=0.85, lw=0)
-        hx.axhline(base.barrier_kt, color=GLOW, lw=1)
+        hx = fig.add_axes([0.51, top - height, 0.12, height])
+        hx.hist(heights, bins=24, orientation="horizontal", color="#7fb3c4", lw=0)
+        hx.axhline(base.barrier_kt, color=RED, lw=0.9)
         hx.set_ylim(ylim)
         hx.set_yticklabels([])
         hx.set_xlabel("resamples")
-        hx.grid(color=GRID, lw=0.6)
-        hx.set_title("barrier, resampled", fontsize=9.5, color=MUTED, weight="normal", pad=6)
-        hx.text(0.96, 0.03, f"TS q = {np.median(places):.2f}\n[{np.percentile(places, 2.5):.2f}, "
+        hx.set_title("barrier, resampled", pad=6, weight="normal", fontsize=9)
+        hx.text(0.95, 0.04, f"TS q = {np.median(places):.2f}\n[{np.percentile(places, 2.5):.2f}, "
                 f"{np.percentile(places, 97.5):.2f}]", transform=hx.transAxes, ha="right", va="bottom",
-                color=MUTED, fontsize=8, fontfamily="DejaVu Sans Mono")
+                fontsize=7.5, color=MUTED)
+        hx.text(-0.12, 1.1, letters[1], transform=hx.transAxes, fontsize=13, weight="bold", color=INK, va="bottom")
 
-        rx = fig.add_axes([0.69, top - height, 0.27, height])
+        rx = fig.add_axes([0.71, top - height, 0.26, height])
         sizes = [n for n in (150, 250, 400, 600, 900, 1500, 2200, 3000) if n <= len(q)]
         means, lows, highs = [], [], []
         for n in sizes:
@@ -283,20 +266,19 @@ def barrier_bootstrap(plt, out):
             means.append(np.mean(b))
             lows.append(np.percentile(b, 2.5))
             highs.append(np.percentile(b, 97.5))
-        rx.fill_between(sizes, lows, highs, color="#a78bfa", alpha=0.22, lw=0)
-        for lw, alpha in ((6, 0.12), (2, 1.0)):
-            rx.plot(sizes, means, color="#a78bfa", lw=lw, alpha=alpha)
-        rx.scatter(sizes, means, s=16, color=BG, edgecolor="#e879f9", lw=1.2, zorder=4)
+        rx.fill_between(sizes, lows, highs, color=PURPLE, alpha=0.15, lw=0)
+        rx.plot(sizes, means, color=PURPLE, lw=1.8, marker="o", ms=3.5, mfc="white", mec=PURPLE)
         rx.set_xscale("log")
         rx.set_xticks(sizes)
-        rx.set_xticklabels([f"{n:,}" for n in sizes], rotation=0, fontsize=7)
+        rx.set_xticklabels([f"{n:,}" for n in sizes], fontsize=7)
         rx.minorticks_off()
         rx.set_ylim(0, max(highs) * 1.15)
-        rx.set_xlabel("cells in the estimate")
-        rx.set_ylabel("barrier  [kT]")
+        rx.set_xlabel("cells in the estimate (log scale)")
+        rx.set_ylabel("barrier (kT)")
         rx.grid(color=GRID, lw=0.6)
-        rx.set_title("barrier vs cell number", fontsize=9.5, color=MUTED, weight="normal", pad=6)
-    fig.savefig(out, dpi=200)
+        rx.set_title("barrier vs cell number", pad=6, weight="normal", fontsize=9)
+        rx.text(-0.2, 1.1, letters[2], transform=rx.transAxes, fontsize=13, weight="bold", color=INK, va="bottom")
+    fig.savefig(out, dpi=220)
     plt.close(fig)
     print(f"wrote {out}")
 
