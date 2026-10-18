@@ -105,13 +105,15 @@ def colorbar(fig, rect, label):
     ax.set_title(label, fontsize=8.5, loc="center", pad=3, weight="normal", color=INK)
 
 
-def landscape_3d(plt, out):
+def landscape_figure(plt):
+    """The Waddington-surface figure, both lineages; returns the figure and its two 3D axes."""
     import contourpy
     from matplotlib.colors import LightSource
     from scipy.interpolate import RegularGridInterpolator
 
     cm = plt.get_cmap("viridis")
     fig = plt.figure(figsize=(12, 5.6), dpi=220)
+    axes = []
     for col, (prefix, title, src, tgt) in enumerate(LINEAGES):
         xy, q, s = load(prefix)
         X, Y = grid_over(xy, pad=0.12)
@@ -123,6 +125,7 @@ def landscape_3d(plt, out):
         U = U - U.min()
         cap = float(U.max())
         ax = fig.add_axes([0.0 + 0.5 * col, 0.08, 0.5, 0.8], projection="3d")
+        axes.append(ax)
         mix = np.clip(support / 0.08, 0, 1) ** 0.6
         rgb = cm(np.clip(qf, 0, 1))[..., :3] * mix[..., None] + FLOOR * (1 - mix[..., None])
         shaded = LightSource(azdeg=300, altdeg=42).shade_rgb(rgb, U, blend_mode="soft", vert_exag=3.0)
@@ -152,6 +155,11 @@ def landscape_3d(plt, out):
         fig.text(0.05 + 0.5 * col, 0.925, f"{src} → {tgt}; {len(q):,} cells; commits at {c['commitment_stage']}",
                  fontsize=8.5, color=MUTED, va="top")
     colorbar(fig, [0.4, 0.07, 0.2, 0.018], "committor q (surface colour); red: q = 0.5 separatrix")
+    return fig, axes
+
+
+def landscape_3d(plt, out):
+    fig, _ = landscape_figure(plt)
     fig.savefig(out, dpi=220)
     plt.close(fig)
     print(f"wrote {out}")

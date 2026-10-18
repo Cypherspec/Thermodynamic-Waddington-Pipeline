@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/Cypherspec/thermodynamic-waddington-pipeline/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/version-1.5.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.6.0-blue.svg)](CHANGELOG.md)
 [![Tests](https://img.shields.io/badge/tests-233%20passing-brightgreen.svg)](tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-online-teal.svg)](https://cypherspec.github.io/Thermodynamic-Waddington-Pipeline/)
@@ -198,6 +198,8 @@ streamlines of its gradient, and how sure the barrier is.
 
 ![Waddington landscape](figures/waddington_landscape_3d.png)
 
+![the Waddington surface, turning](figures/waddington_landscape_rotation.gif)
+
 ![commitment flow field](figures/commitment_flow_field.png)
 
 ![barrier uncertainty](figures/barrier_bootstrap.png)
@@ -280,7 +282,7 @@ falsifiable test of the commitment prediction is preregistered in
 @software{kommisetty_thermodynamic_waddington,
   author  = {Kommisetty, Nischay},
   title   = {Thermodynamic Waddington Pipeline},
-  version = {1.5.0},
+  version = {1.6.0},
   year    = {2026},
   url     = {https://github.com/Cypherspec/Thermodynamic-Waddington-Pipeline},
   license = {MIT}

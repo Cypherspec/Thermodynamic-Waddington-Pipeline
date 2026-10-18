@@ -3,6 +3,20 @@
 All notable changes to this project are documented here. Format loosely follows
 Keep a Changelog. Versioning is semantic.
 
+## [1.6.0] - 2026-10-18
+
+### Added
+- `benchmarks/animate_landscape.py`: the Waddington-surface figure as an animation
+  (`figures/waddington_landscape_rotation.gif`, and an MP4 with `--mp4` when ffmpeg is
+  available), the view swinging either side of the published angle.
+
+### Changed
+- The landscape, commitment-field and barrier figures and the overview diagram use the
+  manuscript's style: white ground, panel letters, the committor in viridis, the
+  transition state and separatrix in red.
+- `plot_landscape_gallery.landscape_figure` returns the surface figure and its axes, so the
+  animation reuses it.
+
 ## [1.5.0] - 2026-10-17
 
 ### Added

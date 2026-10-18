@@ -57,6 +57,7 @@ def main() -> None:
         ok = run(["benchmarks/export_examples.py"]) and ok
         ok = run(["benchmarks/plot_commitment_maps.py"]) and ok
         ok = run(["benchmarks/plot_landscape_gallery.py"]) and ok
+        ok = run(["benchmarks/animate_landscape.py"]) and ok
         ok = run(["benchmarks/plot_overview.py"]) and ok
     else:
         print(f"skip Drosophila benchmark: {FLY_DATA} not found (run benchmarks/fly_testis_prepare.py)")
