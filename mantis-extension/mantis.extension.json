@@ -1,0 +1,32 @@
+{
+    "manifestVersion": 1,
+    "apiVersion": "1.0.0",
+    "id": "kommisetty.thermodynamic-waddington",
+    "name": "Thermodynamic Waddington",
+    "version": "1.7.0",
+    "description": "Reads a Thermodynamic Waddington export on the active map: where cells commit to their fate, the commitment barrier in kT, and whether the flow circulates beyond its own noise. Turns commitment phases into bags and draws commitment flow on the map.",
+    "publisher": "Nischay Kommisetty",
+    "activationEvents": [
+        "onPanel:thermodynamicWaddingtonPanel"
+    ],
+    "permissions": [
+        "maps:read",
+        "selection:read",
+        "bags:write",
+        "selection:write",
+        "edges:write"
+    ],
+    "contributes": {
+        "panels": [
+            {
+                "id": "thermodynamicWaddingtonPanel",
+                "title": "Thermodynamic Waddington",
+                "entry": "dist/panel.js",
+                "styles": [
+                    "dist/panel.css"
+                ],
+                "description": "Commitment, barrier and calibrated irreversibility for a cell map."
+            }
+        ]
+    }
+}
